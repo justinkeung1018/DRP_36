@@ -18,4 +18,6 @@ deploy:
   stage: deploy
   script:
     - git push https://heroku:$HEROKU_API_KEY@git.heroku.com/drp.git HEAD:master
+  only:
+    master
     
