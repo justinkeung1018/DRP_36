@@ -1,0 +1,21 @@
+
+cache:
+  paths:
+    - node_modules/
+
+stages:
+  - init
+  - deploy
+
+init:
+  stage: init
+  image: node:12.16.1
+  script:
+    - npm install
+
+deploy:
+  image: node:12.16.1
+  stage: deploy
+  script:
+    - git push https://$HEROKU_USER:$HEROKU_API_KEY@git.heroku.com/drp.git HEAD:master
+    
