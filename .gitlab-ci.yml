@@ -1,10 +1,10 @@
-
 cache:
   paths:
     - node_modules/
 
 stages:
   - init
+  - test
   - deploy
 
 init:
@@ -13,6 +13,13 @@ init:
   script:
     - npm install
 
+test:
+  stage: test
+  image: node:12.16.1
+  script:
+    - npm run build  
+    - CI=true npm test       
+
 deploy:
   image: node:12.16.1
   stage: deploy
@@ -20,4 +27,3 @@ deploy:
     - git push https://heroku:$HEROKU_API_KEY@git.heroku.com/drp.git HEAD:master
   only:
     - master
-    
