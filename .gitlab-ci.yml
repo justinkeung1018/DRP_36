@@ -9,19 +9,19 @@ stages:
 
 init:
   stage: init
-  image: node:22.2.0
+  image: node:20.5.1
   script:
     - npm install
 
 test:
   stage: test
-  image: node:22.2.0
+  image: node:20.5.1
   script:
     - npm run build  
     - CI=true npm test       
 
 deploy:
-  image: node:22.2.0
+  image: node:20.5.1
   stage: deploy
   script:
     - git push https://heroku:$HEROKU_API_KEY@git.heroku.com/drp.git HEAD:master
