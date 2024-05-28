@@ -12,7 +12,8 @@
   },
   "scripts": {
     "start": "http-server dist",
-    "build": "webpack --mode production"
+    "build": "webpack --mode production",
+    "test": "echo \"Error: no test specified\""
   },
   "eslintConfig": {
     "extends": [
