@@ -3,20 +3,14 @@ cache:
     - /node_modules/
 
 stages:
-  - init
   - test
   - deploy
-
-init:
-  stage: init
-  image: node:20.5.1
-  script:
-    - npm install
 
 test:
   stage: test
   image: node:20.5.1
   script:
+    - npm install
     - npm run build
     - CI=true npm test
 
