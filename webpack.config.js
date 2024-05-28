@@ -1,6 +1,7 @@
 import path, { dirname } from "path";
 import HtmlWebpackPlugin from "html-webpack-plugin";
 import WorkboxPlugin from "workbox-webpack-plugin";
+import CopyWebpackPlugin from "copy-webpack-plugin";
 
 import { fileURLToPath } from "url";
 
@@ -9,8 +10,8 @@ const __dirname = dirname(__filename);
 
 export default {
   mode: "development",
-  context: path.join(__dirname, "./src/client/"),
-  entry: "./index.tsx",
+  context: path.join(__dirname, "./src/"),
+  entry: "./client/index.tsx",
   resolve: {
     extensions: [".tsx", ".ts", ".js"],
   },
@@ -28,13 +29,6 @@ export default {
       },
     ],
   },
-  devServer: {
-    static: {
-      directory: path.join(__dirname, 'public'),
-    },
-    compress: true,
-    port: 9000,
-  },
   output: {
     path: path.resolve(__dirname, "./dist"),
     filename: "bundle.js",
@@ -49,6 +43,10 @@ export default {
       // and not allow any straggling "old" SWs to hang around
       clientsClaim: true,
       skipWaiting: true,
+    }),
+    new CopyWebpackPlugin({
+      patterns: [{ from: './client/img/', to: './client/img/' },
+        './manifest.webmanifest'],
     }),
   ],
   performance: {
