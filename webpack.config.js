@@ -27,6 +27,11 @@ export default {
         include: path.resolve(__dirname, "./src/client/"),
         use: ["style-loader", "css-loader"],
       },
+      {
+        test: /\.(jpg|jpeg)$/,
+        include: path.resolve(__dirname, "./src/client/"),
+        use: ["file-loader"],
+      },
     ],
   },
   output: {
