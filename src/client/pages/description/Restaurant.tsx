@@ -20,13 +20,12 @@ const Restaurant = () => {
   // });
 
   return (
-    <div>
-      <Nav />
+    <>
       <RestaurantHeader {...{ rest: restaurant }} />
       <RestaurantItems />
       <RestaurantItems />
       <RestaurantItems />
-    </div>
+    </>
   );
 };
 

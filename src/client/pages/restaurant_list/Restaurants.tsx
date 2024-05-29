@@ -48,8 +48,7 @@ const restaurants = [
 
 const RestaurantList = () => {
   return (
-    <div>
-      <Nav />
+    <>
       <div className="main-content">
         {restaurants.map(({ name, waitTime, location, img }) => (
           <RestaurantCard
@@ -60,7 +59,7 @@ const RestaurantList = () => {
           />
         ))}
       </div>
-    </div>
+    </>
   );
 };
 
