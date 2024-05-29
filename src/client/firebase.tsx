@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { get, ref, getDatabase } from "firebase/database";
+import { getStorage } from "firebase/storage";
 
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
@@ -24,6 +25,5 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
-const database = getDatabase(app);
-
-export default database;
+export const database = getDatabase(app);
+export const storage = getStorage(app);
