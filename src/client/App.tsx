@@ -6,6 +6,7 @@ import {ref, get} from "firebase/database";
 import Home from './pages/Home';
 import Restaurants from './pages/Restaurants';
 import Items from './pages/Items';
+import Restaurant from './pages/Restaurant';
 
 
 export const App = () => {
@@ -32,6 +33,12 @@ export const App = () => {
       path="restaurants"
       element={
           <Restaurants />
+      }
+    />
+    <Route
+      path="restaurant"
+      element={
+          <Restaurant />
       }
     />
     <Route

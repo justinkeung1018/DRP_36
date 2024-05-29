@@ -6,10 +6,10 @@ const Restaurants = () => {
   return (
     <div>
       <Nav />
-      <RestaurantHeader />
-      <RestaurantItems /> 
-      <RestaurantItems />
-      <RestaurantItems />
+        <RestaurantHeader />
+        <RestaurantItems /> 
+        <RestaurantItems />
+        <RestaurantItems />
     </div>
   );
 };

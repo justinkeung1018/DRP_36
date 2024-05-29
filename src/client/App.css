@@ -1,9 +1,15 @@
+.main-content {
+  overflow: auto;
+  max-height: 90vh;
+}
+
 /* nav bar */
 
 .navigation-tab {
   position: absolute;
-  bottom: 10px;
+  bottom: 15px;
   border-top: 1px solid darkgray;
+  font-family: sans-serif;
 }
 
 nav {
@@ -38,8 +44,44 @@ nav a {
   text-decoration: none;
 }
 
+/* restaurants */
+.all-rests {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
+
 
 /* restaurants description */
 .rest-desc-card {
-  background-color: red;
+  font-family: sans-serif;
+  padding-bottom: 2vh;
+  padding-top: 2vh;
+}
+
+.rest-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: -15px;
+}
+
+.r1 {
+  font-size: calc(15px + 2vmin);
+  color: "black";
+}
+
+.rest-desc {
+  display: flex;
+  justify-content: space-between;
+}
+
+.r2 {
+  font-size: calc(8px + 1.3vmin);
+}
+
+.centered-image {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  border-radius: 10px;
 }

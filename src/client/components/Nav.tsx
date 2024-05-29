@@ -12,7 +12,7 @@ const Nav = () => {
           <li>
             <Link to="/">
               <div className="nav-item">
-                <FaHome size={25} />
+                <FaHome size={30} />
                 <br />
                 Home
               </div>
@@ -21,7 +21,7 @@ const Nav = () => {
           <li>
             <Link to="/restaurants">
               <div className="nav-item">
-                <IoRestaurantSharp size={25} />
+                <IoRestaurantSharp size={30} />
                 <br />
                 Restaurants
               </div>
@@ -30,7 +30,7 @@ const Nav = () => {
           <li>
             <Link to="/items">
               <div className="nav-item">
-                <FaBowlFood size={25} />
+                <FaBowlFood size={30} />
                 <br />
                 Items
               </div>
@@ -39,7 +39,7 @@ const Nav = () => {
           <li>
             <Link to="/items">
               <div className="nav-item">
-                <IoAddOutline size={25} />
+                <IoAddOutline size={30} />
                 <br />
                 Add Item
               </div>
