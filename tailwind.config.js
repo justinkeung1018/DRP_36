@@ -4,6 +4,9 @@ module.exports = {
   content: ["./src/**/*.{ts,tsx,html}"],
   prefix: "",
   theme: {
+    fontFamily: {
+      sans: ['"Noto Sans"'],
+    },
     container: {
       center: true,
       padding: {

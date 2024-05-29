@@ -1,7 +1,7 @@
-import Nav from "../components/Nav";
-import RestaurantHeader from "../components/Restaurant/RestaurantHeader";
-import RestaurantItems from "../components/Restaurant/RestaurantItems";
-import database from "../firebase";
+import Nav from "../../components/Nav";
+import RestaurantHeader from "./RestaurantHeader";
+import RestaurantItems from "./RestaurantItems";
+import database from "../../firebase";
 import { ref, get } from "firebase/database";
 import { useLocation } from "react-router-dom";
 

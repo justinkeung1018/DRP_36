@@ -1,9 +1,10 @@
 import { Route, Routes, BrowserRouter } from "react-router-dom";
-import "./styles/App.css";
-import Restaurants from "./pages/Restaurants";
-import Items from "./pages/Items";
-import Restaurant from "./pages/Restaurant";
+import Restaurants from "./pages/restaurant_list/Restaurants";
+import Items from "./pages/description/Items";
+import Restaurant from "./pages/description/Restaurant";
 
+// TODO: clean up CSS
+import "./styles/App.css";
 import "./styles/global.css";
 
 export const App = () => {

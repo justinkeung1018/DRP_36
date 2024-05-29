@@ -28,7 +28,7 @@ export default {
         use: ["style-loader", "css-loader", "postcss-loader"],
       },
       {
-        test: /\.(jpg|jpeg)$/,
+        test: /\.(jpe?g|png|webp)$/i,
         include: path.resolve(__dirname, "./src/client/"),
         use: ["file-loader"],
       },
@@ -53,6 +53,10 @@ export default {
       patterns: [
         { from: "./client/img/", to: "./client/img/" },
         "./manifest.webmanifest",
+        {
+          from: "./client/pages/restaurant_list/images/",
+          to: "./assets/images/",
+        },
       ],
     }),
   ],
