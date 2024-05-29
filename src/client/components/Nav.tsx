@@ -9,7 +9,7 @@ const Nav = () => {
     <div className="navigation-tab">
       <nav>
         <ul className="nav-list">
-          <li>
+          {/* <li>
             <Link to="/">
               <div className="nav-item">
                 <FaHome size={30} />
@@ -17,9 +17,9 @@ const Nav = () => {
                 Home
               </div>
             </Link>
-          </li>
+          </li> */}
           <li>
-            <Link to="/restaurants">
+            <Link to="/">
               <div className="nav-item">
                 <IoRestaurantSharp size={30} />
                 <br />
@@ -36,7 +36,7 @@ const Nav = () => {
               </div>
             </Link>
           </li>
-          <li>
+          {/* <li>
             <Link to="/items">
               <div className="nav-item">
                 <IoAddOutline size={30} />
@@ -44,7 +44,7 @@ const Nav = () => {
                 Add Item
               </div>
             </Link>
-          </li>
+          </li> */}
         </ul>
       </nav>
     </div>
