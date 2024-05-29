@@ -1,3 +1,5 @@
+/* nav bar */
+
 .navigation-tab {
   position: absolute;
   bottom: 10px;
@@ -34,4 +36,10 @@ nav li {
 nav a {
   color: #000;
   text-decoration: none;
+}
+
+
+/* restaurants description */
+.rest-desc-card {
+  background-color: red;
 }
