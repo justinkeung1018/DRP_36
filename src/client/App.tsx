@@ -1,6 +1,12 @@
-import React, { useState } from "react";
+import React from 'react';
+import { Route, Routes, BrowserRouter } from "react-router-dom";
+import './App.css';
 import database from "./firebase";
 import {ref, get} from "firebase/database";
+import Home from './pages/Home';
+import Restaurants from './pages/Restaurants';
+import Items from './pages/Items';
+
 
 export const App = () => {
   // const data = ref(database, "hi");
@@ -14,8 +20,29 @@ export const App = () => {
   //   console.error(error);
   // });
   return (
-    <div className="container mx-auto py-10">
-      DRP
-    </div>
+    <BrowserRouter>
+        <Routes>
+      <Route
+        path="/"
+       element={
+          <Home />
+      }
+    />
+    <Route
+      path="restaurants"
+      element={
+          <Restaurants />
+      }
+    />
+    <Route
+      path="items"
+      element={
+          <Items />
+      }
+    />
+    </Routes>
+    </BrowserRouter>
+
   );
 };
+

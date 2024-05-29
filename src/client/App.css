@@ -1,0 +1,37 @@
+.navigation-tab {
+  position: absolute;
+  bottom: 10px;
+  border-top: 1px solid darkgray;
+}
+
+nav {
+  display: flex;
+  justify-content: center;
+}
+
+nav div {
+  text-align: center;
+  vertical-align: middle;
+  width: 24vw;
+  background-color: #efefef;
+}
+
+nav div:hover {
+  background-color: darkgray;
+}
+
+nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+nav li { 
+  display: inline-block;
+  font-size: calc(5px + 1vmin);
+}
+
+nav a {
+  color: #000;
+  text-decoration: none;
+}
