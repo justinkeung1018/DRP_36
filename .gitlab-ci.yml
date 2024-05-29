@@ -3,12 +3,20 @@ cache:
     - /node_modules/
 
 stages:
+  - init
   - format
   - test
   - deploy
 
+init:
+  stage: init
+  image: node:20.5.1
+  script:
+    - npm install
+
 format:
   stage: format
+  image: node:20.5.1
   script:
     - npx prettier . --check
 
