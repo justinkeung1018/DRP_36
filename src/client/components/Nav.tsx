@@ -40,7 +40,7 @@ const Nav = () => {
       defaultValue="restaurant-list"
       onValueChange={handleTabChange}
     >
-      <TabsList className="absolute bottom-0 w-screen h-fit flex">
+      <TabsList className="absolute bottom-0 left-0 right-0 w-screen h-fit flex">
         <TabsTrigger value="restaurant-list" className="flex-1">
           <div className="flex flex-col items-center justify-center">
             <div>
