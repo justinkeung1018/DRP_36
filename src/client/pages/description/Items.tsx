@@ -11,7 +11,6 @@ import {
 const Items = () => {
   return (
     <div>
-      <Nav />
       <h1>ITEMS</h1>
       <ItemInformation />
     </div>
