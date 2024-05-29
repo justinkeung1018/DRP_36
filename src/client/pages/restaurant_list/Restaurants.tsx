@@ -1,48 +1,35 @@
-import Nav from "../../components/Nav";
 import RestaurantCard from "./RestaurantCard";
-
-// TODO: serve static files and use path names instead
-import imgScr from "./images/SCR.webp";
-import imgLoudBird from "./images/Loud-Bird.webp";
-import imgKokoro from "./images/Kokoro.webp";
-import imgLibraryCafe from "./images/Library-Cafe.webp";
-import imgPlantworks from "./images/Plantworks.webp";
 
 const restaurants = [
   {
     name: "SCR Restaurant",
     waitTime: 20,
     location: "Level 2, Sherfield Building",
-    // img: "./SCR.webp",
-    img: imgScr,
+    img: "./images/SCR.webp",
   },
   {
     name: "The Loud Bird",
     waitTime: 20,
     location: "Sir Alexander Fleming Building",
-    // img: "./Loud-Bird.webp",
-    img: imgLoudBird,
+    img: "./images/Loud-Bird.webp",
   },
   {
     name: "Kokoro",
     waitTime: 20,
     location: "Level 0, Sherfield Building",
-    // img: "./Kokoro.webp",
-    img: imgKokoro,
+    img: "./images/Kokoro.webp",
   },
   {
     name: "Library Cafe",
     waitTime: 10,
     location: "Level 0, Abdus Salam Library",
-    // img: "./Library-Cafe.webp",
-    img: imgLibraryCafe,
+    img: "./images/Library-Cafe.webp",
   },
   {
     name: "Plantworks",
     waitTime: 5,
     location: "Junior Common Room",
-    // img: "./Plantworks.webp",
-    img: imgPlantworks,
+    img: "./Plantworks.webp",
   },
 ];
 
