@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-import food from "./images/Loud-Bird.webp";
 import { IconMapPinFilled } from "@tabler/icons-react";
 
 import { AspectRatio } from "../../components/shadcn/AspectRatio";
