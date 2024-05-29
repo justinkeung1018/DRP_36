@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import {get, ref, getDatabase} from "firebase/database";
+import { get, ref, getDatabase } from "firebase/database";
 
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
@@ -17,7 +17,8 @@ const firebaseConfig = {
   messagingSenderId: "1064933229081",
   appId: "1:1064933229081:web:b1ac20faf42545ff186088",
   measurementId: "G-99RTYS3R8C",
-  databaseURL: "https://drp36-ea396-default-rtdb.europe-west1.firebasedatabase.app",
+  databaseURL:
+    "https://drp36-ea396-default-rtdb.europe-west1.firebasedatabase.app",
 };
 
 // Initialize Firebase

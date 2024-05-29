@@ -24,8 +24,8 @@ export default {
       },
       {
         test: /\.css$/,
-        include: path.resolve(__dirname, "./src/client/"),
-        use: ["style-loader", "css-loader"],
+        include: path.resolve(__dirname, "./src/client/styles/"),
+        use: ["style-loader", "css-loader", "postcss-loader"],
       },
       {
         test: /\.(jpg|jpeg)$/,
@@ -50,8 +50,10 @@ export default {
       skipWaiting: true,
     }),
     new CopyWebpackPlugin({
-      patterns: [{ from: './client/img/', to: './client/img/' },
-        './manifest.webmanifest'],
+      patterns: [
+        { from: "./client/img/", to: "./client/img/" },
+        "./manifest.webmanifest",
+      ],
     }),
   ],
   performance: {

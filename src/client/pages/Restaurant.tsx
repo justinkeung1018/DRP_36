@@ -2,8 +2,8 @@ import Nav from "../components/Nav";
 import RestaurantHeader from "../components/Restaurant/RestaurantHeader";
 import RestaurantItems from "../components/Restaurant/RestaurantItems";
 import database from "../firebase";
-import {ref, get} from "firebase/database";
-import { useLocation } from 'react-router-dom';
+import { ref, get } from "firebase/database";
+import { useLocation } from "react-router-dom";
 
 const Restaurant = () => {
   const location = useLocation();
@@ -19,14 +19,13 @@ const Restaurant = () => {
   //   console.error(error);
   // });
 
-
   return (
     <div>
       <Nav />
-        <RestaurantHeader {...{rest: restaurant}} />
-        <RestaurantItems /> 
-        <RestaurantItems />
-        <RestaurantItems />
+      <RestaurantHeader {...{ rest: restaurant }} />
+      <RestaurantItems />
+      <RestaurantItems />
+      <RestaurantItems />
     </div>
   );
 };

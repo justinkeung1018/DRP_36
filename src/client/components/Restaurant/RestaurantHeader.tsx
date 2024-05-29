@@ -1,10 +1,9 @@
-
 interface HeaderProps {
-  rest: String
+  rest: String;
 }
 
 const RestaurantHeader = (props: HeaderProps) => {
-  console.log(props.rest)
+  console.log(props.rest);
   return (
     <div>
       <h1>{props.rest}</h1>

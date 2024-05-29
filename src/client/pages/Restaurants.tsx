@@ -7,10 +7,10 @@ const Restaurants = () => {
       <Nav />
       <div className="main-content">
         <div className="all-rests">
-          <RestaurantDesc name="SCR Restaurant"/>
-          <RestaurantDesc name="The Loud Bird"/>
-          <RestaurantDesc name="Kokoro"/>
-          <RestaurantDesc name="Kimiko"/>
+          <RestaurantDesc name="SCR Restaurant" />
+          <RestaurantDesc name="The Loud Bird" />
+          <RestaurantDesc name="Kokoro" />
+          <RestaurantDesc name="Kimiko" />
         </div>
       </div>
     </div>

@@ -5,7 +5,10 @@
     "target": "ES5",
     "module": "ESNext",
     "moduleResolution": "node",
-    "lib": ["DOM", "ESNext"] /* Specify library files to be included in the compilation. */,
+    "lib": [
+      "DOM",
+      "ESNext"
+    ] /* Specify library files to be included in the compilation. */,
     "jsx": "react-jsx",
     "esModuleInterop": true,
     "strict": true /* Enable all strict type-checking options. */,

@@ -1,7 +1,7 @@
 const RestaurantItems = (props: any) => {
   return (
     <div>
-      <h1>RESTAURANT ITEMS</h1>
+      <h1>cunt</h1>
     </div>
   );
 };

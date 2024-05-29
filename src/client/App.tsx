@@ -1,12 +1,10 @@
-import React from 'react';
 import { Route, Routes, BrowserRouter } from "react-router-dom";
-import './App.css';
-import database from "./firebase";
-import {ref, get} from "firebase/database";
-import Restaurants from './pages/Restaurants';
-import Items from './pages/Items';
-import Restaurant from './pages/Restaurant';
+import "./styles/App.css";
+import Restaurants from "./pages/Restaurants";
+import Items from "./pages/Items";
+import Restaurant from "./pages/Restaurant";
 
+import "./styles/global.css";
 
 export const App = () => {
   // const data = ref(database, "hi");
@@ -21,28 +19,11 @@ export const App = () => {
   // });
   return (
     <BrowserRouter>
-        <Routes>
-    <Route
-        path="/"
-       element={
-          <Restaurants />
-      }
-    />
-    <Route
-      path="restaurant"
-      element={
-          <Restaurant />
-      }
-    />
-    <Route
-      path="items"
-      element={
-          <Items />
-      }
-    />
-    </Routes>
+      <Routes>
+        <Route path="/" element={<Restaurants />} />
+        <Route path="restaurant" element={<Restaurant />} />
+        <Route path="items" element={<Items />} />
+      </Routes>
     </BrowserRouter>
-
   );
 };
-

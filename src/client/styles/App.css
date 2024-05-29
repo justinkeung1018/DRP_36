@@ -34,7 +34,7 @@ nav ul {
   margin: 0;
 }
 
-nav li { 
+nav li {
   display: inline-block;
   font-size: calc(5px + 1vmin);
 }
@@ -50,7 +50,6 @@ nav a {
   flex-wrap: wrap;
   justify-content: space-around;
 }
-
 
 /* restaurants description */
 .rest-desc-card {
