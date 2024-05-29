@@ -3,8 +3,14 @@ cache:
     - /node_modules/
 
 stages:
+  - format
   - test
   - deploy
+
+format:
+  stage: format
+  script:
+    - npx prettier . --check
 
 test:
   stage: test
