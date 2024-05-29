@@ -1,5 +1,6 @@
 import { Route, Routes, BrowserRouter } from "react-router-dom";
-import Restaurants from "./pages/restaurant_list/Restaurants";
+import Nav from "./components/Nav";
+import RestaurantList from "./pages/restaurant_list/Restaurants";
 import Items from "./pages/description/Items";
 import Restaurant from "./pages/description/Restaurant";
 
@@ -20,11 +21,14 @@ export const App = () => {
   // });
   return (
     <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Restaurants />} />
-        <Route path="restaurant" element={<Restaurant />} />
-        <Route path="items" element={<Items />} />
-      </Routes>
+      <Nav />
+      <div className="static">
+        <Routes>
+          <Route path="/" element={<RestaurantList />} />
+          <Route path="restaurant" element={<Restaurant />} />
+          <Route path="items" element={<Items />} />
+        </Routes>
+      </div>
     </BrowserRouter>
   );
 };
