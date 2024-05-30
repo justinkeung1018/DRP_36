@@ -45,112 +45,6 @@ import { z } from "zod";
 import { MenuItemCard } from "../description/Restaurant";
 import { MenuItemInfo } from "../../types";
 
-const Items = () => {
-  const name = "SCR Restaurant";
-
-  const [items, setItems] = useState<
-    Record<string, Record<string, MenuItemInfo>>
-  >({});
-
-  useEffect(() => {
-    const restaurantRef = ref(database, name);
-    const unsubscribe = onValue(restaurantRef, (snapshot) => {
-      const data = snapshot.val();
-      if (data != null) {
-        setItems(data);
-      }
-    });
-
-    return () => {
-      unsubscribe();
-    };
-  }, [name]);
-
-  return (
-    <>
-      <Tabs defaultValue="Food">
-        <div className="flex items-center justify-center mb-4 pb-1">
-          <TabsList>
-            {(Object.keys(items).length === 0
-              ? ["Drink", "Food"]
-              : Object.keys(items)
-            )
-              .reverse()
-              .map((category) => (
-                <TabsTrigger key={category} value={category}>
-                  {category}
-                </TabsTrigger>
-              ))}
-          </TabsList>
-        </div>
-        {Object.keys(items).length === 0
-          ? ["Drink", "Food"].map((category) => (
-              <TabsContent
-                key={category}
-                value={category}
-                className="space-y-4 overflow-auto text-center font-bold text-l"
-              >
-                No Items
-              </TabsContent>
-            ))
-          : Object.entries(items).map(([category, items]) => (
-              <TabsContent
-                key={category}
-                value={category}
-                className="space-y-4 overflow-auto"
-              >
-                {Object.values(items).map((item: MenuItemInfo) => (
-                  <MenuItemCard info={item} />
-                ))}
-              </TabsContent>
-            ))}
-      </Tabs>
-      <Dialog>
-        <DialogTrigger>
-          <Button
-            variant="outline"
-            className="fixed bottom-20 right-10 shadow-md font-bold h-fit"
-          >
-            <div className="flex flex-col items-center">
-              <div>
-                <IoAddOutline size={30} />
-              </div>
-              <div>Add item</div>
-            </div>
-          </Button>
-        </DialogTrigger>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Add food item</DialogTitle>
-          </DialogHeader>
-          <ItemInformationForm />
-        </DialogContent>
-      </Dialog>
-    </>
-  );
-};
-
-export default Items;
-
-function nullable<TSchema extends z.AnyZodObject>(schema: TSchema) {
-  const entries = Object.entries(schema.shape) as [
-    keyof TSchema["shape"],
-    z.ZodTypeAny,
-  ][];
-
-  const newProps = entries.reduce(
-    (acc, [key, value]) => {
-      acc[key] = value.nullable();
-      return acc;
-    },
-    {} as {
-      [key in keyof TSchema["shape"]]: z.ZodNullable<TSchema["shape"][key]>;
-    },
-  );
-
-  return z.object(newProps);
-}
-
 const formSchema = z.object({
   name: z.string().min(2).max(50),
   category: z.string(),
@@ -335,34 +229,119 @@ function ItemInformationForm() {
             </FormItem>
           )}
         />
-        <div>
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => {
-              document.getElementById("upload-menu-image")?.click();
-            }}
-          >
-            Upload image
-          </Button>
-          <Input
-            id="upload-menu-image"
-            className="hidden"
-            type="file"
-            accept="image/x-png,image/jpeg,image/gif"
-            ref={fileInputRef}
-            onChange={(e) => {
-              const image = e.target.files?.[0] || null;
-              if (image) {
-                form.setValue("image", image);
-              }
-            }}
-          />
-        </div>
+        <FormField
+          control={form.control}
+          name="image"
+          render={() => (
+            <FormItem>
+              <FormLabel>Upload image</FormLabel>
+              <FormControl>
+                <Input
+                  type="file"
+                  accept="image/x-png,image/jpeg,image/gif"
+                  ref={fileInputRef}
+                  onChange={(e) => {
+                    const image = e.target.files?.[0] || null;
+                    if (image) {
+                      form.setValue("image", image);
+                    }
+                  }}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
         <div className="flex items-center justify-center w-full mt-[20px]">
           <Button type="submit">Submit</Button>
         </div>
       </form>
     </Form>
+  );
+}
+
+export default function Items() {
+  const name = "SCR Restaurant";
+
+  const [items, setItems] = useState<
+    Record<string, Record<string, MenuItemInfo>>
+  >({});
+
+  useEffect(() => {
+    const restaurantRef = ref(database, name);
+    const unsubscribe = onValue(restaurantRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data != null) {
+        setItems(data);
+      }
+    });
+
+    return () => {
+      unsubscribe();
+    };
+  }, [name]);
+
+  return (
+    <>
+      <Tabs defaultValue="Food">
+        <div className="flex items-center justify-center mb-4 pb-1">
+          <TabsList>
+            {(Object.keys(items).length === 0
+              ? ["Drink", "Food"]
+              : Object.keys(items)
+            )
+              .reverse()
+              .map((category) => (
+                <TabsTrigger key={category} value={category}>
+                  {category}
+                </TabsTrigger>
+              ))}
+          </TabsList>
+        </div>
+        {Object.keys(items).length === 0
+          ? ["Drink", "Food"].map((category) => (
+              <TabsContent
+                key={category}
+                value={category}
+                className="space-y-4 overflow-auto text-center font-bold text-l"
+              >
+                No Items
+              </TabsContent>
+            ))
+          : Object.entries(items).map(([category, items]) => (
+              <TabsContent
+                key={category}
+                value={category}
+                className="space-y-4 overflow-auto"
+              >
+                {Object.values(items).map((item: MenuItemInfo) => (
+                  <MenuItemCard info={item} />
+                ))}
+              </TabsContent>
+            ))}
+      </Tabs>
+      <Dialog>
+        <DialogTrigger>
+          <Button
+            variant="outline"
+            className="fixed bottom-20 right-10 shadow-md font-bold h-fit"
+          >
+            <div className="flex flex-col items-center">
+              <div>
+                <IoAddOutline size={30} />
+              </div>
+              <div>Add item</div>
+            </div>
+          </Button>
+        </DialogTrigger>
+        <DialogContent className="rounded-lg max-w-[90dvw] max-h-[85dvh] overflow-auto">
+          <DialogHeader>
+            <DialogTitle>Add food item</DialogTitle>
+          </DialogHeader>
+          <ItemInformationForm />
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }
