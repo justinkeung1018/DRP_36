@@ -1,6 +1,6 @@
 {
-  "short_name": "DRP",
-  "name": "DRP Food App",
+  "short_name": "ICFood",
+  "name": "ICFood",
   "icons": [
     {
       "src": "./client/img/icons-192.png",
