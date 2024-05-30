@@ -6,12 +6,14 @@ interface RestaurantInfo {
 }
 
 interface MenuItemInfo {
+  gf: boolean;
+  halal: boolean;
+  image: string;
   name: string;
-  sides?: string;
-  price: string;
-  dietaryRequirements?: string[];
-  availability: number;
-  img: string;
+  price: number;
+  quantity: number;
+  v: boolean;
+  vg: boolean;
 }
 
 export { RestaurantInfo, MenuItemInfo };

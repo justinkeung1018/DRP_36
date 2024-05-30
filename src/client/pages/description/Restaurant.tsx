@@ -12,6 +12,11 @@ import {
 
 import { RestaurantInfo, MenuItemInfo } from "../../types";
 
+import { doc, onSnapshot } from "firebase/firestore";
+import { database } from "../../firebase";
+import { onValue, ref } from "firebase/database";
+import { useEffect, useState } from "react";
+
 function RestaurantHeader({ info }: { info: RestaurantInfo }) {
   const { name, location, img } = info;
   return (
@@ -34,26 +39,25 @@ function RestaurantHeader({ info }: { info: RestaurantInfo }) {
 }
 
 function MenuItemCard({ info }: { info: MenuItemInfo }) {
-  const { name, sides, price, dietaryRequirements, availability, img } = info;
+  const { gf, halal, image, name, price, quantity, v, vg } = info;
+  const good_name = name.replace(/"/g, "");
   return (
     <>
       <Card className="px-4 border-none shadow-none">
         <div className="basis-3/4 flex justify-between gap-x-2">
           <div>
             <CardHeader className="p-0 text-lg font-medium leading-tight">
-              {name}
+              {good_name}
             </CardHeader>
             <CardContent className="p-0">
               <div className="text-gray-500 font-light">£{price}</div>
-              <div className="text-gray-500 font-light leading-tight">
-                {sides}
-              </div>
+              <div className="text-gray-500 font-light leading-tight"></div>
             </CardContent>
           </div>
           <div className="basis-1/4 flex-none flex flex-col items-center justify-center">
             <AspectRatio ratio={1}>
               <img
-                src="https://hips.hearstapps.com/hmg-prod/images/taco-spaghetti2-1671200124.jpg"
+                src={image}
                 alt="Food"
                 className="object-cover w-full h-full rounded-md"
               />
@@ -73,62 +77,23 @@ function capitalise(x: string): string {
 const Restaurant = () => {
   const location = useLocation();
   const { info } = location.state;
+  const { name } = info;
+  const [items, setItems] = useState<
+    Record<string, Record<string, MenuItemInfo>>
+  >({});
 
-  // const data = ref(database, "hi");
-  // get(data).then((snapshot) => {
-  //   if (snapshot.exists()) {
-  //     console.log(snapshot.val());
-  //   } else {
-  //     console.log("No data available");
-  //   }
-  // }).catch((error) => {
-  //   console.error(error);
-  // });
+  useEffect(() => {
+    const restaurantRef = ref(database, name);
+    const unsubscribe = onValue(restaurantRef, (snapshot) => {
+      const data = snapshot.val();
+      setItems(data);
+      console.log(data);
+    });
 
-  const items: Record<string, MenuItemInfo[]> = {
-    food: [
-      {
-        name: "Pork in Black Bean Sauce",
-        sides: "with Asian-style noodles, prawn crackers, and coleslaw",
-        price: "5.70",
-        dietaryRequirements: [],
-        availability: 8,
-        img: "dummy",
-      },
-      {
-        name: "Roasted Corn Fed Chicken Breast",
-        sides: "with Yorkshire pudding, roasted potatoes, and mixed vegetables",
-        price: "5.70",
-        dietaryRequirements: ["Halal"],
-        availability: 8,
-        img: "dummy",
-      },
-      {
-        name: "Creamy Tomato Rigatoni",
-        sides: "with garlic bread and rocket Parmesan salad",
-        price: "5.70",
-        dietaryRequirements: ["Vegetarian"],
-        availability: 8,
-        img: "dummy",
-      },
-    ],
-    drinks: [
-      {
-        name: "San Pellegrino Lemonade",
-        price: "1.02",
-        availability: 8,
-        img: "dummy",
-      },
-    ],
-    desserts: [
-      {
-        name: "Apple & Peach Crumble Custard",
-        price: "1.92",
-        availability: 8,
-        img: "dummy",
-      },
-    ],
-  };
+    return () => {
+      unsubscribe();
+    };
+  }, [name]);
 
   return (
     <>
@@ -136,15 +101,23 @@ const Restaurant = () => {
       <Tabs defaultValue={Object.keys(items)[0]}>
         <div className="flex items-center justify-center mb-4">
           <TabsList>
-            {Object.keys(items).map((category) => (
-              <TabsTrigger value={category}>{capitalise(category)}</TabsTrigger>
-            ))}
+            {Object.keys(items)
+              .reverse()
+              .map((category) => (
+                <TabsTrigger key={category} value={category}>
+                  {capitalise(category)}
+                </TabsTrigger>
+              ))}
           </TabsList>
         </div>
         {Object.entries(items).map(([category, items]) => (
-          <TabsContent value={category} className="space-y-4 overflow-auto">
-            {items.map((item) => (
-              <MenuItemCard info={item} />
+          <TabsContent
+            key={category}
+            value={category}
+            className="space-y-4 overflow-auto"
+          >
+            {Object.values(items).map((item: MenuItemInfo) => (
+              <MenuItemCard info={item} /> // Assuming MenuItemInfo has an id field
             ))}
           </TabsContent>
         ))}
