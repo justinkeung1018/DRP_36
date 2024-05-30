@@ -1,7 +1,12 @@
-import { useLocation } from "react-router-dom";
+import { database } from "../../firebase";
+import { onValue, ref } from "firebase/database";
+import { useEffect, useState } from "react";
+import { useLocation, Link } from "react-router-dom";
+import { IoChevronBack } from "react-icons/io5";
 
 import { AspectRatio } from "../../components/shadcn/AspectRatio";
 import { Badge } from "../../components/shadcn/Badge";
+import { Button } from "../../components/shadcn/Button";
 import { Card, CardContent, CardHeader } from "../../components/shadcn/Card";
 import { Separator } from "../../components/shadcn/Separator";
 import {
@@ -12,10 +17,7 @@ import {
 } from "../../components/shadcn/Tabs";
 
 import { RestaurantInfo, MenuItemInfo } from "../../types";
-
-import { database } from "../../firebase";
-import { onValue, ref } from "firebase/database";
-import { useEffect, useState } from "react";
+import { IconContext } from "react-icons";
 
 function RestaurantHeader({ info }: { info: RestaurantInfo }) {
   const { name, location, img } = info;
@@ -174,6 +176,13 @@ const Restaurant = () => {
               </TabsContent>
             ))}
       </Tabs>
+      <Button asChild>
+        <Link to="/" className="fixed top-5 left-5 bg-stone-700/75 px-1">
+          <IconContext.Provider value={{ color: "#a8a29e", size: "30px" }}>
+            <IoChevronBack />
+          </IconContext.Provider>
+        </Link>
+      </Button>
     </>
   );
 };
