@@ -12,7 +12,6 @@ import {
 
 import { RestaurantInfo, MenuItemInfo } from "../../types";
 
-import { doc, onSnapshot } from "firebase/firestore";
 import { database } from "../../firebase";
 import { onValue, ref } from "firebase/database";
 import { useEffect, useState } from "react";
@@ -38,20 +37,40 @@ function RestaurantHeader({ info }: { info: RestaurantInfo }) {
   );
 }
 
+function parseMenuName(name: string) {
+  const splitOnWith = name.split("with");
+  if (splitOnWith.length === 1) {
+    const splitOnLeftParenthesis = name.split("(");
+    if (splitOnLeftParenthesis.length === 1) {
+      return { name, description: "" };
+    }
+    const [mainName, ...rest] = [
+      splitOnLeftParenthesis[0],
+      ...splitOnLeftParenthesis[1].split(")"),
+    ];
+    return { name: mainName, description: rest.join(" ") };
+  }
+  const [mainName, description] = splitOnWith;
+  return { name: mainName, description: "with " + description };
+}
+
 function MenuItemCard({ info }: { info: MenuItemInfo }) {
   const { gf, halal, image, name, price, quantity, v, vg } = info;
-  const good_name = name.replace(/"/g, "");
+  const goodName = name.replace(/"/g, "");
+  const { name: mainName, description } = parseMenuName(goodName);
   return (
     <>
       <Card className="px-4 border-none shadow-none">
         <div className="basis-3/4 flex justify-between gap-x-2">
           <div>
             <CardHeader className="p-0 text-lg font-medium leading-tight">
-              {good_name}
+              {mainName}
             </CardHeader>
             <CardContent className="p-0">
               <div className="text-gray-500 font-light">£{price}</div>
-              <div className="text-gray-500 font-light leading-tight"></div>
+              <div className="text-gray-500 font-light leading-tight">
+                {description}
+              </div>
             </CardContent>
           </div>
           <div className="basis-1/4 flex-none flex flex-col items-center justify-center">
@@ -87,7 +106,6 @@ const Restaurant = () => {
     const unsubscribe = onValue(restaurantRef, (snapshot) => {
       const data = snapshot.val();
       setItems(data);
-      console.log(data);
     });
 
     return () => {
@@ -98,14 +116,14 @@ const Restaurant = () => {
   return (
     <>
       <RestaurantHeader info={info} />
-      <Tabs defaultValue={Object.keys(items)[0]}>
+      <Tabs defaultValue="Food">
         <div className="flex items-center justify-center mb-4">
           <TabsList>
             {Object.keys(items)
               .reverse()
               .map((category) => (
                 <TabsTrigger key={category} value={category}>
-                  {capitalise(category)}
+                  {category}
                 </TabsTrigger>
               ))}
           </TabsList>
