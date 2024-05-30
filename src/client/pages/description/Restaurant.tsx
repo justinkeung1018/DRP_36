@@ -40,13 +40,14 @@ function RestaurantHeader({ info }: { info: RestaurantInfo }) {
 
 function MenuItemCard({ info }: { info: MenuItemInfo }) {
   const { gf, halal, image, name, price, quantity, v, vg } = info;
+  const good_name = name.replace(/"/g, "");
   return (
     <>
       <Card className="px-4 border-none shadow-none">
         <div className="basis-3/4 flex justify-between gap-x-2">
           <div>
             <CardHeader className="p-0 text-lg font-medium leading-tight">
-              {name}
+              {good_name}
             </CardHeader>
             <CardContent className="p-0">
               <div className="text-gray-500 font-light">£{price}</div>
