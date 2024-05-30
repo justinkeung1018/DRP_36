@@ -132,6 +132,25 @@ const Items = () => {
 
 export default Items;
 
+function nullable<TSchema extends z.AnyZodObject>(schema: TSchema) {
+  const entries = Object.entries(schema.shape) as [
+    keyof TSchema["shape"],
+    z.ZodTypeAny,
+  ][];
+
+  const newProps = entries.reduce(
+    (acc, [key, value]) => {
+      acc[key] = value.nullable();
+      return acc;
+    },
+    {} as {
+      [key in keyof TSchema["shape"]]: z.ZodNullable<TSchema["shape"][key]>;
+    },
+  );
+
+  return z.object(newProps);
+}
+
 const formSchema = z.object({
   name: z.string().min(2).max(50),
   category: z.string(),
@@ -141,7 +160,7 @@ const formSchema = z.object({
       z.number(),
     ])
     .pipe(z.coerce.number().min(0.01).max(999)),
-  initialQuantity: z.coerce.number(),
+  initialQuantity: z.coerce.number().positive(),
   dietaryRequirements: z.array(z.string()),
   description: z.string().max(200),
   image: z.instanceof(File),
@@ -158,6 +177,19 @@ function ItemInformationForm() {
       description: "",
     },
   });
+  const { formState, resetField } = form;
+
+  // We use useEffect as recommended here: https://react-hook-form.com/docs/useform/reset
+  useEffect(() => {
+    if (formState.isSubmitSuccessful) {
+      form.reset();
+      // Ideally we do not need to do the following but react-hook-form will not clear
+      // the price and initialQuantity fields because we need to supply default values
+      // but it is an absolute pain in the ass to make them nullable in zod and work well
+      // with react-hook-form
+      (document.getElementById("item-info-form") as HTMLFormElement).reset();
+    }
+  }, [formState]);
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     const {
@@ -180,17 +212,17 @@ function ItemInformationForm() {
       fileInputRef.current.value = "";
     }
 
-    uploadBytes(imageRef, image).then((snapshot) => {
+    uploadBytes(imageRef, image as File).then((snapshot) => {
       getDownloadURL(snapshot.ref).then((url) => {
         set(newItemRef, {
           name,
           price,
           quantity: initialQuantity,
           image: url,
-          gf: dietaryRequirements.includes("gluten-free"),
-          nf: dietaryRequirements.includes("nut-free"),
-          v: dietaryRequirements.includes("vegetarian"),
-          vg: dietaryRequirements.includes("vegan"),
+          gf: dietaryRequirements?.includes("gluten-free"),
+          nf: dietaryRequirements?.includes("nut-free"),
+          v: dietaryRequirements?.includes("vegetarian"),
+          vg: dietaryRequirements?.includes("vegan"),
         });
       });
     });
@@ -203,6 +235,7 @@ function ItemInformationForm() {
   return (
     <Form {...form}>
       <form
+        id="item-info-form"
         onSubmit={form.handleSubmit(onSubmit, onInvalid)}
         className="space-y-4"
       >
@@ -226,7 +259,7 @@ function ItemInformationForm() {
             <FormItem>
               <FormLabel>Price</FormLabel>
               <FormControl>
-                <Input placeholder="£" {...field} />
+                <Input id="price-input" placeholder="£" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -239,7 +272,7 @@ function ItemInformationForm() {
             <FormItem>
               <FormLabel>Initial quantity</FormLabel>
               <FormControl>
-                <Input type="number" {...field} />
+                <Input id="initial-quantity-input" type="number" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
