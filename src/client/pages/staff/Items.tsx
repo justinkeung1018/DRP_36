@@ -57,6 +57,7 @@ export default Items;
 
 const formSchema = z.object({
   name: z.string().min(2).max(50),
+  category: z.string(),
   price: z
     .union([
       z.string().transform((x) => x.replace(/[^0-9.-]+/g, "")),
@@ -85,14 +86,19 @@ function ItemInformationForm() {
     const {
       name,
       price,
+      category,
       initialQuantity,
       dietaryRequirements,
       description,
       image,
     } = values;
-    const itemsRef = ref(database, "Kimiko/Items");
+    console.log(values);
+    const itemsRef = ref(database, "SCR Restaurant/" + category);
     const newItemRef = push(itemsRef);
-    const imageRef = ref_storage(storage, "Kimiko/Items/" + newItemRef.key);
+    const imageRef = ref_storage(
+      storage,
+      "SCR Restaurant/Items/" + newItemRef.key,
+    );
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
@@ -100,7 +106,16 @@ function ItemInformationForm() {
     // TODO: write the remaining attributes to database
     uploadBytes(imageRef, image).then((snapshot) => {
       getDownloadURL(snapshot.ref).then((url) => {
-        set(newItemRef, { name, price, quantity: initialQuantity, url });
+        set(newItemRef, {
+          name,
+          price,
+          quantity: initialQuantity,
+          image: url,
+          gf: dietaryRequirements.includes("gluten-free"),
+          nf: dietaryRequirements.includes("nut-free"),
+          v: dietaryRequirements.includes("vegetarian"),
+          vg: dietaryRequirements.includes("vegan"),
+        });
       });
     });
   }
@@ -154,6 +169,23 @@ function ItemInformationForm() {
             </FormItem>
           )}
         />
+        <div className="space-y-2">
+          <Label>Category</Label>
+          <ToggleGroup
+            className="grid grid-cols-2 gap-1"
+            type="single"
+            onValueChange={(category) => {
+              form.setValue("category", category);
+            }}
+          >
+            <ToggleGroupItem value="Food" variant="outline">
+              Food
+            </ToggleGroupItem>
+            <ToggleGroupItem value="Drink" variant="outline">
+              Drink
+            </ToggleGroupItem>
+          </ToggleGroup>
+        </div>
         <div className="space-y-2">
           <Label>Dietary requirements</Label>
           <ToggleGroup

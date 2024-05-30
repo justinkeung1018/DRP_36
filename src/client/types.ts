@@ -7,7 +7,7 @@ interface RestaurantInfo {
 
 interface MenuItemInfo {
   gf: boolean;
-  halal: boolean;
+  nf: boolean;
   image: string;
   name: string;
   price: number;

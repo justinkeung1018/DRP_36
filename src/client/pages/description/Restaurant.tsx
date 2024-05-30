@@ -55,16 +55,30 @@ function parseMenuName(name: string) {
 }
 
 function MenuItemCard({ info }: { info: MenuItemInfo }) {
-  const { gf, halal, image, name, price, quantity, v, vg } = info;
-  const goodName = name.replace(/"/g, "");
-  const { name: mainName, description } = parseMenuName(goodName);
+  const { gf, nf, image, name, price, quantity, v, vg } = info;
+  const { name: mainName, description } = parseMenuName(name);
+  const dietary = [];
+  if (gf) {
+    dietary.push("GF");
+  }
+  if (nf) {
+    dietary.push("NF");
+  }
+  if (v) {
+    dietary.push("V");
+  }
+  if (vg) {
+    dietary.push("VG");
+  }
   return (
     <>
       <Card className="px-4 border-none shadow-none">
         <div className="basis-3/4 flex justify-between gap-x-2">
           <div>
             <CardHeader className="p-0 text-lg font-medium leading-tight">
-              {mainName}
+              {mainName +
+                " " +
+                (dietary.length > 0 ? "(" + dietary.join(", ") + ")" : "")}
             </CardHeader>
             <CardContent className="p-0">
               <div className="text-gray-500 font-light">£{price}</div>
@@ -105,7 +119,9 @@ const Restaurant = () => {
     const restaurantRef = ref(database, name);
     const unsubscribe = onValue(restaurantRef, (snapshot) => {
       const data = snapshot.val();
-      setItems(data);
+      if (data != null) {
+        setItems(data);
+      }
     });
 
     return () => {
@@ -135,7 +151,7 @@ const Restaurant = () => {
             className="space-y-4 overflow-auto"
           >
             {Object.values(items).map((item: MenuItemInfo) => (
-              <MenuItemCard info={item} /> // Assuming MenuItemInfo has an id field
+              <MenuItemCard info={item} />
             ))}
           </TabsContent>
         ))}
