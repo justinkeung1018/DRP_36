@@ -129,15 +129,16 @@ const Restaurant = () => {
     };
   }, [name]);
 
-
-
   return (
     <>
       <RestaurantHeader info={info} />
       <Tabs defaultValue="Food">
         <div className="flex items-center justify-center mb-4 pb-1">
-            <TabsList>
-            {(Object.keys(items).length === 0 ? ["Drink", "Food"] : Object.keys(items))
+          <TabsList>
+            {(Object.keys(items).length === 0
+              ? ["Drink", "Food"]
+              : Object.keys(items)
+            )
               .reverse()
               .map((category) => (
                 <TabsTrigger key={category} value={category}>
@@ -146,26 +147,27 @@ const Restaurant = () => {
               ))}
           </TabsList>
         </div>
-        {(Object.keys(items).length === 0 ? (
-          ["Drink", "Food"].map((category) => (
-          <TabsContent 
-            key={category} 
-            value={category}  
-            className="space-y-4 overflow-auto text-center font-bold text-l"
-          >
-            No Items
-          </TabsContent>))) : 
-        (Object.entries(items).map(([category, items]) => (
-          <TabsContent
-            key={category}
-            value={category}
-            className="space-y-4 overflow-auto"
-          >
-            {Object.values(items).map((item: MenuItemInfo) => (
-              <MenuItemCard info={item} />
+        {Object.keys(items).length === 0
+          ? ["Drink", "Food"].map((category) => (
+              <TabsContent
+                key={category}
+                value={category}
+                className="space-y-4 overflow-auto text-center font-bold text-l"
+              >
+                No Items
+              </TabsContent>
+            ))
+          : Object.entries(items).map(([category, items]) => (
+              <TabsContent
+                key={category}
+                value={category}
+                className="space-y-4 overflow-auto"
+              >
+                {Object.values(items).map((item: MenuItemInfo) => (
+                  <MenuItemCard info={item} />
+                ))}
+              </TabsContent>
             ))}
-          </TabsContent>
-        ))))}
       </Tabs>
     </>
   );
