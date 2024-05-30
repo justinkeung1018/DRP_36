@@ -26,6 +26,7 @@ import {
 } from "../../components/shadcn/Form";
 import { Input } from "../../components/shadcn/Input";
 import { Label } from "../../components/shadcn/Label";
+import { Separator } from "../../components/shadcn/Separator";
 import {
   Tabs,
   TabsContent,
@@ -43,7 +44,24 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { MenuItemCard } from "../description/Restaurant";
-import { MenuItemInfo } from "../../types";
+import { MenuItemInfo, RestaurantInfo } from "../../types";
+
+interface StaffHeaderProps {
+  restaurantName: string;
+}
+
+function StaffHeader({ restaurantName }: StaffHeaderProps) {
+  return (
+    <>
+      <div className="flex flex-col items-center justify-center mb-4 mt-10">
+        <h1 className="text-2xl font-bold">{restaurantName}</h1>
+        <h2 className="text-lg font-light">Staff page</h2>
+      </div>
+      <Separator className="mb-2" />
+      <h1 className="text-xl text-center font-bold mx-4 py-2">Menu</h1>
+    </>
+  );
+}
 
 const formSchema = z.object({
   name: z.string().min(2).max(50),
@@ -284,6 +302,7 @@ export default function Items() {
 
   return (
     <>
+      <StaffHeader restaurantName={name} />
       <Tabs defaultValue="Food">
         <div className="flex items-center justify-center mb-4 pb-1">
           <TabsList>
