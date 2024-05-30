@@ -1,11 +1,12 @@
-import { useRef } from "react";
-import { ref, set, push } from "firebase/database";
+import { useEffect, useRef, useState } from "react";
+import { onValue, ref, set, push } from "firebase/database";
 import { database, storage } from "../../firebase";
 import {
   getDownloadURL,
   ref as ref_storage,
   uploadBytes,
 } from "firebase/storage";
+import { IoAddOutline } from "react-icons/io5";
 
 import { Button } from "../../components/shadcn/Button";
 import {
@@ -25,6 +26,12 @@ import {
 } from "../../components/shadcn/Form";
 import { Input } from "../../components/shadcn/Input";
 import { Label } from "../../components/shadcn/Label";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "../../components/shadcn/Tabs";
 import { Textarea } from "../../components/shadcn/Textarea";
 import {
   ToggleGroup,
@@ -35,21 +42,91 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
+import { MenuItemCard } from "../description/Restaurant";
+import { MenuItemInfo } from "../../types";
+
 const Items = () => {
+  const name = "SCR Restaurant";
+
+  const [items, setItems] = useState<
+    Record<string, Record<string, MenuItemInfo>>
+  >({});
+
+  useEffect(() => {
+    const restaurantRef = ref(database, name);
+    const unsubscribe = onValue(restaurantRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data != null) {
+        setItems(data);
+      }
+    });
+
+    return () => {
+      unsubscribe();
+    };
+  }, [name]);
+
   return (
-    <Dialog>
-      <DialogTrigger>
-        <Button variant="outline" className="absolute bottom-20 right-10">
-          Add item
-        </Button>
-      </DialogTrigger>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Add food item</DialogTitle>
-        </DialogHeader>
-        <ItemInformationForm />
-      </DialogContent>
-    </Dialog>
+    <>
+      <Tabs defaultValue="Food">
+        <div className="flex items-center justify-center mb-4 pb-1">
+          <TabsList>
+            {(Object.keys(items).length === 0
+              ? ["Drink", "Food"]
+              : Object.keys(items)
+            )
+              .reverse()
+              .map((category) => (
+                <TabsTrigger key={category} value={category}>
+                  {category}
+                </TabsTrigger>
+              ))}
+          </TabsList>
+        </div>
+        {Object.keys(items).length === 0
+          ? ["Drink", "Food"].map((category) => (
+              <TabsContent
+                key={category}
+                value={category}
+                className="space-y-4 overflow-auto text-center font-bold text-l"
+              >
+                No Items
+              </TabsContent>
+            ))
+          : Object.entries(items).map(([category, items]) => (
+              <TabsContent
+                key={category}
+                value={category}
+                className="space-y-4 overflow-auto"
+              >
+                {Object.values(items).map((item: MenuItemInfo) => (
+                  <MenuItemCard info={item} />
+                ))}
+              </TabsContent>
+            ))}
+      </Tabs>
+      <Dialog>
+        <DialogTrigger>
+          <Button
+            variant="outline"
+            className="fixed bottom-20 right-10 shadow-md font-bold h-fit"
+          >
+            <div className="flex flex-col items-center">
+              <div>
+                <IoAddOutline size={30} />
+              </div>
+              <div>Add item</div>
+            </div>
+          </Button>
+        </DialogTrigger>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Add food item</DialogTitle>
+          </DialogHeader>
+          <ItemInformationForm />
+        </DialogContent>
+      </Dialog>
+    </>
   );
 };
 
@@ -103,7 +180,6 @@ function ItemInformationForm() {
       fileInputRef.current.value = "";
     }
 
-    // TODO: write the remaining attributes to database
     uploadBytes(imageRef, image).then((snapshot) => {
       getDownloadURL(snapshot.ref).then((url) => {
         set(newItemRef, {

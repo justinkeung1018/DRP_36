@@ -3,7 +3,6 @@ import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { IoRestaurantSharp } from "react-icons/io5";
 import { FaBowlFood } from "react-icons/fa6";
-import { IoAddOutline } from "react-icons/io5";
 
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "./shadcn/Tabs";
 
