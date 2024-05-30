@@ -1,4 +1,4 @@
-import { Dispatch, FormEvent, SetStateAction, useRef, useState } from "react";
+import { useRef } from "react";
 import { ref, set, push } from "firebase/database";
 import { database, storage } from "../../firebase";
 import {
@@ -26,7 +26,6 @@ import {
 import { Input } from "../../components/shadcn/Input";
 import { Label } from "../../components/shadcn/Label";
 import { Textarea } from "../../components/shadcn/Textarea";
-// import { Toggle } from "../../components/shadcn/Toggle";
 import {
   ToggleGroup,
   ToggleGroupItem,
@@ -66,10 +65,6 @@ const formSchema = z.object({
     .pipe(z.coerce.number().min(0.01).max(999)),
   initialQuantity: z.coerce.number(),
   dietaryRequirements: z.array(z.string()),
-  // vegetarian: z.boolean(),
-  // vegan: z.boolean(),
-  // glutenFree: z.boolean(),
-  // nutFree: z.boolean(),
   description: z.string().max(200),
   image: z.instanceof(File),
 });
@@ -77,25 +72,16 @@ const formSchema = z.object({
 function ItemInformationForm() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
       dietaryRequirements: [],
-      // vegetarian: false,
-      // vegan: false,
-      // glutenFree: false,
-      // nutFree: false,
       description: "",
     },
   });
 
-  // 2. Define a submit handler.
   function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values);
     const {
       name,
       price,
@@ -110,6 +96,8 @@ function ItemInformationForm() {
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
+
+    // TODO: write the remaining attributes to database
     uploadBytes(imageRef, image).then((snapshot) => {
       getDownloadURL(snapshot.ref).then((url) => {
         set(newItemRef, { name, price, quantity: initialQuantity, url });
@@ -236,38 +224,4 @@ function ItemInformationForm() {
       </form>
     </Form>
   );
-
-  // return (
-  //   <div>
-  //     <input
-  //       type="file"
-  //       accept="image/x-png,image/jpeg,image/gif"
-  //       ref={fileInputRef}
-  //       onChange={(e) => setImage(e.target.files?.[0] || null)}
-  //     />
-  //     <form onSubmit={handleSubmit}>
-  //       <div>
-  //         <label>
-  //           Name
-  //           <input
-  //             type="text"
-  //             value={input1}
-  //             onChange={(e) => setInput1(e.target.value)}
-  //           />
-  //         </label>
-  //       </div>
-  //       <div>
-  //         <label>
-  //           Quantity
-  //           <input
-  //             type="text"
-  //             value={input2}
-  //             onChange={(e) => setInput2(e.target.value)}
-  //           />
-  //         </label>
-  //       </div>
-  //       <button type="submit">Submit</button>
-  //     </form>
-  //   </div>
-  // );
 }
