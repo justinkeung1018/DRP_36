@@ -3,7 +3,7 @@ import { Route, Routes, BrowserRouter } from "react-router-dom";
 import Nav from "./components/Nav";
 import RestaurantList from "./pages/restaurant_list/Restaurants";
 import Items from "./pages/staff/Items";
-import Restaurant from "./pages/description/Restaurant";
+import { Restaurant } from "./pages/description/Restaurant";
 
 // TODO: clean up CSS
 import "./styles/App.css";

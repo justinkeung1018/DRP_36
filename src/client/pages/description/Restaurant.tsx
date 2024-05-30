@@ -1,6 +1,7 @@
 import { useLocation } from "react-router-dom";
 
 import { AspectRatio } from "../../components/shadcn/AspectRatio";
+import { Badge } from "../../components/shadcn/Badge";
 import { Card, CardContent, CardHeader } from "../../components/shadcn/Card";
 import { Separator } from "../../components/shadcn/Separator";
 import {
@@ -57,34 +58,42 @@ function parseMenuName(name: string) {
 function MenuItemCard({ info }: { info: MenuItemInfo }) {
   const { gf, nf, image, name, price, quantity, v, vg } = info;
   const { name: mainName, description } = parseMenuName(name);
-  const dietary = [];
-  if (gf) {
-    dietary.push("GF");
+
+  let availabilityColour;
+  if (quantity > 30) {
+    availabilityColour = "border-green-700 text-green-700";
+  } else if (quantity > 10) {
+    availabilityColour = "border-amber-700 text-amber-700";
+  } else {
+    availabilityColour = "border-red-700 text-red-700";
   }
-  if (nf) {
-    dietary.push("NF");
-  }
-  if (v) {
-    dietary.push("V");
-  }
-  if (vg) {
-    dietary.push("VG");
-  }
+
   return (
     <>
       <Card className="px-4 border-none shadow-none">
         <div className="basis-3/4 flex justify-between gap-x-2">
           <div>
             <CardHeader className="p-0 text-lg font-medium leading-tight">
-              {mainName +
-                " " +
-                (dietary.length > 0 ? "(" + dietary.join(", ") + ")" : "")}
+              {mainName}
             </CardHeader>
             <CardContent className="p-0">
-              <div className="text-gray-500 font-light">£{price}</div>
+              <div className="flex items-center gap-x-1">
+                <div className="text-gray-500 font-light">£{price}</div>
+                {(v || vg || gf || nf) && <div>·</div>}
+                {v && <Badge className="bg-green-700 px-1.5 py-0.25">V</Badge>}
+                {vg && <Badge className="bg-lime-400 px-1.5 py-0.25">VG</Badge>}
+                {gf && <Badge className="bg-sky-600 px-1.5 py-0.25">GF</Badge>}
+                {nf && (
+                  <Badge className="bg-fuchsia-700 px-1.5 py-0.25">NF</Badge>
+                )}
+              </div>
+
               <div className="text-gray-500 font-light leading-tight">
                 {description}
               </div>
+              <Badge variant="outline" className={"mt-2 " + availabilityColour}>
+                Availability: {quantity}
+              </Badge>
             </CardContent>
           </div>
           <div className="basis-1/4 flex-none flex flex-col items-center justify-center">
@@ -101,10 +110,6 @@ function MenuItemCard({ info }: { info: MenuItemInfo }) {
       <Separator className="ml-4 w-[calc(100%-4)]" />
     </>
   );
-}
-
-function capitalise(x: string): string {
-  return x[0].toUpperCase() + x.slice(1);
 }
 
 const Restaurant = () => {
@@ -173,4 +178,4 @@ const Restaurant = () => {
   );
 };
 
-export default Restaurant;
+export { MenuItemCard, Restaurant };
