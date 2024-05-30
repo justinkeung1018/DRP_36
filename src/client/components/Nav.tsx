@@ -34,6 +34,11 @@ const Nav = () => {
     }
   }, [location]);
 
+  if (location.pathname.slice(1) === "restaurant") {
+    // Do not display navigation bar when user is in individual restaurant page
+    return null;
+  }
+
   return (
     <Tabs
       value={activeTab}

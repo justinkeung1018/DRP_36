@@ -4,23 +4,15 @@ import { IconMapPinFilled } from "@tabler/icons-react";
 import { AspectRatio } from "../../components/shadcn/AspectRatio";
 import { Card, CardContent, CardHeader } from "../../components/shadcn/Card";
 
-interface RestaurantCardProps {
-  name: string;
-  waitTime: number;
-  location: string;
-  img: string;
-}
+import { RestaurantInfo } from "../../types";
 
-const RestaurantCard = ({
-  name,
-  waitTime,
-  location,
-  img,
-}: RestaurantCardProps) => {
+const RestaurantCard = ({ info }: { info: RestaurantInfo }) => {
+  const { name, waitTime, location, img } = info;
+
   return (
     <Link
       to="/restaurant"
-      state={{ restaurant: name }}
+      state={{ info }}
       style={{ textDecoration: "none", color: "black" }}
     >
       <Card className="w-full border-none">

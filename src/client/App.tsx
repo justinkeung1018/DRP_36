@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Route, Routes, BrowserRouter } from "react-router-dom";
 import Nav from "./components/Nav";
 import RestaurantList from "./pages/restaurant_list/Restaurants";
@@ -21,14 +22,12 @@ export const App = () => {
   // });
   return (
     <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<RestaurantList />} />
+        <Route path="restaurant" element={<Restaurant />} />
+        <Route path="items" element={<Items />} />
+      </Routes>
       <Nav />
-      <div className="static">
-        <Routes>
-          <Route path="/" element={<RestaurantList />} />
-          <Route path="restaurant" element={<Restaurant />} />
-          <Route path="items" element={<Items />} />
-        </Routes>
-      </div>
     </BrowserRouter>
   );
 };
