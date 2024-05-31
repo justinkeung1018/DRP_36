@@ -50,7 +50,7 @@ const Nav = () => {
             <div>
               <IoRestaurantSharp size={30} />
             </div>
-            Restaurants
+            Hallelujah
           </div>
         </TabsTrigger>
         <TabsTrigger value="items" className="flex-1">
