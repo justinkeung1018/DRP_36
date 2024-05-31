@@ -62,7 +62,7 @@ function MenuItemCard({ info }: { info: MenuItemInfo }) {
   const { name: mainName, description } = parseMenuName(name);
 
   let availabilityColour;
-  if (quantity > 30) {
+  if (true) {
     availabilityColour = "border-green-700 text-green-700";
   } else if (quantity > 10) {
     availabilityColour = "border-amber-700 text-amber-700";

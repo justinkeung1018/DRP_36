@@ -1,7 +1,7 @@
 const restaurants = [
   {
     name: "SCR Restaurant",
-    waitTime: 20,
+    waitTime: 19,
     location: "Level 2, Sherfield Building",
     img: "./images/SCR.webp",
   },
