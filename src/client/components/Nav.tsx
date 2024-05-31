@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 
 import { useNavigate, useLocation } from "react-router-dom";
 import { IoRestaurantSharp } from "react-icons/io5";
-import { FaBowlFood } from "react-icons/fa6";
+import { IoAddCircleOutline } from "react-icons/io5";
 
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "./shadcn/Tabs";
 
@@ -56,9 +56,9 @@ const Nav = () => {
         <TabsTrigger value="items" className="flex-1">
           <div className="flex flex-col items-center justify-center">
             <div>
-              <FaBowlFood size={30} />
+              <IoAddCircleOutline size={30} />
             </div>
-            Items
+            Staff
           </div>
         </TabsTrigger>
       </TabsList>
