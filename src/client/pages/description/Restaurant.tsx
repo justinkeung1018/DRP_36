@@ -177,7 +177,7 @@ const Restaurant = () => {
             ))}
       </Tabs>
       <Button asChild>
-        <Link to="/" className="fixed top-5 left-5 bg-stone-700/75 px-1">
+        <Link to="/" className="fixed top-5 left-5 bg-stone-700/60 px-1">
           <IconContext.Provider value={{ color: "#a8a29e", size: "30px" }}>
             <IoChevronBack />
           </IconContext.Provider>
