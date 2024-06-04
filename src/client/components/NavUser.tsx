@@ -6,7 +6,7 @@ import { IoAddCircleOutline } from "react-icons/io5";
 
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "./shadcn/Tabs";
 
-const Nav = () => {
+const NavUser = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [activeTab, setActiveTab] = useState("restaurant-list");
@@ -17,8 +17,8 @@ const Nav = () => {
       case "restaurant-list":
         navigate("/restaurants");
         break;
-      case "items":
-        navigate("/items");
+      case "account":
+        navigate("/account");
         break;
     }
   }
@@ -26,7 +26,7 @@ const Nav = () => {
   // Update the tab triggers immediately when path changes
   useEffect(() => {
     const pathname = location.pathname.slice(1);
-    if (pathname.length === 0) {
+    if (pathname.length === 0 || pathname === "restaurants") {
       setActiveTab("restaurant-list");
     } else {
       setActiveTab(pathname);
@@ -53,19 +53,19 @@ const Nav = () => {
             Restaurants
           </div>
         </TabsTrigger>
-        <TabsTrigger value="items" className="flex-1">
+        <TabsTrigger value="account" className="flex-1">
           <div className="flex flex-col items-center justify-center">
             <div>
               <IoAddCircleOutline size={30} />
             </div>
-            Staff
+            Account
           </div>
         </TabsTrigger>
       </TabsList>
       <TabsContent value="restaurant-list" />
-      <TabsContent value="items" />
+      <TabsContent value="account" />
     </Tabs>
   );
 };
 
-export default Nav;
+export default NavUser;

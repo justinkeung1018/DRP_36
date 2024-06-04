@@ -19,8 +19,11 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { onValue, ref } from "firebase/database";
+import NavStaff from "./components/NavStaff";
+import NavUser from "./components/NavUser";
+import Account from "./components/Account";
 
-const Home = () => {
+const Home = (props: any) => {
   app;
   const navigate = useNavigate();
 
@@ -31,12 +34,15 @@ const Home = () => {
         onValue(ref(database, "Staff"), (snapshot) => {
           if (snapshot.exists() && snapshot.val() === user.uid) {
             navigate("/items");
+            props.setPrivileges(1);
           } else {
             navigate("/restaurants");
+            props.setPrivileges(2);
           }
         });
       } else {
         navigate("/login");
+        props.setPrivileges(0);
       }
     });
   }, [navigate]);
@@ -45,26 +51,24 @@ const Home = () => {
 };
 
 export const App = () => {
-  // const data = ref(database, "hi");
-  // get(data).then((snapshot) => {
-  //   if (snapshot.exists()) {
-  //     console.log(snapshot.val());
-  //   } else {
-  //     console.log("No data available");
-  //   }
-  // }).catch((error) => {
-  //   console.error(error);
-  // });
+  const [privileges, setPrivileges] = useState(0);
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={<Home setPrivileges={setPrivileges} />} />
         <Route path="login" element={<Login />} />
         <Route path="restaurants" element={<RestaurantList />} />
         <Route path="restaurant" element={<Restaurant />} />
         <Route path="items" element={<Items />} />
+        <Route path="account" element={<Account />} />
       </Routes>
-      <Nav />
+      {privileges === 0 ? (
+        <div></div>
+      ) : privileges === 1 ? (
+        <NavStaff />
+      ) : (
+        <NavUser />
+      )}
     </BrowserRouter>
   );
 };

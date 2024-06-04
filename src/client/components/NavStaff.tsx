@@ -6,19 +6,19 @@ import { IoAddCircleOutline } from "react-icons/io5";
 
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "./shadcn/Tabs";
 
-const Nav = () => {
+const NavStaff = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [activeTab, setActiveTab] = useState("restaurant-list");
+  const [activeTab, setActiveTab] = useState("items");
 
   function handleTabChange(value: string) {
     setActiveTab(value);
     switch (value) {
-      case "restaurant-list":
-        navigate("/restaurants");
-        break;
       case "items":
-        navigate("/items");
+        navigate("items");
+        break;
+      case "account":
+        navigate("/account");
         break;
     }
   }
@@ -27,7 +27,7 @@ const Nav = () => {
   useEffect(() => {
     const pathname = location.pathname.slice(1);
     if (pathname.length === 0) {
-      setActiveTab("restaurant-list");
+      setActiveTab("items");
     } else {
       setActiveTab(pathname);
     }
@@ -41,31 +41,31 @@ const Nav = () => {
   return (
     <Tabs
       value={activeTab}
-      defaultValue="restaurant-list"
+      defaultValue="items"
       onValueChange={handleTabChange}
     >
       <TabsList className="fixed bottom-0 left-0 right-0 w-screen h-fit flex">
-        <TabsTrigger value="restaurant-list" className="flex-1">
+        <TabsTrigger value="items" className="flex-1">
           <div className="flex flex-col items-center justify-center">
             <div>
               <IoRestaurantSharp size={30} />
             </div>
-            Restaurants
+            Items
           </div>
         </TabsTrigger>
-        <TabsTrigger value="items" className="flex-1">
+        <TabsTrigger value="account" className="flex-1">
           <div className="flex flex-col items-center justify-center">
             <div>
               <IoAddCircleOutline size={30} />
             </div>
-            Staff
+            Account
           </div>
         </TabsTrigger>
       </TabsList>
-      <TabsContent value="restaurant-list" />
       <TabsContent value="items" />
+      <TabsContent value="account" />
     </Tabs>
   );
 };
 
-export default Nav;
+export default NavStaff;
