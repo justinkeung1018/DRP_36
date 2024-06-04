@@ -5,28 +5,23 @@ import RestaurantList from "./pages/restaurant_list/Restaurants";
 import Items from "./pages/staff/Items";
 import { Restaurant } from "./pages/description/Restaurant";
 
-
 // TODO: clean up CSS
 import "./styles/App.css";
 import "./styles/global.css";
 
 import { database } from "./firebase";
-import 'firebase/compat/auth';
-import 'firebase/compat/firestore';
+import "firebase/compat/auth";
+import "firebase/compat/firestore";
 import Login from "./pages/Login";
-import {app} from "./firebase";
-
-
+import { app } from "./firebase";
 
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { onValue, ref } from "firebase/database";
 
-
-
 const Home = () => {
-  app
+  app;
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -39,15 +34,15 @@ const Home = () => {
           } else {
             navigate("/restaurants");
           }
-        })
+        });
       } else {
-        navigate("/login")
+        navigate("/login");
       }
     });
   }, [navigate]);
 
   return null;
-}
+};
 
 export const App = () => {
   // const data = ref(database, "hi");
