@@ -5,9 +5,7 @@ import { useLocation, Link } from "react-router-dom";
 import { IoChevronBack } from "react-icons/io5";
 
 import { AspectRatio } from "../../../components/shadcn/AspectRatio";
-import { Badge } from "../../../components/shadcn/Badge";
 import { Button } from "../../../components/shadcn/Button";
-import { Card, CardContent, CardHeader } from "../../../components/shadcn/Card";
 import { Separator } from "../../../components/shadcn/Separator";
 import { Input } from "../../../components/shadcn/Input";
 import {
