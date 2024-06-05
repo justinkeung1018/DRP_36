@@ -1,5 +1,5 @@
 import { database } from "../../../firebase";
-import { onValue, ref } from "firebase/database";
+import { onValue, orderByChild, query, ref } from "firebase/database";
 import { useEffect, useState } from "react";
 import { useLocation, Link } from "react-router-dom";
 import { IoChevronBack } from "react-icons/io5";
@@ -15,7 +15,11 @@ import {
   TabsContent,
 } from "../../../components/shadcn/Tabs";
 
-import { RestaurantInfo, MenuItemInfo } from "../../../types";
+import {
+  RestaurantInfo,
+  MenuItemInfo,
+  MenuItemInfoNoKey,
+} from "../../../types";
 import { IconContext } from "react-icons";
 import { MenuItemCard } from "../../../components/MenuItemCard";
 
@@ -45,7 +49,7 @@ const Restaurant = () => {
   const { info } = location.state;
   const { name } = info;
   const [items, setItems] = useState<
-    Record<string, Record<string, MenuItemInfo>>
+    Record<string, Record<string, MenuItemInfoNoKey>>
   >({});
   const [userInput, setUserInput] = useState("");
 
@@ -103,16 +107,22 @@ const Restaurant = () => {
                 value={category}
                 className="space-y-4 overflow-auto"
               >
-                {Object.values(items).map((item: MenuItemInfo) => {
-                  if (
-                    item.name
-                      .toLowerCase()
-                      .replace(/\s+/g, "")
-                      .includes(userInput)
-                  ) {
-                    return <MenuItemCard info={item} />;
-                  }
-                })}
+                {Object.entries(items).map(
+                  ([key, item]: [string, MenuItemInfoNoKey]) => {
+                    if (
+                      item.name
+                        .toLowerCase()
+                        .replace(/\s+/g, "")
+                        .includes(userInput)
+                    ) {
+                      return (
+                        <MenuItemCard
+                          info={{ ...item, category, key, restaurant: name }}
+                        />
+                      );
+                    }
+                  },
+                )}
               </TabsContent>
             ))}
       </Tabs>

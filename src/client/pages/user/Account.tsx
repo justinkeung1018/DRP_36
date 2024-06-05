@@ -7,6 +7,8 @@ import {
   ToggleGroup,
   ToggleGroupItem,
 } from "../../components/shadcn/ToggleGroup";
+import { database } from "../../firebase";
+import { ref, set } from "firebase/database";
 
 function signOutOfAccount() {
   const auth = getAuth();
@@ -36,8 +38,19 @@ function AccountHeader({ name }: AccountHeaderProps) {
 }
 
 function setDietaryRequirements(dietaryRequirements: string[]) {
-  // TODO: Update database
-  console.log(dietaryRequirements);
+  const user = getAuth().currentUser;
+  if (!user) {
+    console.error("User not signed in!");
+    return;
+  }
+  const uid = user.uid;
+  const favouritesRef = ref(database, `Users/${uid}/Dietary`);
+  set(favouritesRef, {
+    gf: dietaryRequirements.includes("gluten-free"),
+    nf: dietaryRequirements.includes("nut-free"),
+    v: dietaryRequirements.includes("vegetarian"),
+    vg: dietaryRequirements.includes("vegan"),
+  });
 }
 
 function DietaryRequirements() {

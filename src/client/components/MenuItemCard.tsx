@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { IoHeartOutline, IoHeartSharp } from "react-icons/io5";
 
 import { AspectRatio } from "./shadcn/AspectRatio";
@@ -7,15 +7,73 @@ import { Card, CardContent, CardHeader } from "./shadcn/Card";
 import { Separator } from "./shadcn/Separator";
 
 import { MenuItemInfo } from "../types";
+import {
+  equalTo,
+  get,
+  orderByChild,
+  push,
+  query,
+  ref,
+  set,
+} from "firebase/database";
+import { getAuth } from "firebase/auth";
+import { database } from "../firebase";
+import { useLocation } from "react-router-dom";
 
 function addFavourite(info: MenuItemInfo) {
-  // TODO: Add menu item to database
-  console.log("Favourite added!");
-}
+  const user = getAuth().currentUser;
+  if (!user) {
+    console.error("User not signed in!");
+    return;
+  }
+  const uid = user.uid;
+  const favouritesRef = ref(database, `Users/${uid}/Favourites`);
+  const favouritesListRef = push(favouritesRef);
 
+  set(favouritesListRef, {
+    key: info.key,
+    category: info.category,
+    restaurant: info.restaurant,
+  })
+    .then(() => {
+      console.log("Favourite item added successfully.");
+    })
+    .catch((error) => {
+      console.error("Error adding favourite item: ", error);
+    });
+}
 function removeFavourite(info: MenuItemInfo) {
-  // TODO: Remove menu item from database
-  console.log("Favourite removed!");
+  const user = getAuth().currentUser;
+  if (!user) {
+    console.error("User not signed in!");
+    return;
+  }
+  const uid = user.uid;
+  const dbRef = ref(database, `Users/${uid}/Favourites`);
+
+  const valueQuery = query(dbRef, orderByChild("key"), equalTo(info.key));
+
+  get(valueQuery)
+    .then((snapshot) => {
+      if (snapshot.exists()) {
+        const entryKey = Object.keys(snapshot.val())[0]; // Get the key of the single entry
+        const entryRef = ref(database, `Users/${uid}/Favourites/${entryKey}`); // Reference to the specific entry
+
+        // Perform the delete operation
+        set(entryRef, null)
+          .then(() => {
+            console.log("Entry has been removed.");
+          })
+          .catch((error) => {
+            console.error("Error removing entry: ", error);
+          });
+      } else {
+        console.log("No entry found.");
+      }
+    })
+    .catch((error) => {
+      console.error("Error removing entry: ", error);
+    });
 }
 
 function parseMenuName(name: string) {
@@ -43,6 +101,25 @@ interface FavouriteIconProps {
 function FavouriteIcon({ size, info }: FavouriteIconProps) {
   const [favourite, setFavourite] = useState(false);
 
+  useEffect(() => {
+    const user = getAuth().currentUser;
+    if (!user) {
+      console.error("User not signed in!");
+      return;
+    }
+    const uid = user.uid;
+    const dbRef = ref(database, `Users/${uid}/Favourites`);
+
+    const valueQuery = query(dbRef, orderByChild("key"), equalTo(info.key));
+    get(valueQuery)
+      .then((snapshot) => {
+        setFavourite(snapshot.exists());
+      })
+      .catch((error) => {
+        console.error("Error checking favourite item: ", error);
+      });
+  }, [info.key]);
+
   return favourite ? (
     <IoHeartSharp
       size={size}
@@ -65,6 +142,10 @@ function FavouriteIcon({ size, info }: FavouriteIconProps) {
 function MenuItemCard({ info }: { info: MenuItemInfo }) {
   const { gf, nf, image, name, price, quantity, v, vg } = info;
   const { name: mainName, description } = parseMenuName(name);
+  const location = useLocation();
+  if (location.state) {
+    info.restaurant = location.state.info.name;
+  }
 
   let availabilityColour;
   if (true) {
