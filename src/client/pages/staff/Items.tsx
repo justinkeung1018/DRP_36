@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { onValue, ref, set, push } from "firebase/database";
+import { onValue, ref, set, push, remove } from "firebase/database";
 import { database, storage } from "../../firebase";
 import {
   getDownloadURL,
@@ -43,8 +43,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { MenuItemCard } from "../../components/MenuItemCard";
+import { parseMenuName } from "../user/description/Restaurant";
 import { MenuItemInfo, RestaurantInfo } from "../../types";
+import { AspectRatio } from "@radix-ui/react-aspect-ratio";
+import { Badge } from "../../components/shadcn/Badge";
+import { Card, CardHeader, CardContent } from "../../components/shadcn/Card";
 
 interface StaffHeaderProps {
   restaurantName: string;
@@ -279,12 +282,108 @@ function ItemInformationForm() {
   );
 }
 
+function StaffMenuItemCard({
+  id,
+  info,
+  restaurantName,
+  category,
+}: {
+  id: string;
+  info: MenuItemInfo;
+  restaurantName: string;
+  category: string;
+}) {
+  const { gf, nf, image, name, price, quantity, v, vg } = info;
+  const { name: mainName, description } = parseMenuName(name);
+
+  const deleteItem = () => {
+    const dbRef = ref(database, `${restaurantName}/${category}/${id}`);
+    remove(dbRef).then(() => console.log("Deleted"));
+  };
+
+  const soldOut = () => {
+    const dbRef = ref(database, `${restaurantName}/${category}/${id}/quantity`);
+    set(dbRef, 0);
+  };
+
+  let availabilityColour;
+  if (true) {
+    availabilityColour = "border-green-700 text-green-700";
+  } else if (quantity > 10) {
+    availabilityColour = "border-amber-700 text-amber-700";
+  } else {
+    availabilityColour = "border-red-700 text-red-700";
+  }
+
+  return (
+    <>
+      <Card className="px-4 border-none shadow-none">
+        <div className="basis-3/4 flex justify-between gap-x-2">
+          <div>
+            <CardHeader className="p-0 text-lg font-medium leading-tight">
+              {mainName}
+            </CardHeader>
+            <CardContent className="p-0">
+              <div className="flex items-center gap-x-1">
+                <div className="text-gray-500 font-light">£{price}</div>
+                {(v || vg || gf || nf) && <div>·</div>}
+                {v && <Badge className="bg-green-700 px-1.5 py-0.25">V</Badge>}
+                {vg && <Badge className="bg-lime-400 px-1.5 py-0.25">VG</Badge>}
+                {gf && <Badge className="bg-sky-600 px-1.5 py-0.25">GF</Badge>}
+                {nf && (
+                  <Badge className="bg-fuchsia-700 px-1.5 py-0.25">NF</Badge>
+                )}
+              </div>
+
+              <div className="text-gray-500 font-light leading-tight">
+                {description}
+              </div>
+              <Badge
+                variant="outline"
+                className={"mt-2 mx-0.5" + availabilityColour}
+              >
+                Availability: {quantity}
+              </Badge>
+              <Badge
+                variant="outline"
+                className={"mt-2 mx-0.5 cursor-pointer bg-red-500"}
+                onClick={soldOut}
+              >
+                Sold Out
+              </Badge>
+              <Badge
+                variant="outline"
+                className={"mt-2 mx-0.5 cursor-pointer bg-red-500"}
+                onClick={deleteItem}
+              >
+                Delete
+              </Badge>
+            </CardContent>
+          </div>
+          <div className="basis-1/4 flex-none flex flex-col items-center justify-center">
+            <AspectRatio ratio={1}>
+              <img
+                src={image}
+                alt="Food"
+                className="object-cover w-full h-full rounded-md"
+              />
+            </AspectRatio>
+          </div>
+        </div>
+      </Card>
+      <Separator className="ml-4 w-[calc(100%-4)]" />
+    </>
+  );
+}
+
 export default function Items() {
   const name = "SCR Restaurant";
 
   const [items, setItems] = useState<
     Record<string, Record<string, MenuItemInfo>>
   >({});
+
+  const [userInput, setUserInput] = useState("");
 
   useEffect(() => {
     const restaurantRef = ref(database, name);
@@ -303,6 +402,12 @@ export default function Items() {
   return (
     <>
       <StaffHeader restaurantName={name} />
+      {/* <Input
+        placeholder="Search For an Item"
+        onChange={(e) => {
+          setUserInput(e.target.value.toLowerCase().replace(/\s+/g, ""));
+        }}
+      /> */}
       <Tabs defaultValue="Food">
         <div className="flex items-center justify-center mb-4 pb-1">
           <TabsList>
@@ -334,9 +439,26 @@ export default function Items() {
                 value={category}
                 className="space-y-4 overflow-auto"
               >
-                {Object.values(items).map((item: MenuItemInfo) => (
-                  <MenuItemCard info={item} />
-                ))}
+                {Object.entries(items).map(
+                  ([id, item]: [string, MenuItemInfo]) => {
+                    if (
+                      item.name
+                        .toLowerCase()
+                        .replace(/\s+/g, "")
+                        .includes(userInput)
+                    ) {
+                      console.log(items);
+                      return (
+                        <StaffMenuItemCard
+                          id={id}
+                          info={item}
+                          restaurantName={name}
+                          category={category}
+                        />
+                      );
+                    }
+                  },
+                )}
               </TabsContent>
             ))}
       </Tabs>
