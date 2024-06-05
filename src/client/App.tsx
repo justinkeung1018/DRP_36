@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Route, Routes, BrowserRouter } from "react-router-dom";
+import { Route, Routes, BrowserRouter, Navigation } from "react-router-dom";
 import RestaurantList from "./pages/user/restaurant_list/Restaurants";
 import Items from "./pages/staff/Items";
 import { Restaurant } from "./pages/user/description/Restaurant";
@@ -24,15 +24,14 @@ import NavStaff from "./components/NavStaff";
 import NavUser from "./components/NavUser";
 
 const Home = (props: any) => {
-  app;
   const navigate = useNavigate();
 
   useEffect(() => {
     const auth = getAuth();
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        onValue(ref(database, "Staff"), (snapshot) => {
-          if (snapshot.exists() && snapshot.val() === user.uid) {
+        onValue(ref(database, `Staff/${user.uid}`), (snapshot) => {
+          if (snapshot.exists()) {
             navigate("/items");
             props.setPrivileges(1);
           } else {
@@ -52,6 +51,11 @@ const Home = (props: any) => {
 
 export const App = () => {
   const [privileges, setPrivileges] = useState(0);
+  // let id = navigator.geolocation.watchPosition((position: GeolocationPosition) => {
+  //   console.log(position.coords.latitude, position.coords.longitude);
+
+  // }, (err) => console.error("Bad"), {enableHighAccuracy: true, timeout: 10000, maximumAge: 0});
+
   return (
     <BrowserRouter>
       <Routes>

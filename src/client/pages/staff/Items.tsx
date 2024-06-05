@@ -6,6 +6,7 @@ import {
   push,
   remove,
   DatabaseReference,
+  get,
 } from "firebase/database";
 import { database, storage } from "../../firebase";
 import {
@@ -56,6 +57,8 @@ import { AspectRatio } from "@radix-ui/react-aspect-ratio";
 import { Badge } from "../../components/shadcn/Badge";
 import { Card, CardHeader, CardContent } from "../../components/shadcn/Card";
 import { parseMenuName } from "../../components/MenuItemCard";
+import { useLocation } from "react-router-dom";
+import { getAuth } from "firebase/auth";
 
 interface StaffHeaderProps {
   restaurantName: string;
@@ -140,26 +143,42 @@ function ItemInformationForm({ item }: ItemFormProps) {
       description,
       image,
     } = values;
-    if (item) {
-      const deleteItemRef = ref(
-        database,
-        `SCR Restaurant/${item.category}/${item.id}`,
-      );
-      const newItemRef = ref(database, `SCR Restaurant/${category}/${item.id}`);
-      const imageRef = ref_storage(storage, "SCR Restaurant/Items/" + item.id);
 
-      remove(deleteItemRef).then(() => {
-        addItem(newItemRef, imageRef);
-      });
-    } else {
-      const itemsRef = ref(database, "SCR Restaurant/" + category);
-      const newItemRef = push(itemsRef);
-      const imageRef = ref_storage(
-        storage,
-        "SCR Restaurant/Items/" + newItemRef.key,
-      );
-      addItem(newItemRef, imageRef);
+    const user = getAuth().currentUser;
+    if (!user) {
+      console.error("User not signed in!");
+      return;
     }
+    const uid = user.uid;
+    get(ref(database, "Staff/" + uid)).then((snapshot) => {
+      if (item) {
+        ref(database, "Staff");
+        const deleteItemRef = ref(
+          database,
+          `${snapshot.val()}/${item.category}/${item.id}`,
+        );
+        const newItemRef = ref(
+          database,
+          `${snapshot.val()}/${category}/${item.id}`,
+        );
+        const imageRef = ref_storage(
+          storage,
+          `${snapshot.val()}/Items/` + item.id,
+        );
+
+        remove(deleteItemRef).then(() => {
+          addItem(newItemRef, imageRef);
+        });
+      } else {
+        const itemsRef = ref(database, snapshot.val() + "/" + category);
+        const newItemRef = push(itemsRef);
+        const imageRef = ref_storage(
+          storage,
+          "SCR Restaurant/Items/" + newItemRef.key,
+        );
+        addItem(newItemRef, imageRef);
+      }
+    });
 
     function addItem(
       newItemRef: DatabaseReference,
@@ -490,7 +509,25 @@ function StaffMenuItemCard({ info }: { info: MenuItemInfo }) {
 }
 
 export default function Items() {
-  const name = "SCR Restaurant";
+  const [name, setName] = useState("SCR Restaurant");
+  const user = getAuth().currentUser;
+  if (!user) {
+    console.error("User not signed in!");
+    return;
+  }
+  const uid = user.uid;
+  useEffect(() => {
+    const unsubscribe = onValue(ref(database, "Staff/" + uid), (snapshot) => {
+      const data = snapshot.val();
+      if (data != null) {
+        setName(data);
+      }
+    });
+
+    return () => {
+      unsubscribe();
+    };
+  }, []);
 
   const [items, setItems] = useState<
     Record<string, Record<string, MenuItemInfo>>
