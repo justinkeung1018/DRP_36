@@ -20,8 +20,8 @@ const RestaurantCard = ({ info, isStaff }: RestaurantCardProps) => {
       state={{ info }}
       style={{ textDecoration: "none", color: "black" }}
     >
-      <Card className="w-full border-none">
-        <CardHeader>
+      <Card className="transition w-full border-none shadow-none hover:shadow-lg">
+        <CardHeader className="p-2">
           <div className="w-full overflow-hidden">
             <AspectRatio ratio={20 / 9}>
               <img
@@ -32,7 +32,7 @@ const RestaurantCard = ({ info, isStaff }: RestaurantCardProps) => {
             </AspectRatio>
           </div>
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-2">
           <div className="flex justify-between">
             <div>
               <h1 className="font-bold text-xl">{name}</h1>
