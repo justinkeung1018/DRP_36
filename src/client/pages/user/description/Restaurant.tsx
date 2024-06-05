@@ -141,12 +141,12 @@ const Restaurant = () => {
   return (
     <>
       <RestaurantHeader info={info} />
-      {/* <Input
+      <Input
         placeholder="Search For an Item"
         onChange={(e) => {
           setUserInput(e.target.value.toLowerCase().replace(/\s+/g, ""));
         }}
-      /> */}
+      />
       <Tabs defaultValue="Food">
         <div className="flex items-center justify-center mb-4 pb-1">
           <TabsList>
