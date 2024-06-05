@@ -10,18 +10,30 @@ import { getFirestore } from "firebase/firestore";
 // https://firebase.google.com/docs/web/setup#available-libraries
 
 // Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: "AIzaSyApBcH7XHno5saByD1_IvbGqnC1K8cEDqw",
-  authDomain: "drp36-ea396.firebaseapp.com",
-  projectId: "drp36-ea396",
-  storageBucket: "drp36-ea396.appspot.com",
-  messagingSenderId: "1064933229081",
-  appId: "1:1064933229081:web:b1ac20faf42545ff186088",
-  measurementId: "G-99RTYS3R8C",
+  apiKey: "AIzaSyAakMxuEU9lC6a8m67ztllTRxUyYswo7z8",
+  authDomain: "drp36-e0704.firebaseapp.com",
+  projectId: "drp36-e0704",
+  storageBucket: "drp36-e0704.appspot.com",
+  messagingSenderId: "861245857051",
+  appId: "1:861245857051:web:7e02a77ddb09ad136b47be",
   databaseURL:
-    "https://drp36-ea396-default-rtdb.europe-west1.firebasedatabase.app",
+    "https://drp36-e0704-default-rtdb.europe-west1.firebasedatabase.app",
 };
+
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+// const firebaseConfig = {
+//   apiKey: "AIzaSyApBcH7XHno5saByD1_IvbGqnC1K8cEDqw",
+//   authDomain: "drp36-ea396.firebaseapp.com",
+//   projectId: "drp36-ea396",
+//   storageBucket: "drp36-ea396.appspot.com",
+//   messagingSenderId: "1064933229081",
+//   appId: "1:1064933229081:web:b1ac20faf42545ff186088",
+//   measurementId: "G-99RTYS3R8C",
+//   databaseURL:
+//     "https://drp36-ea396-default-rtdb.europe-west1.firebasedatabase.app",
+// };
 
 // Initialize Firebase
 export const app = initializeApp(firebaseConfig);
