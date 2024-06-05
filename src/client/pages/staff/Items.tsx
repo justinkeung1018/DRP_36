@@ -367,7 +367,7 @@ function StaffMenuItemCard({ info }: { info: MenuItemInfo }) {
       database,
       `${info.restaurant}/${info.category}/${info.key}/quantity`,
     );
-    set(dbRef, 0);
+    set(dbRef, -1000000);
   };
 
   let availabilityColour;
@@ -431,8 +431,6 @@ function StaffMenuItemCard({ info }: { info: MenuItemInfo }) {
 
   return (
     <>
-      <Dialog>
-        <DialogTrigger>
           <Card className="px-4 border-none shadow-none">
             <div className="basis-3/4 flex justify-between gap-x-2">
               <div>
@@ -482,6 +480,22 @@ function StaffMenuItemCard({ info }: { info: MenuItemInfo }) {
                   >
                     Delete
                   </Badge>
+                  <Dialog>
+        <DialogTrigger>
+                  <Badge
+                    variant="outline"
+                    className={"mt-2 mx-0.5 cursor-pointer bg-red-500"}
+                  >
+                    Edit
+                  </Badge>
+                  </DialogTrigger>
+        <DialogContent className="rounded-lg max-w-[90dvw] max-h-[85dvh] overflow-auto">
+          <DialogHeader>
+            <DialogTitle>Add food item</DialogTitle>
+          </DialogHeader>
+          <ItemInformationForm item={getItem()} />
+        </DialogContent>
+      </Dialog>
                 </CardContent>
               </div>
               <div className="basis-1/4 flex-none flex flex-col items-center justify-center">
@@ -495,14 +509,6 @@ function StaffMenuItemCard({ info }: { info: MenuItemInfo }) {
               </div>
             </div>
           </Card>
-        </DialogTrigger>
-        <DialogContent className="rounded-lg max-w-[90dvw] max-h-[85dvh] overflow-auto">
-          <DialogHeader>
-            <DialogTitle>Add food item</DialogTitle>
-          </DialogHeader>
-          <ItemInformationForm item={getItem()} />
-        </DialogContent>
-      </Dialog>
       <Separator className="ml-4 w-[calc(100%-4)]" />
     </>
   );
@@ -589,14 +595,14 @@ export default function Items() {
                 value={category}
                 className="space-y-4 overflow-auto"
               >
-                {Object.values(items).map((item: MenuItemInfo) => {
+                {Object.entries(items).map(([key, item]: [string, MenuItemInfo]) => {
                   if (
                     item.name
                       .toLowerCase()
                       .replace(/\s+/g, "")
                       .includes(userInput)
                   ) {
-                    return <StaffMenuItemCard info={item} />;
+                    return <StaffMenuItemCard info={{...item, category, key, restaurant: name}} />;
                   }
                 })}
               </TabsContent>
