@@ -43,7 +43,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { MenuItemCard } from "../description/Restaurant";
+import { MenuItemCard } from "../../components/MenuItemCard";
 import { MenuItemInfo, RestaurantInfo } from "../../types";
 
 interface StaffHeaderProps {

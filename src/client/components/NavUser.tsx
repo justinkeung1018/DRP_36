@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { IoRestaurantSharp } from "react-icons/io5";
 import { IoAddCircleOutline } from "react-icons/io5";
+import { IoHeartOutline } from "react-icons/io5";
 
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "./shadcn/Tabs";
 
@@ -19,6 +20,9 @@ const NavUser = () => {
         break;
       case "account":
         navigate("/account");
+        break;
+      case "favourites":
+        navigate("/favourites");
         break;
     }
   }
@@ -61,9 +65,18 @@ const NavUser = () => {
             Account
           </div>
         </TabsTrigger>
+        <TabsTrigger value="favourites" className="flex-1">
+          <div className="flex flex-col items-center justify-center">
+            <div>
+              <IoHeartOutline size={30} />
+            </div>
+            Favourites
+          </div>
+        </TabsTrigger>
       </TabsList>
       <TabsContent value="restaurant-list" />
       <TabsContent value="account" />
+      <TabsContent value="favourites" />
     </Tabs>
   );
 };

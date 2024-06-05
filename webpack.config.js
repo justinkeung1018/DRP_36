@@ -54,7 +54,7 @@ export default {
         { from: "./client/img/", to: "./client/img/" },
         "./manifest.webmanifest",
         {
-          from: "./client/pages/restaurant_list/images/",
+          from: "./client/pages/user/restaurant_list/images/",
           to: "./images/",
         },
       ],

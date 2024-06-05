@@ -1,12 +1,17 @@
 import { Link } from "react-router-dom";
 import { IconMapPinFilled } from "@tabler/icons-react";
 
-import { AspectRatio } from "../../components/shadcn/AspectRatio";
-import { Card, CardContent, CardHeader } from "../../components/shadcn/Card";
+import { AspectRatio } from "./shadcn/AspectRatio";
+import { Card, CardContent, CardHeader } from "./shadcn/Card";
 
-import { RestaurantInfo } from "../../types";
+import { RestaurantInfo } from "../types";
 
-const RestaurantCard = ({ info }: { info: RestaurantInfo }) => {
+interface RestaurantCardProps {
+  info: RestaurantInfo;
+  isStaff?: boolean;
+}
+
+const RestaurantCard = ({ info, isStaff }: RestaurantCardProps) => {
   const { name, waitTime, location, img } = info;
 
   return (

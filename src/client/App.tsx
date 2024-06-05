@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { Route, Routes, BrowserRouter } from "react-router-dom";
-import Nav from "./components/Nav";
-import RestaurantList from "./pages/restaurant_list/Restaurants";
+import RestaurantList from "./pages/user/restaurant_list/Restaurants";
 import Items from "./pages/staff/Items";
-import { Restaurant } from "./pages/description/Restaurant";
+import { Restaurant } from "./pages/user/description/Restaurant";
+import Account from "./pages/user/Account";
+import { Favourites } from "./pages/user/Favourites";
 
 // TODO: clean up CSS
 import "./styles/App.css";
@@ -21,7 +22,6 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { onValue, ref } from "firebase/database";
 import NavStaff from "./components/NavStaff";
 import NavUser from "./components/NavUser";
-import Account from "./components/Account";
 
 const Home = (props: any) => {
   app;
@@ -61,6 +61,7 @@ export const App = () => {
         <Route path="restaurant" element={<Restaurant />} />
         <Route path="items" element={<Items />} />
         <Route path="account" element={<Account />} />
+        <Route path="favourites" element={<Favourites />} />
       </Routes>
       {privileges === 0 ? (
         <div></div>
