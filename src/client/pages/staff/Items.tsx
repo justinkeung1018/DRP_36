@@ -43,11 +43,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { parseMenuName } from "../user/description/Restaurant";
 import { MenuItemInfo, RestaurantInfo } from "../../types";
 import { AspectRatio } from "@radix-ui/react-aspect-ratio";
 import { Badge } from "../../components/shadcn/Badge";
 import { Card, CardHeader, CardContent } from "../../components/shadcn/Card";
+import { parseMenuName } from "../../components/MenuItemCard";
 
 interface StaffHeaderProps {
   restaurantName: string;

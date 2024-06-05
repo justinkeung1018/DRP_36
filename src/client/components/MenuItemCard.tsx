@@ -128,4 +128,4 @@ function MenuItemCard({ info }: { info: MenuItemInfo }) {
   );
 }
 
-export { MenuItemCard };
+export { MenuItemCard, parseMenuName };
