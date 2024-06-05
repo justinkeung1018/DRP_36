@@ -22,6 +22,7 @@ import {
 } from "../../../types";
 import { IconContext } from "react-icons";
 import { MenuItemCard } from "../../../components/MenuItemCard";
+import { getAuth } from "firebase/auth";
 
 function RestaurantHeader({ info }: { info: RestaurantInfo }) {
   const { name, location, img } = info;
@@ -52,12 +53,31 @@ const Restaurant = () => {
     Record<string, Record<string, MenuItemInfoNoKey>>
   >({});
   const [userInput, setUserInput] = useState("");
+  const [dietary, setDietary] = useState({
+    gf: false,
+    nf: false,
+    v: false,
+    vg: false,
+  });
 
   useEffect(() => {
     const restaurantRef = ref(database, name);
     const unsubscribe = onValue(restaurantRef, (snapshot) => {
       const data = snapshot.val();
       if (data != null) {
+        for (const category in data) {
+          for (const item in data[category]) {
+            if (dietary.gf && !data[category][item].gf) {
+              delete data[category][item];
+            } else if (dietary.nf && !data[category][item].nf) {
+              delete data[category][item];
+            } else if (dietary.v && !data[category][item].v) {
+              delete data[category][item];
+            } else if (dietary.vg && !data[category][item].vg) {
+              delete data[category][item];
+            }
+          }
+        }
         setItems(data);
       }
     });
@@ -65,7 +85,23 @@ const Restaurant = () => {
     return () => {
       unsubscribe();
     };
-  }, [name]);
+  }, [name, dietary]);
+
+  useEffect(() => {
+    const user = getAuth().currentUser;
+    if (!user) {
+      console.error("User not signed in!");
+      return;
+    }
+    const uid = user.uid;
+    const dietaryRef = ref(database, `Users/${uid}/Dietary`);
+    onValue(dietaryRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data != null) {
+        setDietary(data);
+      }
+    });
+  });
 
   return (
     <>
