@@ -8,10 +8,13 @@ import { Separator } from "./shadcn/Separator";
 
 import { MenuItemInfo } from "../types";
 import {
+  DataSnapshot,
   equalTo,
   get,
   increment,
+  onValue,
   orderByChild,
+  orderByValue,
   push,
   query,
   ref,
@@ -21,6 +24,7 @@ import {
 import { getAuth } from "firebase/auth";
 import { database } from "../firebase";
 import { useLocation } from "react-router-dom";
+import { Timestamp } from "firebase/firestore";
 
 function addFavourite(info: MenuItemInfo) {
   const user = getAuth().currentUser;
@@ -166,13 +170,68 @@ function MenuItemCard({ info }: { info: MenuItemInfo }) {
   }
 
   const buyItem = () => {
-    const dbRef = ref(
-      database,
-      `${info.restaurant}/${info.category}/${info.key}`,
-    );
-    update(dbRef, {
-      quantity: increment(-1),
+    const user = getAuth().currentUser;
+    if (!user) {
+      console.error("User not signed in!");
+      return;
+    }
+    const uid = user.uid;
+    const userRef = ref(database, `Users/${uid}/Recents`);
+
+    let init = true;
+
+    onValue(userRef, (snapshot) => {
+      if (init) {
+        init = false;
+        if (snapshot.val() == null) {
+          set(userRef, {
+            item1: Timestamp.fromDate(new Date("1970-01-01")),
+            item2: Timestamp.fromDate(new Date("1970-01-01")),
+            item3: Timestamp.fromDate(new Date("1970-01-01")),
+            item4: Timestamp.fromDate(new Date("1970-01-01")),
+            item5: Timestamp.fromDate(new Date("1970-01-01")),
+          })
+            .then(() => {
+              checkBuyStatus(snapshot);
+            })
+            .catch((error) => {
+              console.error("List init failed: ", error);
+            });
+        } else {
+          checkBuyStatus(snapshot);
+        }
+      }
     });
+
+    function checkBuyStatus(snapshot: DataSnapshot) {
+      let itemToChange = null;
+
+      snapshot.forEach((child) => {
+        const date = new Date();
+        let timePassed =
+          date.getTime() -
+          (child.val().seconds * 1000 + child.val().nanoseconds / 1000000);
+        if (timePassed > 1800000) {
+          itemToChange = child.key;
+        }
+      });
+
+      if (itemToChange) {
+        let updates: { [key: string]: Timestamp } = {};
+        updates[itemToChange] = Timestamp.fromDate(new Date());
+        update(userRef, updates).then(() => {
+          const dbRef = ref(
+            database,
+            `${info.restaurant}/${info.category}/${info.key}`,
+          );
+          update(dbRef, {
+            quantity: increment(-1),
+          });
+        });
+      } else {
+        console.log("Limit reached");
+      }
+    }
   };
 
   return (
