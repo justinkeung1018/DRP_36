@@ -429,7 +429,7 @@ function StaffMenuItemCard({ info }: { info: MenuItemInfo }) {
       name: parseMenuName(name).name,
       price,
       category: info.category,
-      initialQuantity: quantity,
+      initialQuantity: quantity <= 0 ? 0 : quantity,
       dietaryRequirements,
       description,
     };
