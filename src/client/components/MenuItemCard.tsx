@@ -150,12 +150,19 @@ function MenuItemCard({ info }: { info: MenuItemInfo }) {
   }
 
   let availabilityColour;
-  if (true) {
+  let status;
+  if (quantity >= 50) {
     availabilityColour = "border-green-700 text-green-700";
-  } else if (quantity > 10) {
+    status = "high";
+  } else if (quantity >= 20) {
     availabilityColour = "border-amber-700 text-amber-700";
+    status = "medium";
+  } else if (quantity > -1000000) {
+    availabilityColour = "border-red-500 text-red-500";
+    status = "low";
   } else {
     availabilityColour = "border-red-700 text-red-700";
+    status = "sold out";
   }
 
   const buyItem = () => {
@@ -204,7 +211,7 @@ function MenuItemCard({ info }: { info: MenuItemInfo }) {
                 variant="outline"
                 className={"mt-2 mx-0.5 " + availabilityColour}
               >
-                Availability: {quantity}
+                Availability: {status}
               </Badge>
               {quantity > -1000000 ? (
                 <Badge
