@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from "react";
-import { onValue, ref, set, push, remove } from "firebase/database";
+import { onValue, ref, set, push, remove, DatabaseReference } from "firebase/database";
 import { database, storage } from "../../firebase";
 import {
   getDownloadURL,
   ref as ref_storage,
+  StorageReference,
   uploadBytes,
 } from "firebase/storage";
 import { IoAddOutline } from "react-icons/io5";
@@ -81,12 +82,28 @@ const formSchema = z.object({
   image: z.instanceof(File),
 });
 
-function ItemInformationForm() {
+type MenuItem = {
+  id: string,
+  name: string,
+  price: number,
+  category: string,
+  initialQuantity: number,
+  dietaryRequirements: string[],
+  description: string,
+}
+
+type ItemFormProps = {
+  item?: MenuItem
+}
+
+
+function ItemInformationForm({ item }: ItemFormProps) {
+  
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
+    defaultValues: item ? item : {
       name: "",
       dietaryRequirements: [],
       description: "",
@@ -116,31 +133,52 @@ function ItemInformationForm() {
       description,
       image,
     } = values;
-    console.log(values);
-    const itemsRef = ref(database, "SCR Restaurant/" + category);
-    const newItemRef = push(itemsRef);
-    const imageRef = ref_storage(
-      storage,
-      "SCR Restaurant/Items/" + newItemRef.key,
-    );
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
+    if (item) {
+      const deleteItemRef = ref(database, `SCR Restaurant/${item.category}/${item.id}`);
+      const newItemRef = ref(database, `SCR Restaurant/${category}/${item.id}`);
+      const imageRef = ref_storage(
+        storage,
+        "SCR Restaurant/Items/" + item.id,
+      );
+
+      remove(deleteItemRef).then(() => {
+        addItem(newItemRef, imageRef);
+      });
+
+    } else {
+      const itemsRef = ref(database, "SCR Restaurant/" + category);
+      const newItemRef = push(itemsRef);
+      const imageRef = ref_storage(
+        storage,
+        "SCR Restaurant/Items/" + newItemRef.key,
+      );
+      addItem(newItemRef, imageRef);
     }
 
-    uploadBytes(imageRef, image as File).then((snapshot) => {
-      getDownloadURL(snapshot.ref).then((url) => {
-        set(newItemRef, {
-          name,
-          price,
-          quantity: initialQuantity,
-          image: url,
-          gf: dietaryRequirements?.includes("gluten-free"),
-          nf: dietaryRequirements?.includes("nut-free"),
-          v: dietaryRequirements?.includes("vegetarian"),
-          vg: dietaryRequirements?.includes("vegan"),
+    function addItem(newItemRef: DatabaseReference, imageRef: StorageReference) {
+      let newname = name;
+      if (description) {
+        newname += `with ${description}`
+      }
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+
+      uploadBytes(imageRef, image as File).then((snapshot) => {
+        getDownloadURL(snapshot.ref).then((url) => {
+          set(newItemRef, {
+            name: newname,
+            price,
+            quantity: initialQuantity,
+            image: url,
+            gf: dietaryRequirements?.includes("gluten-free"),
+            nf: dietaryRequirements?.includes("nut-free"),
+            v: dietaryRequirements?.includes("vegetarian"),
+            vg: dietaryRequirements?.includes("vegan"),
+          });
         });
       });
-    });
+    }
   }
 
   function onInvalid(errors: object) {
@@ -198,6 +236,7 @@ function ItemInformationForm() {
           <ToggleGroup
             className="grid grid-cols-2 gap-1"
             type="single"
+            defaultValue= {item? item.category : ""}
             onValueChange={(category) => {
               form.setValue("category", category);
             }}
@@ -215,6 +254,7 @@ function ItemInformationForm() {
           <ToggleGroup
             className="grid grid-cols-2 gap-1"
             type="multiple"
+            defaultValue= {item? item.dietaryRequirements : []}
             onValueChange={(dietaryRequirements) => {
               form.setValue("dietaryRequirements", dietaryRequirements);
             }}
@@ -315,8 +355,58 @@ function StaffMenuItemCard({
     availabilityColour = "border-red-700 text-red-700";
   }
 
+  function getItem() {
+    let dietaryRequirements = []
+
+    if (v) {
+      dietaryRequirements.push("vegetarian");
+    }
+
+    if (vg) {
+      dietaryRequirements.push("vegan");
+    }
+
+    if (nf) {
+      dietaryRequirements.push("nut-free");
+    }
+
+    if (gf) {
+      dietaryRequirements.push("gluten-free");
+    }
+
+    // let img = ref_storage(
+    //   storage,
+    //   "SCR Restaurant/Items/" + id,
+    // ); 
+
+    // getBlob(img).then((file) => {
+    //   return {id,
+    //     name,
+    //     price,
+    //     category,
+    //     initialQuantity:quantity,
+    //     dietaryRequirements,
+    //     description,
+    //     image: new File([file], "malhar")}
+    // });
+
+    const description = parseMenuName(name).description.split("with")[1] ? parseMenuName(name).description.split("with")[1].trimStart() : parseMenuName(name).description;
+
+    return {id,
+      name:parseMenuName(name).name,
+      price,
+      category,
+      initialQuantity:quantity,
+      dietaryRequirements,
+      description}
+  }
+
+
+
   return (
     <>
+      <Dialog>
+      <DialogTrigger>
       <Card className="px-4 border-none shadow-none">
         <div className="basis-3/4 flex justify-between gap-x-2">
           <div>
@@ -371,6 +461,14 @@ function StaffMenuItemCard({
           </div>
         </div>
       </Card>
+      </DialogTrigger>
+      <DialogContent className="rounded-lg max-w-[90dvw] max-h-[85dvh] overflow-auto">
+          <DialogHeader>
+            <DialogTitle>Add food item</DialogTitle>
+          </DialogHeader>
+          <ItemInformationForm item={getItem()} />
+        </DialogContent>
+      </Dialog>
       <Separator className="ml-4 w-[calc(100%-4)]" />
     </>
   );
@@ -447,7 +545,6 @@ export default function Items() {
                         .replace(/\s+/g, "")
                         .includes(userInput)
                     ) {
-                      console.log(items);
                       return (
                         <StaffMenuItemCard
                           id={id}
