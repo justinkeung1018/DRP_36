@@ -10,11 +10,13 @@ import { MenuItemInfo } from "../types";
 import {
   equalTo,
   get,
+  increment,
   orderByChild,
   push,
   query,
   ref,
   set,
+  update,
 } from "firebase/database";
 import { getAuth } from "firebase/auth";
 import { database } from "../firebase";
@@ -156,6 +158,16 @@ function MenuItemCard({ info }: { info: MenuItemInfo }) {
     availabilityColour = "border-red-700 text-red-700";
   }
 
+  const buyItem = () => {
+    const dbRef = ref(
+      database,
+      `${info.restaurant}/${info.category}/${info.key}`,
+    );
+    update(dbRef, {
+      quantity: increment(-1),
+    });
+  };
+
   return (
     <>
       <Card className="px-4 border-none shadow-none">
@@ -188,8 +200,18 @@ function MenuItemCard({ info }: { info: MenuItemInfo }) {
               <div className="text-gray-500 font-light leading-tight">
                 {description}
               </div>
-              <Badge variant="outline" className={"mt-2 " + availabilityColour}>
+              <Badge
+                variant="outline"
+                className={"mt-2 mx-0.5 " + availabilityColour}
+              >
                 Availability: {quantity}
+              </Badge>
+              <Badge
+                variant="outline"
+                className={"mt-2 mx-0.5 cursor-pointer bg-red-500"}
+                onClick={buyItem}
+              >
+                Buy
               </Badge>
             </CardContent>
           </div>

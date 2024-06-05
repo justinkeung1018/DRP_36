@@ -331,27 +331,23 @@ function ItemInformationForm({ item }: ItemFormProps) {
   );
 }
 
-function StaffMenuItemCard({
-  id,
-  info,
-  restaurantName,
-  category,
-}: {
-  id: string;
-  info: MenuItemInfo;
-  restaurantName: string;
-  category: string;
-}) {
+function StaffMenuItemCard({ info }: { info: MenuItemInfo }) {
   const { gf, nf, image, name, price, quantity, v, vg } = info;
   const { name: mainName, description } = parseMenuName(name);
 
   const deleteItem = () => {
-    const dbRef = ref(database, `${restaurantName}/${category}/${id}`);
+    const dbRef = ref(
+      database,
+      `${info.restaurant}/${info.category}/${info.key}`,
+    );
     remove(dbRef).then(() => console.log("Deleted"));
   };
 
   const soldOut = () => {
-    const dbRef = ref(database, `${restaurantName}/${category}/${id}/quantity`);
+    const dbRef = ref(
+      database,
+      `${info.restaurant}/${info.category}/${info.key}/quantity`,
+    );
     set(dbRef, 0);
   };
 
@@ -404,10 +400,10 @@ function StaffMenuItemCard({
       : parseMenuName(name).description;
 
     return {
-      id,
+      id: info.key,
       name: parseMenuName(name).name,
       price,
-      category,
+      category: info.category,
       initialQuantity: quantity,
       dietaryRequirements,
       description,
@@ -556,25 +552,16 @@ export default function Items() {
                 value={category}
                 className="space-y-4 overflow-auto"
               >
-                {Object.entries(items).map(
-                  ([id, item]: [string, MenuItemInfo]) => {
-                    if (
-                      item.name
-                        .toLowerCase()
-                        .replace(/\s+/g, "")
-                        .includes(userInput)
-                    ) {
-                      return (
-                        <StaffMenuItemCard
-                          id={id}
-                          info={item}
-                          restaurantName={name}
-                          category={category}
-                        />
-                      );
-                    }
-                  },
-                )}
+                {Object.values(items).map((item: MenuItemInfo) => {
+                  if (
+                    item.name
+                      .toLowerCase()
+                      .replace(/\s+/g, "")
+                      .includes(userInput)
+                  ) {
+                    return <StaffMenuItemCard info={item} />;
+                  }
+                })}
               </TabsContent>
             ))}
       </Tabs>

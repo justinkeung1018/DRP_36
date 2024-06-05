@@ -23,6 +23,7 @@ import {
 import { IconContext } from "react-icons";
 import { MenuItemCard } from "../../../components/MenuItemCard";
 import { getAuth } from "firebase/auth";
+import { ids } from "webpack";
 
 function RestaurantHeader({ info }: { info: RestaurantInfo }) {
   const { name, location, img } = info;
