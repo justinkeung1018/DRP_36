@@ -8,7 +8,8 @@ import {
   ToggleGroupItem,
 } from "../../components/shadcn/ToggleGroup";
 import { database } from "../../firebase";
-import { ref, set } from "firebase/database";
+import { get, ref, set } from "firebase/database";
+import { useEffect, useState } from "react";
 
 function signOutOfAccount() {
   const auth = getAuth();
@@ -38,6 +39,7 @@ function AccountHeader({ name }: AccountHeaderProps) {
 }
 
 function setDietaryRequirements(dietaryRequirements: string[]) {
+  console.log("Dietar, ", dietaryRequirements);
   const user = getAuth().currentUser;
   if (!user) {
     console.error("User not signed in!");
@@ -54,6 +56,37 @@ function setDietaryRequirements(dietaryRequirements: string[]) {
 }
 
 function DietaryRequirements() {
+  const [dietary, setDietary] = useState<string[]>([]);
+  useEffect(() => {
+    const user = getAuth().currentUser;
+    if (!user) {
+      console.error("User not signed in!");
+      return;
+    }
+    const uid = user.uid;
+    const dietaryRef = ref(database, `Users/${uid}/Dietary`);
+    get(dietaryRef)
+      .then((snapshot) => {
+        const data = snapshot.val();
+        const newDietary = [];
+        if (data["gf"]) {
+          newDietary.push("gluten-free");
+        }
+        if (data["nf"]) {
+          newDietary.push("nut-free");
+        }
+        if (data["v"]) {
+          newDietary.push("vegetarian");
+        }
+        if (data["vg"]) {
+          newDietary.push("vegan");
+        }
+        setDietary(newDietary);
+      })
+      .catch((error) => {
+        console.error("Error getting dietary requirements:", error);
+      });
+  }, []);
   return (
     <div className="mb-8">
       <h1 className="text-2xl font-semibold leading-none tracking-tight mb-2">
@@ -65,7 +98,11 @@ function DietaryRequirements() {
       <ToggleGroup
         className="grid grid-cols-2 gap-1"
         type="multiple"
-        onValueChange={setDietaryRequirements}
+        value={dietary}
+        onValueChange={(value) => {
+          setDietary(value);
+          setDietaryRequirements(value);
+        }}
       >
         <ToggleGroupItem
           value="vegetarian"
@@ -99,7 +136,7 @@ function DietaryRequirements() {
 const Account = () => {
   return (
     <>
-      <AccountHeader name="Aboud Dabbas" />
+      <AccountHeader name={getAuth().currentUser?.displayName || ""} />
       <div className="px-10">
         <DietaryRequirements />
         <div className="flex items-center justify-center">
