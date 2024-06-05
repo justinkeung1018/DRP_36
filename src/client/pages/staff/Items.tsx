@@ -431,84 +431,76 @@ function StaffMenuItemCard({ info }: { info: MenuItemInfo }) {
 
   return (
     <>
-          <Card className="px-4 border-none shadow-none">
-            <div className="basis-3/4 flex justify-between gap-x-2">
-              <div>
-                <CardHeader className="p-0 text-lg font-medium leading-tight">
-                  {mainName}
-                </CardHeader>
-                <CardContent className="p-0">
-                  <div className="flex items-center gap-x-1">
-                    <div className="text-gray-500 font-light">£{price}</div>
-                    {(v || vg || gf || nf) && <div>·</div>}
-                    {v && (
-                      <Badge className="bg-green-700 px-1.5 py-0.25">V</Badge>
-                    )}
-                    {vg && (
-                      <Badge className="bg-lime-400 px-1.5 py-0.25">VG</Badge>
-                    )}
-                    {gf && (
-                      <Badge className="bg-sky-600 px-1.5 py-0.25">GF</Badge>
-                    )}
-                    {nf && (
-                      <Badge className="bg-fuchsia-700 px-1.5 py-0.25">
-                        NF
-                      </Badge>
-                    )}
-                  </div>
+      <Card className="px-4 border-none shadow-none">
+        <div className="basis-3/4 flex justify-between gap-x-2">
+          <div>
+            <CardHeader className="p-0 text-lg font-medium leading-tight">
+              {mainName}
+            </CardHeader>
+            <CardContent className="p-0">
+              <div className="flex items-center gap-x-1">
+                <div className="text-gray-500 font-light">£{price}</div>
+                {(v || vg || gf || nf) && <div>·</div>}
+                {v && <Badge className="bg-green-700 px-1.5 py-0.25">V</Badge>}
+                {vg && <Badge className="bg-lime-400 px-1.5 py-0.25">VG</Badge>}
+                {gf && <Badge className="bg-sky-600 px-1.5 py-0.25">GF</Badge>}
+                {nf && (
+                  <Badge className="bg-fuchsia-700 px-1.5 py-0.25">NF</Badge>
+                )}
+              </div>
 
-                  <div className="text-gray-500 font-light leading-tight">
-                    {description}
-                  </div>
-                  <Badge
-                    variant="outline"
-                    className={"mt-2 mx-0.5" + availabilityColour}
-                  >
-                    Availability: {quantity}
-                  </Badge>
-                  <Badge
-                    variant="outline"
-                    className={"mt-2 mx-0.5 cursor-pointer bg-red-500"}
-                    onClick={soldOut}
-                  >
-                    Sold Out
-                  </Badge>
-                  <Badge
-                    variant="outline"
-                    className={"mt-2 mx-0.5 cursor-pointer bg-red-500"}
-                    onClick={deleteItem}
-                  >
-                    Delete
-                  </Badge>
-                  <Dialog>
-        <DialogTrigger>
+              <div className="text-gray-500 font-light leading-tight">
+                {description}
+              </div>
+              <Badge
+                variant="outline"
+                className={"mt-2 mx-0.5" + availabilityColour}
+              >
+                Availability: {quantity}
+              </Badge>
+              <Badge
+                variant="outline"
+                className={"mt-2 mx-0.5 cursor-pointer bg-red-500"}
+                onClick={soldOut}
+              >
+                Sold Out
+              </Badge>
+              <Badge
+                variant="outline"
+                className={"mt-2 mx-0.5 cursor-pointer bg-red-500"}
+                onClick={deleteItem}
+              >
+                Delete
+              </Badge>
+              <Dialog>
+                <DialogTrigger>
                   <Badge
                     variant="outline"
                     className={"mt-2 mx-0.5 cursor-pointer bg-red-500"}
                   >
                     Edit
                   </Badge>
-                  </DialogTrigger>
-        <DialogContent className="rounded-lg max-w-[90dvw] max-h-[85dvh] overflow-auto">
-          <DialogHeader>
-            <DialogTitle>Add food item</DialogTitle>
-          </DialogHeader>
-          <ItemInformationForm item={getItem()} />
-        </DialogContent>
-      </Dialog>
-                </CardContent>
-              </div>
-              <div className="basis-1/4 flex-none flex flex-col items-center justify-center">
-                <AspectRatio ratio={1}>
-                  <img
-                    src={image}
-                    alt="Food"
-                    className="object-cover w-full h-full rounded-md"
-                  />
-                </AspectRatio>
-              </div>
-            </div>
-          </Card>
+                </DialogTrigger>
+                <DialogContent className="rounded-lg max-w-[90dvw] max-h-[85dvh] overflow-auto">
+                  <DialogHeader>
+                    <DialogTitle>Add food item</DialogTitle>
+                  </DialogHeader>
+                  <ItemInformationForm item={getItem()} />
+                </DialogContent>
+              </Dialog>
+            </CardContent>
+          </div>
+          <div className="basis-1/4 flex-none flex flex-col items-center justify-center">
+            <AspectRatio ratio={1}>
+              <img
+                src={image}
+                alt="Food"
+                className="object-cover w-full h-full rounded-md"
+              />
+            </AspectRatio>
+          </div>
+        </div>
+      </Card>
       <Separator className="ml-4 w-[calc(100%-4)]" />
     </>
   );
@@ -595,16 +587,22 @@ export default function Items() {
                 value={category}
                 className="space-y-4 overflow-auto"
               >
-                {Object.entries(items).map(([key, item]: [string, MenuItemInfo]) => {
-                  if (
-                    item.name
-                      .toLowerCase()
-                      .replace(/\s+/g, "")
-                      .includes(userInput)
-                  ) {
-                    return <StaffMenuItemCard info={{...item, category, key, restaurant: name}} />;
-                  }
-                })}
+                {Object.entries(items).map(
+                  ([key, item]: [string, MenuItemInfo]) => {
+                    if (
+                      item.name
+                        .toLowerCase()
+                        .replace(/\s+/g, "")
+                        .includes(userInput)
+                    ) {
+                      return (
+                        <StaffMenuItemCard
+                          info={{ ...item, category, key, restaurant: name }}
+                        />
+                      );
+                    }
+                  },
+                )}
               </TabsContent>
             ))}
       </Tabs>

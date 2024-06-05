@@ -206,15 +206,17 @@ function MenuItemCard({ info }: { info: MenuItemInfo }) {
               >
                 Availability: {quantity}
               </Badge>
-              {
-                quantity > -1000000 ?               <Badge
-                variant="outline"
-                className={"mt-2 mx-0.5 cursor-pointer bg-red-500"}
-                onClick={buyItem}
-              >
-                Buy
-              </Badge> : <></>
-              }
+              {quantity > -1000000 ? (
+                <Badge
+                  variant="outline"
+                  className={"mt-2 mx-0.5 cursor-pointer bg-red-500"}
+                  onClick={buyItem}
+                >
+                  Buy
+                </Badge>
+              ) : (
+                <></>
+              )}
             </CardContent>
           </div>
           <div className="basis-1/4 flex-none flex flex-col items-center justify-center">
