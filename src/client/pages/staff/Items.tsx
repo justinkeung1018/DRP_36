@@ -1,5 +1,12 @@
 import { useEffect, useRef, useState } from "react";
-import { onValue, ref, set, push, remove, DatabaseReference } from "firebase/database";
+import {
+  onValue,
+  ref,
+  set,
+  push,
+  remove,
+  DatabaseReference,
+} from "firebase/database";
 import { database, storage } from "../../firebase";
 import {
   getDownloadURL,
@@ -83,31 +90,31 @@ const formSchema = z.object({
 });
 
 type MenuItem = {
-  id: string,
-  name: string,
-  price: number,
-  category: string,
-  initialQuantity: number,
-  dietaryRequirements: string[],
-  description: string,
-}
+  id: string;
+  name: string;
+  price: number;
+  category: string;
+  initialQuantity: number;
+  dietaryRequirements: string[];
+  description: string;
+};
 
 type ItemFormProps = {
-  item?: MenuItem
-}
-
+  item?: MenuItem;
+};
 
 function ItemInformationForm({ item }: ItemFormProps) {
-  
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: item ? item : {
-      name: "",
-      dietaryRequirements: [],
-      description: "",
-    },
+    defaultValues: item
+      ? item
+      : {
+          name: "",
+          dietaryRequirements: [],
+          description: "",
+        },
   });
   const { formState, resetField } = form;
 
@@ -134,17 +141,16 @@ function ItemInformationForm({ item }: ItemFormProps) {
       image,
     } = values;
     if (item) {
-      const deleteItemRef = ref(database, `SCR Restaurant/${item.category}/${item.id}`);
-      const newItemRef = ref(database, `SCR Restaurant/${category}/${item.id}`);
-      const imageRef = ref_storage(
-        storage,
-        "SCR Restaurant/Items/" + item.id,
+      const deleteItemRef = ref(
+        database,
+        `SCR Restaurant/${item.category}/${item.id}`,
       );
+      const newItemRef = ref(database, `SCR Restaurant/${category}/${item.id}`);
+      const imageRef = ref_storage(storage, "SCR Restaurant/Items/" + item.id);
 
       remove(deleteItemRef).then(() => {
         addItem(newItemRef, imageRef);
       });
-
     } else {
       const itemsRef = ref(database, "SCR Restaurant/" + category);
       const newItemRef = push(itemsRef);
@@ -155,10 +161,13 @@ function ItemInformationForm({ item }: ItemFormProps) {
       addItem(newItemRef, imageRef);
     }
 
-    function addItem(newItemRef: DatabaseReference, imageRef: StorageReference) {
+    function addItem(
+      newItemRef: DatabaseReference,
+      imageRef: StorageReference,
+    ) {
       let newname = name;
       if (description) {
-        newname += `with ${description}`
+        newname += `with ${description}`;
       }
       if (fileInputRef.current) {
         fileInputRef.current.value = "";
@@ -236,7 +245,7 @@ function ItemInformationForm({ item }: ItemFormProps) {
           <ToggleGroup
             className="grid grid-cols-2 gap-1"
             type="single"
-            defaultValue= {item? item.category : ""}
+            defaultValue={item ? item.category : ""}
             onValueChange={(category) => {
               form.setValue("category", category);
             }}
@@ -254,7 +263,7 @@ function ItemInformationForm({ item }: ItemFormProps) {
           <ToggleGroup
             className="grid grid-cols-2 gap-1"
             type="multiple"
-            defaultValue= {item? item.dietaryRequirements : []}
+            defaultValue={item ? item.dietaryRequirements : []}
             onValueChange={(dietaryRequirements) => {
               form.setValue("dietaryRequirements", dietaryRequirements);
             }}
@@ -356,7 +365,7 @@ function StaffMenuItemCard({
   }
 
   function getItem() {
-    let dietaryRequirements = []
+    let dietaryRequirements = [];
 
     if (v) {
       dietaryRequirements.push("vegetarian");
@@ -377,7 +386,7 @@ function StaffMenuItemCard({
     // let img = ref_storage(
     //   storage,
     //   "SCR Restaurant/Items/" + id,
-    // ); 
+    // );
 
     // getBlob(img).then((file) => {
     //   return {id,
@@ -390,79 +399,89 @@ function StaffMenuItemCard({
     //     image: new File([file], "malhar")}
     // });
 
-    const description = parseMenuName(name).description.split("with")[1] ? parseMenuName(name).description.split("with")[1].trimStart() : parseMenuName(name).description;
+    const description = parseMenuName(name).description.split("with")[1]
+      ? parseMenuName(name).description.split("with")[1].trimStart()
+      : parseMenuName(name).description;
 
-    return {id,
-      name:parseMenuName(name).name,
+    return {
+      id,
+      name: parseMenuName(name).name,
       price,
       category,
-      initialQuantity:quantity,
+      initialQuantity: quantity,
       dietaryRequirements,
-      description}
+      description,
+    };
   }
-
-
 
   return (
     <>
       <Dialog>
-      <DialogTrigger>
-      <Card className="px-4 border-none shadow-none">
-        <div className="basis-3/4 flex justify-between gap-x-2">
-          <div>
-            <CardHeader className="p-0 text-lg font-medium leading-tight">
-              {mainName}
-            </CardHeader>
-            <CardContent className="p-0">
-              <div className="flex items-center gap-x-1">
-                <div className="text-gray-500 font-light">£{price}</div>
-                {(v || vg || gf || nf) && <div>·</div>}
-                {v && <Badge className="bg-green-700 px-1.5 py-0.25">V</Badge>}
-                {vg && <Badge className="bg-lime-400 px-1.5 py-0.25">VG</Badge>}
-                {gf && <Badge className="bg-sky-600 px-1.5 py-0.25">GF</Badge>}
-                {nf && (
-                  <Badge className="bg-fuchsia-700 px-1.5 py-0.25">NF</Badge>
-                )}
-              </div>
+        <DialogTrigger>
+          <Card className="px-4 border-none shadow-none">
+            <div className="basis-3/4 flex justify-between gap-x-2">
+              <div>
+                <CardHeader className="p-0 text-lg font-medium leading-tight">
+                  {mainName}
+                </CardHeader>
+                <CardContent className="p-0">
+                  <div className="flex items-center gap-x-1">
+                    <div className="text-gray-500 font-light">£{price}</div>
+                    {(v || vg || gf || nf) && <div>·</div>}
+                    {v && (
+                      <Badge className="bg-green-700 px-1.5 py-0.25">V</Badge>
+                    )}
+                    {vg && (
+                      <Badge className="bg-lime-400 px-1.5 py-0.25">VG</Badge>
+                    )}
+                    {gf && (
+                      <Badge className="bg-sky-600 px-1.5 py-0.25">GF</Badge>
+                    )}
+                    {nf && (
+                      <Badge className="bg-fuchsia-700 px-1.5 py-0.25">
+                        NF
+                      </Badge>
+                    )}
+                  </div>
 
-              <div className="text-gray-500 font-light leading-tight">
-                {description}
+                  <div className="text-gray-500 font-light leading-tight">
+                    {description}
+                  </div>
+                  <Badge
+                    variant="outline"
+                    className={"mt-2 mx-0.5" + availabilityColour}
+                  >
+                    Availability: {quantity}
+                  </Badge>
+                  <Badge
+                    variant="outline"
+                    className={"mt-2 mx-0.5 cursor-pointer bg-red-500"}
+                    onClick={soldOut}
+                  >
+                    Sold Out
+                  </Badge>
+                  <Badge
+                    variant="outline"
+                    className={"mt-2 mx-0.5 cursor-pointer bg-red-500"}
+                    onClick={deleteItem}
+                  >
+                    Delete
+                  </Badge>
+                </CardContent>
               </div>
-              <Badge
-                variant="outline"
-                className={"mt-2 mx-0.5" + availabilityColour}
-              >
-                Availability: {quantity}
-              </Badge>
-              <Badge
-                variant="outline"
-                className={"mt-2 mx-0.5 cursor-pointer bg-red-500"}
-                onClick={soldOut}
-              >
-                Sold Out
-              </Badge>
-              <Badge
-                variant="outline"
-                className={"mt-2 mx-0.5 cursor-pointer bg-red-500"}
-                onClick={deleteItem}
-              >
-                Delete
-              </Badge>
-            </CardContent>
-          </div>
-          <div className="basis-1/4 flex-none flex flex-col items-center justify-center">
-            <AspectRatio ratio={1}>
-              <img
-                src={image}
-                alt="Food"
-                className="object-cover w-full h-full rounded-md"
-              />
-            </AspectRatio>
-          </div>
-        </div>
-      </Card>
-      </DialogTrigger>
-      <DialogContent className="rounded-lg max-w-[90dvw] max-h-[85dvh] overflow-auto">
+              <div className="basis-1/4 flex-none flex flex-col items-center justify-center">
+                <AspectRatio ratio={1}>
+                  <img
+                    src={image}
+                    alt="Food"
+                    className="object-cover w-full h-full rounded-md"
+                  />
+                </AspectRatio>
+              </div>
+            </div>
+          </Card>
+        </DialogTrigger>
+        <DialogContent className="rounded-lg max-w-[90dvw] max-h-[85dvh] overflow-auto">
           <DialogHeader>
             <DialogTitle>Add food item</DialogTitle>
           </DialogHeader>
