@@ -23,7 +23,6 @@ import { getAuth } from "firebase/auth";
 
 function RestaurantHeader({ info }: { info: RestaurantInfo }) {
   const { name, location, img } = info;
-  console.log(img);
   return (
     <>
       <AspectRatio ratio={20 / 9} className="mb-4">

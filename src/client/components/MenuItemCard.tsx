@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { IoHeartOutline, IoHeartSharp } from "react-icons/io5";
+import { CirclePlus } from "lucide-react";
 import {
   equalTo,
   get,
@@ -190,16 +191,16 @@ function MenuItemCard({
   let status;
   if (quantity >= 50) {
     availabilityColour = "border-green-700 text-green-700";
-    status = "high";
+    status = "Plenty";
   } else if (quantity >= 20) {
     availabilityColour = "border-amber-700 text-amber-700";
-    status = "medium";
+    status = "Some";
   } else if (quantity > -1000000) {
     availabilityColour = "border-red-500 text-red-500";
-    status = "low";
+    status = "Few";
   } else {
     availabilityColour = "border-red-700 text-red-700";
-    status = "sold out";
+    status = "Sold out";
   }
 
   const [currentQuantity, setCurrentQuantity] = useState(quantity);
@@ -252,7 +253,7 @@ function MenuItemCard({
 
     function replaceItem(itemToChange: string | null) {
       if (itemToChange) {
-        alert("successfully bought item");
+        alert("Successfully bought item.");
         let updates: { [key: string]: Timestamp } = {};
         updates[itemToChange] = Timestamp.fromDate(new Date());
         update(userRef, updates).then(() => {
@@ -262,7 +263,7 @@ function MenuItemCard({
           });
         });
       } else {
-        alert("Limit reached. You can only buy 5 items in 30 mins");
+        alert("Limit reached. You can only buy 5 items in 30 mins.");
       }
     }
   }
@@ -356,27 +357,28 @@ function MenuItemCard({
                   {nf && (
                     <Badge className="bg-fuchsia-700 px-1.5 py-0.25">NF</Badge>
                   )}
+                  <Badge variant="outline" className={availabilityColour}>
+                    {status}
+                  </Badge>
                 </div>
-                {!isStaff && <FavouriteIcon size={20} info={info} />}
               </div>
-
               <div className="text-gray-500 font-light leading-tight">
                 {description}
               </div>
-              <Badge
-                variant="outline"
-                className={"mt-2 mx-0.5 " + availabilityColour}
-              >
-                Availability: {status}
-              </Badge>
-              {!isStaff && quantity > -1000000 && (
-                <Badge
-                  variant="outline"
-                  className={"mt-2 mx-0.5 cursor-pointer bg-red-500"}
-                  onClick={buyItem}
-                >
-                  Buy
-                </Badge>
+              {!isStaff && (
+                <div className="flex items-center justify-left gap-x-2 mt-2">
+                  {quantity > -1000000 && (
+                    <Button
+                      variant="outline"
+                      className="rounded-full drop-shadow"
+                      size="sm"
+                      onClick={buyItem}
+                    >
+                      I bought this item
+                    </Button>
+                  )}
+                  <FavouriteIcon size={20} info={info} />
+                </div>
               )}
             </CardContent>
           </div>
