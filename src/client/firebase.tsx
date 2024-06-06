@@ -17,9 +17,9 @@ const firebaseConfig = {
   storageBucket: "icfood-4334b.appspot.com",
   messagingSenderId: "412745917777",
   appId: "1:412745917777:web:55b551adb6422f0f555f70",
-  databaseURL: "https://icfood-4334b-default-rtdb.europe-west1.firebasedatabase.app/"
+  databaseURL:
+    "https://icfood-4334b-default-rtdb.europe-west1.firebasedatabase.app/",
 };
-
 
 // const firebaseConfig = {
 //   apiKey: "AIzaSyAakMxuEU9lC6a8m67ztllTRxUyYswo7z8",
