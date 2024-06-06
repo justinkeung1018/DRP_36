@@ -1,23 +1,15 @@
 import { useEffect, useState } from "react";
 import { IoHeartOutline, IoHeartSharp } from "react-icons/io5";
-
-import { AspectRatio } from "./shadcn/AspectRatio";
-import { Badge } from "./shadcn/Badge";
-import { Card, CardContent, CardHeader } from "./shadcn/Card";
-import { Separator } from "./shadcn/Separator";
-
-import { MenuItemInfo } from "../types";
 import {
-  DataSnapshot,
   equalTo,
   get,
   increment,
   onValue,
   orderByChild,
-  orderByValue,
   push,
   query,
   ref,
+  remove,
   set,
   update,
 } from "firebase/database";
@@ -25,6 +17,22 @@ import { getAuth } from "firebase/auth";
 import { database } from "../firebase";
 import { useLocation } from "react-router-dom";
 import { Timestamp } from "firebase/firestore";
+
+import { AspectRatio } from "./shadcn/AspectRatio";
+import { Badge } from "./shadcn/Badge";
+import { Button } from "./shadcn/Button";
+import { Card, CardContent, CardHeader } from "./shadcn/Card";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "./shadcn/Dialog";
+import { Separator } from "./shadcn/Separator";
+
+import { MenuItemInfo } from "../types";
+import { ItemInformationForm } from "./ItemInformationForm";
 
 function addFavourite(info: MenuItemInfo) {
   const user = getAuth().currentUser;
@@ -145,7 +153,12 @@ function FavouriteIcon({ size, info }: FavouriteIconProps) {
   );
 }
 
-function MenuItemCard({ info }: { info: MenuItemInfo }) {
+interface MenuItemCardProps {
+  info: MenuItemInfo;
+  isStaff?: boolean;
+}
+
+function MenuItemCard({ info, isStaff }: MenuItemCardProps) {
   const { gf, nf, image, name, price, quantity, v, vg } = info;
   const { name: mainName, description } = parseMenuName(name);
   const location = useLocation();
@@ -169,7 +182,9 @@ function MenuItemCard({ info }: { info: MenuItemInfo }) {
     status = "sold out";
   }
 
-  const buyItem = () => {
+  const [currentQuantity, setCurrentQuantity] = useState(quantity);
+
+  function buyItem() {
     const user = getAuth().currentUser;
     if (!user) {
       console.error("User not signed in!");
@@ -234,7 +249,74 @@ function MenuItemCard({ info }: { info: MenuItemInfo }) {
         alert("Limit reached. You can only buy 5 items in 30 mins");
       }
     }
-  };
+  }
+
+  function deleteItem() {
+    const dbRef = ref(
+      database,
+      `${info.restaurant}/${info.category}/${info.key}`,
+    );
+    remove(dbRef).then(() => console.log("Deleted"));
+  }
+
+  function soldOut() {
+    const dbRef = ref(
+      database,
+      `${info.restaurant}/${info.category}/${info.key}/quantity`,
+    );
+    set(dbRef, -1000000);
+    setCurrentQuantity(-1000000);
+  }
+
+  function getItem() {
+    let dietaryRequirements = [];
+
+    if (v) {
+      dietaryRequirements.push("vegetarian");
+    }
+
+    if (vg) {
+      dietaryRequirements.push("vegan");
+    }
+
+    if (nf) {
+      dietaryRequirements.push("nut-free");
+    }
+
+    if (gf) {
+      dietaryRequirements.push("gluten-free");
+    }
+
+    // let img = ref_storage(
+    //   storage,
+    //   "SCR Restaurant/Items/" + id,
+    // );
+
+    // getBlob(img).then((file) => {
+    //   return {id,
+    //     name,
+    //     price,
+    //     category,
+    //     initialQuantity:quantity,
+    //     dietaryRequirements,
+    //     description,
+    //     image: new File([file], "malhar")}
+    // });
+
+    const description = parseMenuName(name).description.split("with")[1]
+      ? parseMenuName(name).description.split("with")[1].trimStart()
+      : parseMenuName(name).description;
+
+    return {
+      id: info.key,
+      name: parseMenuName(name).name,
+      price,
+      category: info.category,
+      initialQuantity: quantity <= 0 ? 0 : quantity,
+      dietaryRequirements,
+      description,
+    };
+  }
 
   return (
     <>
@@ -274,7 +356,7 @@ function MenuItemCard({ info }: { info: MenuItemInfo }) {
               >
                 Availability: {status}
               </Badge>
-              {quantity > -1000000 ? (
+              {!isStaff && quantity > -1000000 && (
                 <Badge
                   variant="outline"
                   className={"mt-2 mx-0.5 cursor-pointer bg-red-500"}
@@ -282,8 +364,6 @@ function MenuItemCard({ info }: { info: MenuItemInfo }) {
                 >
                   Buy
                 </Badge>
-              ) : (
-                <></>
               )}
             </CardContent>
           </div>
@@ -297,10 +377,45 @@ function MenuItemCard({ info }: { info: MenuItemInfo }) {
             </AspectRatio>
           </div>
         </div>
+        {isStaff && (
+          <div className="flex items-center justify-center gap-x-2 mt-2">
+            <Button
+              variant="outline"
+              className="px-4 rounded-full drop-shadow"
+              onClick={soldOut}
+              disabled={currentQuantity <= -1000000}
+            >
+              Sold Out
+            </Button>
+            <Button
+              variant="outline"
+              className="px-4 rounded-full drop-shadow"
+              onClick={deleteItem}
+            >
+              Delete
+            </Button>
+            <Dialog>
+              <DialogTrigger>
+                <Button
+                  variant="outline"
+                  className="px-4 rounded-full drop-shadow"
+                >
+                  Edit
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="rounded-lg max-w-[90dvw] max-h-[85dvh] overflow-auto">
+                <DialogHeader>
+                  <DialogTitle>Add food item</DialogTitle>
+                </DialogHeader>
+                <ItemInformationForm item={getItem()} />
+              </DialogContent>
+            </Dialog>
+          </div>
+        )}
       </Card>
       <Separator className="ml-4 w-[calc(100%-4)]" />
     </>
   );
 }
 
-export { MenuItemCard, parseMenuName };
+export { MenuItemCard };
