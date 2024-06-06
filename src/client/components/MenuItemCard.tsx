@@ -357,7 +357,7 @@ function MenuItemCard({
                     <Badge className="bg-fuchsia-700 px-1.5 py-0.25">NF</Badge>
                   )}
                 </div>
-                <FavouriteIcon size={20} info={info} />
+                {!isStaff && <FavouriteIcon size={20} info={info} />}
               </div>
 
               <div className="text-gray-500 font-light leading-tight">
