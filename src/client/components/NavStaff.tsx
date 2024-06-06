@@ -15,7 +15,7 @@ const NavStaff = () => {
     setActiveTab(value);
     switch (value) {
       case "items":
-        navigate("items");
+        navigate("/items");
         break;
       case "account":
         navigate("/account");
