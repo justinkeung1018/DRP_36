@@ -52,6 +52,7 @@ function LocationDialog() {
               lat,
               long,
             );
+            alert("Distance: " + distance);
             if (distance < 10) {
               const user = getAuth().currentUser;
               if (!user) {
@@ -81,6 +82,7 @@ function LocationDialog() {
           });
         },
         (error) => {
+          alert("Error: " + error.message);
           console.error(error);
         },
         { enableHighAccuracy: true },
