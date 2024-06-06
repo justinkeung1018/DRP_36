@@ -138,6 +138,7 @@ function FavouriteIcon({ size, info }: FavouriteIconProps) {
   return favourite ? (
     <IoHeartSharp
       size={size}
+      color="red"
       onClick={() => {
         setFavourite(false);
         removeFavourite(info);
