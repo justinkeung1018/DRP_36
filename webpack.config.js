@@ -51,12 +51,9 @@ export default {
     }),
     new CopyWebpackPlugin({
       patterns: [
-        { from: "./client/img/", to: "./client/img/" },
+        { from: "./client/img/restaurants/", to: "./images/" },
+        { from: "./client/img/", to: "./images/" },
         "./manifest.webmanifest",
-        {
-          from: "./client/pages/user/restaurant_list/images/",
-          to: "./images/",
-        },
       ],
     }),
   ],

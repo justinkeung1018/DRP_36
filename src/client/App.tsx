@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Route, Routes, BrowserRouter, Navigation } from "react-router-dom";
-import RestaurantList from "./pages/user/restaurant_list/Restaurants";
+import RestaurantList from "./pages/user/RestaurantList";
 import Items from "./pages/staff/Items";
-import { Restaurant } from "./pages/user/description/Restaurant";
+import { Restaurant } from "./pages/user/Menu";
 import Account from "./pages/user/Account";
 import { Favourites } from "./pages/user/Favourites";
 import { LocationDialog } from "./pages/user/LocationDialog";

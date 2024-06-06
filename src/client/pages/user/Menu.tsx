@@ -1,28 +1,29 @@
-import { database } from "../../../firebase";
+import { database } from "../../firebase";
 import { onValue, ref } from "firebase/database";
 import { useEffect, useState } from "react";
 import { useLocation, Link } from "react-router-dom";
 import { IoChevronBack } from "react-icons/io5";
 import { Search } from "lucide-react";
 
-import { AspectRatio } from "../../../components/shadcn/AspectRatio";
-import { Button } from "../../../components/shadcn/Button";
-import { Separator } from "../../../components/shadcn/Separator";
-import { Input } from "../../../components/shadcn/Input";
+import { AspectRatio } from "../../components/shadcn/AspectRatio";
+import { Button } from "../../components/shadcn/Button";
+import { Separator } from "../../components/shadcn/Separator";
+import { Input } from "../../components/shadcn/Input";
 import {
   Tabs,
   TabsList,
   TabsTrigger,
   TabsContent,
-} from "../../../components/shadcn/Tabs";
+} from "../../components/shadcn/Tabs";
 
-import { RestaurantInfo, MenuItemInfoNoKey } from "../../../types";
+import { RestaurantInfo, MenuItemInfoNoKey } from "../../types";
 import { IconContext } from "react-icons";
-import { MenuItemCard } from "../../../components/MenuItemCard";
+import { MenuItemCard } from "../../components/MenuItemCard";
 import { getAuth } from "firebase/auth";
 
 function RestaurantHeader({ info }: { info: RestaurantInfo }) {
   const { name, location, img } = info;
+  console.log(img);
   return (
     <>
       <AspectRatio ratio={20 / 9} className="mb-4">
