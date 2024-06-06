@@ -7,15 +7,73 @@ import { Badge } from "./shadcn/Badge";
 import { Card, CardContent, CardHeader } from "./shadcn/Card";
 
 import { MenuItemInfoNoKey, RestaurantInfo } from "../types";
-import { get, ref, set } from "firebase/database";
+import {
+  get,
+  limitToLast,
+  orderByChild,
+  orderByKey,
+  query,
+  ref,
+  set,
+  startAt,
+} from "firebase/database";
 import { database } from "../firebase";
+import { average } from "firebase/firestore";
 
 interface RestaurantCardProps {
   info: RestaurantInfo;
 }
 
+const WaitTimes: Record<
+  string,
+  Record<number, { averageQueue: number; averageWait: number }>
+> = {
+  "SCR Restaurant": {
+    9: {
+      averageQueue: 1,
+      averageWait: 0,
+    },
+    10: {
+      averageQueue: 1,
+      averageWait: 0,
+    },
+    11: {
+      averageQueue: 3,
+      averageWait: 5,
+    },
+    12: {
+      averageQueue: 5,
+      averageWait: 10,
+    },
+    13: {
+      averageQueue: 7,
+      averageWait: 15,
+    },
+  },
+};
+
 const RestaurantCard = ({ info }: RestaurantCardProps) => {
-  const { name, waitTime, location, img } = info;
+  const { name, location, img } = info;
+  const [waitTime, setWaitTime] = useState(0);
+
+  useEffect(() => {
+    const recentQuery = query(
+      ref(database, `Queue/${name}`),
+      orderByChild("time"),
+      startAt(Date.now() - 300000),
+    );
+    get(recentQuery).then((snapshot) => {
+      if (snapshot.exists()) {
+        const amount = Object.keys(snapshot.val() ?? {}).length;
+        const hour = new Date().getHours();
+        const { averageQueue, averageWait } =
+          WaitTimes.hasOwnProperty(name) && WaitTimes[name].hasOwnProperty(hour)
+            ? WaitTimes.name[hour]
+            : { averageQueue: 1, averageWait: 10 };
+        setWaitTime(averageWait * (amount / averageQueue));
+      }
+    });
+  }, []);
 
   const [vegetarian, setVegetarian] = useState(false);
   const [vegan, setVegan] = useState(false);
