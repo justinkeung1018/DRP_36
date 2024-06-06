@@ -3,6 +3,7 @@ import { onValue, ref } from "firebase/database";
 import { database } from "../../firebase";
 import { getAuth } from "firebase/auth";
 import { IoAddOutline } from "react-icons/io5";
+import { Search } from "lucide-react";
 
 import { Button } from "../../components/shadcn/Button";
 import {
@@ -87,14 +88,8 @@ export default function Items() {
   return (
     <div className="main-content">
       <StaffHeader restaurantName={name} />
-      <Input
-        placeholder="Search For an Item"
-        onChange={(e) => {
-          setUserInput(e.target.value.toLowerCase().replace(/\s+/g, ""));
-        }}
-      />
       <Tabs defaultValue="Food">
-        <div className="flex items-center justify-center mb-4 pb-1">
+        <div className="flex items-center justify-center mb-2">
           <TabsList>
             {(Object.keys(items).length === 0
               ? ["Drink", "Food"]
@@ -107,6 +102,15 @@ export default function Items() {
                 </TabsTrigger>
               ))}
           </TabsList>
+        </div>
+        <div className="px-4 mb-4">
+          <Input
+            placeholder="Search for an item"
+            startIcon={Search}
+            onChange={(e) => {
+              setUserInput(e.target.value.toLowerCase().replace(/\s+/g, ""));
+            }}
+          />
         </div>
         {Object.keys(items).length === 0
           ? ["Drink", "Food"].map((category) => (

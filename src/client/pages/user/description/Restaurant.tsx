@@ -1,8 +1,9 @@
 import { database } from "../../../firebase";
-import { onValue, orderByChild, query, ref } from "firebase/database";
+import { onValue, ref } from "firebase/database";
 import { useEffect, useState } from "react";
 import { useLocation, Link } from "react-router-dom";
 import { IoChevronBack } from "react-icons/io5";
+import { Search } from "lucide-react";
 
 import { AspectRatio } from "../../../components/shadcn/AspectRatio";
 import { Button } from "../../../components/shadcn/Button";
@@ -15,15 +16,10 @@ import {
   TabsContent,
 } from "../../../components/shadcn/Tabs";
 
-import {
-  RestaurantInfo,
-  MenuItemInfo,
-  MenuItemInfoNoKey,
-} from "../../../types";
+import { RestaurantInfo, MenuItemInfoNoKey } from "../../../types";
 import { IconContext } from "react-icons";
 import { MenuItemCard } from "../../../components/MenuItemCard";
 import { getAuth } from "firebase/auth";
-import { ids } from "webpack";
 
 function RestaurantHeader({ info }: { info: RestaurantInfo }) {
   const { name, location, img } = info;
@@ -107,14 +103,8 @@ const Restaurant = () => {
   return (
     <>
       <RestaurantHeader info={info} />
-      <Input
-        placeholder="Search For an Item"
-        onChange={(e) => {
-          setUserInput(e.target.value.toLowerCase().replace(/\s+/g, ""));
-        }}
-      />
       <Tabs defaultValue="Food">
-        <div className="flex items-center justify-center mb-4 pb-1">
+        <div className="flex items-center justify-center mb-2">
           <TabsList>
             {(Object.keys(items).length === 0
               ? ["Drink", "Food"]
@@ -127,6 +117,15 @@ const Restaurant = () => {
                 </TabsTrigger>
               ))}
           </TabsList>
+        </div>
+        <div className="px-4 mb-4">
+          <Input
+            placeholder="Search for an item"
+            startIcon={Search}
+            onChange={(e) => {
+              setUserInput(e.target.value.toLowerCase().replace(/\s+/g, ""));
+            }}
+          />
         </div>
         {Object.keys(items).length === 0
           ? ["Drink", "Food"].map((category) => (
