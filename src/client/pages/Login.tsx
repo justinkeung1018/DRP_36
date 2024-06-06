@@ -8,7 +8,7 @@ const Login = () => {
     signInWithPopup(getAuth(), provider)
       .then((result: { user: { displayName: any } }) => {
         console.log("User signed in:", result.user);
-        alert(`Hello, ${result.user.displayName}`);
+        // alert(`Hello, ${result.user.displayName}`);
       })
       .catch((error: any) => {
         console.error("Error during sign-in:", error);

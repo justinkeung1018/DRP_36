@@ -159,7 +159,19 @@ interface MenuItemCardProps {
 }
 
 function MenuItemCard({ info, isStaff }: MenuItemCardProps) {
-  const { gf, nf, image, name, price, quantity, v, vg } = info;
+  const {
+    gf,
+    nf,
+    image,
+    name,
+    price,
+    quantity,
+    v,
+    vg,
+    restaurant,
+    category,
+    key,
+  } = info;
   const { name: mainName, description } = parseMenuName(name);
   const location = useLocation();
   if (location.state) {
@@ -237,10 +249,7 @@ function MenuItemCard({ info, isStaff }: MenuItemCardProps) {
         let updates: { [key: string]: Timestamp } = {};
         updates[itemToChange] = Timestamp.fromDate(new Date());
         update(userRef, updates).then(() => {
-          const dbRef = ref(
-            database,
-            `${info.restaurant}/${info.category}/${info.key}`,
-          );
+          const dbRef = ref(database, `${restaurant}/${category}/${key}`);
           update(dbRef, {
             quantity: increment(-1),
           }).then(() => {
@@ -254,20 +263,16 @@ function MenuItemCard({ info, isStaff }: MenuItemCardProps) {
   }
 
   function deleteItem() {
-    const dbRef = ref(
-      database,
-      `${info.restaurant}/${info.category}/${info.key}`,
-    );
-    remove(dbRef).then(() => console.log("Deleted"));
+    const dbRef = ref(database, `${restaurant}/${category}/${key}`);
+    remove(dbRef).then(() => alert(`Deleted ${parseMenuName(name).name}`));
   }
 
   function soldOut() {
-    const dbRef = ref(
-      database,
-      `${info.restaurant}/${info.category}/${info.key}/quantity`,
-    );
-    set(dbRef, -1000000);
-    setCurrentQuantity(-1000000);
+    const dbRef = ref(database, `${restaurant}/${category}/${key}/quantity`);
+    set(dbRef, -1000000).then(() => {
+      alert(`${parseMenuName(name).name} is sold out`);
+      setCurrentQuantity(-1000000);
+    });
   }
 
   function getItem() {
@@ -310,10 +315,10 @@ function MenuItemCard({ info, isStaff }: MenuItemCardProps) {
       : parseMenuName(name).description;
 
     return {
-      id: info.key,
+      id: key,
       name: parseMenuName(name).name,
       price,
-      category: info.category,
+      category: category,
       initialQuantity: quantity <= 0 ? 0 : quantity,
       dietaryRequirements,
       description,

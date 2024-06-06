@@ -8,7 +8,7 @@ import {
   ToggleGroupItem,
 } from "../../components/shadcn/ToggleGroup";
 import { database } from "../../firebase";
-import { get, ref, set } from "firebase/database";
+import { get, onValue, ref, set } from "firebase/database";
 import { useEffect, useState } from "react";
 
 function signOutOfAccount() {
@@ -31,7 +31,9 @@ function AccountHeader({ name }: AccountHeaderProps) {
     <>
       <div className="flex flex-col items-center justify-center mb-4 mt-10">
         <h1 className="text-2xl font-bold">Welcome back,</h1>
-        <h2 className="text-lg font-light">{name}</h2>
+        <h2 className="text-lg font-light">
+          {name === "Jamal" ? "Staff" : name}
+        </h2>
       </div>
       <Separator className="mb-8" />
     </>
@@ -134,11 +136,22 @@ function DietaryRequirements() {
 }
 
 const Account = () => {
+  const user = getAuth().currentUser;
+  let staff = false;
+
+  if (user) {
+    onValue(ref(database, `Staff/${user.uid}`), (snapshot) => {
+      if (snapshot.exists()) {
+        staff = true;
+      }
+    });
+  }
+
   return (
     <>
       <AccountHeader name={getAuth().currentUser?.displayName || ""} />
       <div className="px-10">
-        <DietaryRequirements />
+        {staff ? <></> : <DietaryRequirements />}
         <div className="flex items-center justify-center">
           <Button onClick={signOutOfAccount}>Sign Out</Button>
         </div>
