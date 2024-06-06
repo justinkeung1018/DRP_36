@@ -78,7 +78,7 @@ function StaffHeader({ restaurantName }: StaffHeaderProps) {
 
 const formSchema = z.object({
   name: z.string().min(2).max(50),
-  category: z.string(),
+  category: z.coerce.string(),
   price: z
     .union([
       z.string().transform((x) => x.replace(/[^0-9.-]+/g, "")),
@@ -89,6 +89,7 @@ const formSchema = z.object({
   dietaryRequirements: z.array(z.string()),
   description: z.string().max(200),
   image: z.instanceof(File),
+  // duration: z.string(),
 });
 
 type MenuItem = {
@@ -99,6 +100,7 @@ type MenuItem = {
   initialQuantity: number;
   dietaryRequirements: string[];
   description: string;
+  // duration: string;
 };
 
 type ItemFormProps = {
@@ -202,6 +204,12 @@ function ItemInformationForm({ item }: ItemFormProps) {
             nf: dietaryRequirements?.includes("nut-free"),
             v: dietaryRequirements?.includes("vegetarian"),
             vg: dietaryRequirements?.includes("vegan"),
+          }).then(() => {
+            if (item) {
+              alert("Successfully edited");
+            } else {
+              alert("Successfully added");
+            }
           });
         });
       });

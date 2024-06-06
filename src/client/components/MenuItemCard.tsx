@@ -183,7 +183,7 @@ function MenuItemCard({ info }: { info: MenuItemInfo }) {
     onValue(userRef, (snapshot) => {
       if (init) {
         init = false;
-        if (snapshot.val() == null) {
+        if (snapshot.val() === null) {
           set(userRef, {
             item1: Timestamp.fromDate(new Date("1970-01-01")),
             item2: Timestamp.fromDate(new Date("1970-01-01")),
@@ -191,31 +191,31 @@ function MenuItemCard({ info }: { info: MenuItemInfo }) {
             item4: Timestamp.fromDate(new Date("1970-01-01")),
             item5: Timestamp.fromDate(new Date("1970-01-01")),
           })
-            .then(() => {
-              checkBuyStatus(snapshot);
+            .then((val) => {
+              replaceItem("item1");
             })
             .catch((error) => {
               console.error("List init failed: ", error);
             });
         } else {
-          checkBuyStatus(snapshot);
+          let itemToChange = null;
+
+          snapshot.forEach((child) => {
+            const date = new Date();
+            let timePassed =
+              date.getTime() -
+              (child.val().seconds * 1000 + child.val().nanoseconds / 1000000);
+            if (timePassed > 1800000) {
+              itemToChange = child.key;
+            }
+          });
+
+          replaceItem(itemToChange);
         }
       }
     });
 
-    function checkBuyStatus(snapshot: DataSnapshot) {
-      let itemToChange = null;
-
-      snapshot.forEach((child) => {
-        const date = new Date();
-        let timePassed =
-          date.getTime() -
-          (child.val().seconds * 1000 + child.val().nanoseconds / 1000000);
-        if (timePassed > 1800000) {
-          itemToChange = child.key;
-        }
-      });
-
+    function replaceItem(itemToChange: string | null) {
       if (itemToChange) {
         let updates: { [key: string]: Timestamp } = {};
         updates[itemToChange] = Timestamp.fromDate(new Date());
@@ -226,10 +226,12 @@ function MenuItemCard({ info }: { info: MenuItemInfo }) {
           );
           update(dbRef, {
             quantity: increment(-1),
+          }).then(() => {
+            alert("successfully bought item");
           });
         });
       } else {
-        console.log("Limit reached");
+        alert("Limit reached. You can only buy 5 items in 30 mins");
       }
     }
   };
