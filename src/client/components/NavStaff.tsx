@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 
 import { useNavigate, useLocation } from "react-router-dom";
 import { IoRestaurantSharp } from "react-icons/io5";
-import { IoAddCircleOutline } from "react-icons/io5";
+import { MdAccountCircle } from "react-icons/md";
 
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "./shadcn/Tabs";
 
@@ -56,7 +56,7 @@ const NavStaff = () => {
         <TabsTrigger value="account" className="flex-1">
           <div className="flex flex-col items-center justify-center">
             <div>
-              <IoAddCircleOutline size={30} />
+              <MdAccountCircle size={30} />
             </div>
             Account
           </div>

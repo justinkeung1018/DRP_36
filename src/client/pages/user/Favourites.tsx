@@ -55,21 +55,26 @@ function Favourites() {
           key: string;
           restaurant: string;
           category: string;
-        }>(data).map((item) => {
+        }>(data).flatMap((item) => {
           const { key, restaurant, category } = item; // Declare the 'category' variable here
           const databaseRef = ref(database, `${restaurant}/${category}/${key}`);
           return get(databaseRef).then((snapshot) => {
+            if (!snapshot.exists()) {
+              return null;
+            }
             return { val: snapshot, category, key, restaurant };
           });
         });
 
         Promise.all(favouritedItemsPromises).then((favouritedItems) => {
-          const values: MenuItemInfo[] = favouritedItems.map(
-            ({ val, category, key, restaurant }) => {
+          const values: MenuItemInfo[] = favouritedItems.map((item) => {
+            if (item != null) {
+              const { val, category, key, restaurant } = item;
               return { ...val.val(), category, key, restaurant };
-            },
-          );
-          setItems(groupItemsByRestaurant(values));
+            }
+            return null;
+          });
+          setItems(groupItemsByRestaurant(values.filter((val) => val != null)));
         });
       } else {
         setItems(groupItemsByRestaurant([]));
@@ -81,25 +86,32 @@ function Favourites() {
     <>
       <div className="px-10">
         <div className="flex flex-col items-center justify-center mb-4 mt-10">
-          <h1 className="text-2xl font-bold">Favourites</h1>
+          <h1 className="text-2xl font-bold">Your Favourites</h1>
         </div>
       </div>
       <Separator className="mb-8" />
       <div className="space-y-4">
-        {Object.entries(items).map(([restaurant, restaurantItems]) => (
-          <>
-            <h1 className="text-2xl font-semibold leading-none tracking-tight mb-2 px-4">
-              {restaurant}
-            </h1>
-            {restaurantItems.map((info, index) => (
-              <MenuItemCard
-                info={info}
-                withSeparator={index < restaurantItems.length - 1}
-              />
-            ))}
-            <Separator className="h-[5px] bg-slate-100" />
-          </>
-        ))}
+        {Object.entries(items).length === 0 ? (
+          <h1 className="text-center text-xl font-semibold leading-none tracking-tight mb-2 px-4">
+            {" "}
+            No Items{" "}
+          </h1>
+        ) : (
+          Object.entries(items).map(([restaurant, restaurantItems]) => (
+            <>
+              <h1 className="text-2xl font-semibold leading-none tracking-tight mb-2 px-4">
+                {restaurant}
+              </h1>
+              {restaurantItems.map((info, index) => (
+                <MenuItemCard
+                  info={info}
+                  withSeparator={index < restaurantItems.length - 1}
+                />
+              ))}
+              <Separator className="h-[5px] bg-slate-100" />
+            </>
+          ))
+        )}
       </div>
     </>
   );
