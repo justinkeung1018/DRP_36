@@ -85,7 +85,7 @@ export default function Items() {
   }, [name]);
 
   return (
-    <>
+    <div className="main-content">
       <StaffHeader restaurantName={name} />
       <Input
         placeholder="Search For an Item"
@@ -165,6 +165,6 @@ export default function Items() {
           <ItemInformationForm resetAfterSubmission />
         </DialogContent>
       </Dialog>
-    </>
+    </div>
   );
 }
