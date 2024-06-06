@@ -39,10 +39,13 @@ function Favourites() {
           );
           setItems(values);
         });
+      } else {
+        setItems([]);
       }
     });
   });
 
+  console.log(items);
   return (
     <>
       <h1>Favourites</h1>
