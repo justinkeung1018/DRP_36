@@ -18,7 +18,7 @@ const Login = () => {
   return (
     <>
       <div className="flex flex-col items-center justify-center h-dvh w-dvh p-20">
-        <img src="./client/img/logo.png" className="w-full" />
+        <img src="./images/logo.png" className="w-full" />
         <p className="text-center text-lg font-medium mb-5">
           All things food at Imperial College London
         </p>
