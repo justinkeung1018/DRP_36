@@ -145,6 +145,7 @@ export default function Items() {
                     }
                   },
                 )}
+                <div className="h-10" />
               </TabsContent>
             ))}
       </Tabs>
