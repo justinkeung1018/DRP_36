@@ -1,6 +1,6 @@
 import { database } from "../../../firebase";
 import { onValue, ref } from "firebase/database";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocation, Link } from "react-router-dom";
 import { IoChevronBack } from "react-icons/io5";
 import { Search } from "lucide-react";
