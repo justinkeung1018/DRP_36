@@ -99,7 +99,7 @@ function ItemInformationForm({
       dietaryRequirements,
       description,
       image,
-      duration
+      duration,
     } = values;
 
     const user = getAuth().currentUser;
@@ -257,7 +257,9 @@ function ItemInformationForm({
           <ToggleGroup
             className="grid grid-cols-2 gap-1"
             type="single"
-            defaultValue={(item && item.timestamp != undefined) ? "Daily" : "Permanent"}
+            defaultValue={
+              item && item.timestamp != undefined ? "Daily" : "Permanent"
+            }
             onValueChange={(duration) => {
               form.setValue("duration", duration);
             }}
