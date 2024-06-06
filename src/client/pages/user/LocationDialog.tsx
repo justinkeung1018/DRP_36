@@ -52,7 +52,7 @@ function LocationDialog() {
               lat,
               long,
             );
-            if (distance < 10) {
+            if (distance < 30) {
               const user = getAuth().currentUser;
               if (!user) {
                 console.error("User not signed in!");
