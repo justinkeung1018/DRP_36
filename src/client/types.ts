@@ -17,6 +17,7 @@ interface MenuItemInfo {
   category: string;
   key: string;
   restaurant: string;
+  timestamp?: number;
 }
 
 interface MenuItemInfoNoKey {
@@ -28,6 +29,7 @@ interface MenuItemInfoNoKey {
   quantity: number;
   v: boolean;
   vg: boolean;
+  timestamp?: number;
 }
 
 export { RestaurantInfo, MenuItemInfo, MenuItemInfoNoKey };

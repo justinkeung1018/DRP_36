@@ -176,6 +176,7 @@ function MenuItemCard({
     restaurant,
     category,
     key,
+    timestamp
   } = info;
   const { name: mainName, description } = parseMenuName(name);
   const location = useLocation();
@@ -326,6 +327,7 @@ function MenuItemCard({
       initialQuantity: quantity <= 0 ? 0 : quantity,
       dietaryRequirements,
       description,
+      timestamp
     };
   }
 

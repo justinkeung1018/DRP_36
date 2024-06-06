@@ -38,6 +38,7 @@ import { database, storage } from "../firebase";
 const formSchema = z.object({
   name: z.string().min(2).max(50),
   category: z.coerce.string(),
+  duration: z.coerce.string(),
   price: z
     .union([
       z.string().transform((x) => x.replace(/[^0-9.-]+/g, "")),
@@ -59,7 +60,7 @@ interface MenuItem {
   initialQuantity: number;
   dietaryRequirements: string[];
   description: string;
-  // duration: string;
+  timestamp?: number;
 }
 
 interface ItemFormProps {
@@ -98,6 +99,7 @@ function ItemInformationForm({
       dietaryRequirements,
       description,
       image,
+      duration
     } = values;
 
     const user = getAuth().currentUser;
@@ -159,6 +161,7 @@ function ItemInformationForm({
             nf: dietaryRequirements?.includes("nut-free"),
             v: dietaryRequirements?.includes("vegetarian"),
             vg: dietaryRequirements?.includes("vegan"),
+            timestamp: duration === "Daily" ? Date.now() : null,
           }).then(() => {
             if (onSubmissionComplete) {
               onSubmissionComplete();
@@ -246,6 +249,24 @@ function ItemInformationForm({
             </ToggleGroupItem>
             <ToggleGroupItem value="Drink" variant="outline">
               Drink
+            </ToggleGroupItem>
+          </ToggleGroup>
+        </div>
+        <div className="space-y-2">
+          <Label>Duration</Label>
+          <ToggleGroup
+            className="grid grid-cols-2 gap-1"
+            type="single"
+            defaultValue={(item && item.timestamp != undefined) ? "Daily" : "Permanent"}
+            onValueChange={(duration) => {
+              form.setValue("duration", duration);
+            }}
+          >
+            <ToggleGroupItem value="Permanent" variant="outline">
+              Permanent
+            </ToggleGroupItem>
+            <ToggleGroupItem value="Daily" variant="outline">
+              Daily
             </ToggleGroupItem>
           </ToggleGroup>
         </div>
