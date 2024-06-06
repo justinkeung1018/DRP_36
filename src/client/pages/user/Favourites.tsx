@@ -7,20 +7,6 @@ import { Separator } from "../../components/shadcn/Separator";
 import { MenuItemCard } from "../../components/MenuItemCard";
 import { MenuItemInfo } from "../../types";
 
-// interface MenuItemInfo {
-//   gf: boolean;
-//   nf: boolean;
-//   image: string;
-//   name: string;
-//   price: number;
-//   quantity: number;
-//   v: boolean;
-//   vg: boolean;
-//   category: string;
-//   key: string;
-//   restaurant: string;
-// }
-
 function groupItemsByRestaurant(
   items: MenuItemInfo[],
 ): Record<string, MenuItemInfo[]> {
@@ -93,8 +79,7 @@ function Favourites() {
       <div className="space-y-4">
         {Object.entries(items).length === 0 ? (
           <h1 className="text-center text-xl font-semibold leading-none tracking-tight mb-2 px-4">
-            {" "}
-            No Items{" "}
+            No Items
           </h1>
         ) : (
           Object.entries(items).map(([restaurant, restaurantItems]) => (
