@@ -1,4 +1,5 @@
 import RestaurantCard from "../../../components/RestaurantCard";
+import { LocationDialog } from "../LocationDialog";
 
 import { restaurants } from "../../../data";
 
