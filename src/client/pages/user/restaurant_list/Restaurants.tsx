@@ -5,7 +5,7 @@ import { restaurants } from "../../../data";
 const RestaurantList = () => {
   return (
     <>
-      <div className="main-content flex flex-col p-2 gap-y-2">
+      <div className="main-content flex flex-col">
         {restaurants.map((info) => (
           <RestaurantCard info={info} />
         ))}

@@ -23,8 +23,8 @@ const RestaurantCard = ({ info }: RestaurantCardProps) => {
   const [nutFree, setNutFree] = useState(false);
 
   useEffect(() => {
-   const restaurantRef = ref(database, `${name}/Food`); 
-   get(restaurantRef).then((snapshot) => {
+    const restaurantRef = ref(database, `${name}/Food`);
+    get(restaurantRef).then((snapshot) => {
       if (snapshot.exists()) {
         const data: Record<string, MenuItemInfoNoKey> = snapshot.val();
         let gf = false;
@@ -36,13 +36,13 @@ const RestaurantCard = ({ info }: RestaurantCardProps) => {
           vegan = vegan || item.v;
           vegetarian = vegetarian || item.vg;
           nf = nf || item.nf;
-        })
+        });
         setGlutenFree(gf);
         setVegan(vegan);
         setVegetarian(vegetarian);
         setNutFree(nf);
       }
-    })
+    });
   }, []);
 
   return (
@@ -51,10 +51,11 @@ const RestaurantCard = ({ info }: RestaurantCardProps) => {
       state={{ info }}
       style={{ textDecoration: "none", color: "black" }}
     >
-      <Card className="transition w-full border-none shadow-none hover:shadow-lg">
-        <CardHeader className="p-2">
+      <Card className="border-none shadow-none">
+        <CardHeader className="p-4">
           <div className="w-full overflow-hidden">
-            <AspectRatio ratio={20 / 9}>
+            <AspectRatio ratio={20 / 9} >
+              <div className="transition w-full h-full rounded-md opacity-0 hover:opacity-30 bg-black absolute " />
               <img
                 src={img}
                 alt="Food"
@@ -63,9 +64,9 @@ const RestaurantCard = ({ info }: RestaurantCardProps) => {
             </AspectRatio>
           </div>
         </CardHeader>
-        <CardContent className="p-2">
-          <div className="flex justify-between">
-            <div>
+        <CardContent className="px-4">
+          <div>
+            <div className="flex items-center gap-x-1 justify-between">
               <div className="flex items-center gap-x-2">
                 <h1 className="font-bold text-xl">{name}</h1>
                 <div className="flex items-center gap-x-1">
@@ -83,7 +84,12 @@ const RestaurantCard = ({ info }: RestaurantCardProps) => {
                   )}
                 </div>
               </div>
-              <div className="flex gap-x-1">
+              <h2 className="font-medium text-xl text-right">
+                {waitTime} mins
+              </h2>
+            </div>
+            <div className="flex gap-x-1 items-center justify-between">
+              <div className="flex gap-x-1 items-center">
                 <div className="flex items-center justify-center text-slate-400">
                   <div>
                     <IconMapPinFilled className="h-4 w-4" />
@@ -91,11 +97,6 @@ const RestaurantCard = ({ info }: RestaurantCardProps) => {
                 </div>
                 <p className="font-light">{location}</p>
               </div>
-            </div>
-            <div>
-              <h2 className="font-medium text-xl text-right">
-                {waitTime} mins
-              </h2>
               <p className="font-light text-right">estimated wait</p>
             </div>
           </div>
