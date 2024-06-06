@@ -57,7 +57,6 @@ import { AspectRatio } from "@radix-ui/react-aspect-ratio";
 import { Badge } from "../../components/shadcn/Badge";
 import { Card, CardHeader, CardContent } from "../../components/shadcn/Card";
 import { parseMenuName } from "../../components/MenuItemCard";
-import { useLocation } from "react-router-dom";
 import { getAuth } from "firebase/auth";
 
 interface StaffHeaderProps {
@@ -352,6 +351,7 @@ function ItemInformationForm({ item }: ItemFormProps) {
 
 function StaffMenuItemCard({ info }: { info: MenuItemInfo }) {
   const { gf, nf, image, name, price, quantity, v, vg } = info;
+  const [currentQuantity, setCurrentQuantity] = useState(quantity);
   const { name: mainName, description } = parseMenuName(name);
 
   const deleteItem = () => {
@@ -368,9 +368,11 @@ function StaffMenuItemCard({ info }: { info: MenuItemInfo }) {
       `${info.restaurant}/${info.category}/${info.key}/quantity`,
     );
     set(dbRef, -1000000);
+    setCurrentQuantity(-1000000);
   };
 
   let availabilityColour;
+  let status;
   if (quantity > 50) {
     availabilityColour = "border-green-700 text-green-700";
     status = "high";
@@ -460,44 +462,10 @@ function StaffMenuItemCard({ info }: { info: MenuItemInfo }) {
               </div>
               <Badge
                 variant="outline"
-                className={"mt-2 mx-0.5" + availabilityColour}
+                className={"mt-2 mx-0.5 " + availabilityColour}
               >
                 Availability: {status}
               </Badge>
-              {quantity > -1000000 ? (
-                <Badge
-                  variant="outline"
-                  className={"mt-2 mx-0.5 cursor-pointer bg-red-500"}
-                  onClick={soldOut}
-                >
-                  Sold Out
-                </Badge>
-              ) : (
-                <></>
-              )}
-              <Badge
-                variant="outline"
-                className={"mt-2 mx-0.5 cursor-pointer bg-red-500"}
-                onClick={deleteItem}
-              >
-                Delete
-              </Badge>
-              <Dialog>
-                <DialogTrigger>
-                  <Badge
-                    variant="outline"
-                    className={"mt-2 mx-0.5 cursor-pointer bg-red-500"}
-                  >
-                    Edit
-                  </Badge>
-                </DialogTrigger>
-                <DialogContent className="rounded-lg max-w-[90dvw] max-h-[85dvh] overflow-auto">
-                  <DialogHeader>
-                    <DialogTitle>Add food item</DialogTitle>
-                  </DialogHeader>
-                  <ItemInformationForm item={getItem()} />
-                </DialogContent>
-              </Dialog>
             </CardContent>
           </div>
           <div className="basis-1/4 flex-none flex flex-col items-center justify-center">
@@ -509,6 +477,39 @@ function StaffMenuItemCard({ info }: { info: MenuItemInfo }) {
               />
             </AspectRatio>
           </div>
+        </div>
+        <div className="flex items-center justify-center gap-x-2 mt-2">
+          <Button
+            variant="outline"
+            className="px-4 rounded-full drop-shadow"
+            onClick={soldOut}
+            disabled={currentQuantity <= -1000000}
+          >
+            Sold Out
+          </Button>
+          <Button
+            variant="outline"
+            className="px-4 rounded-full drop-shadow"
+            onClick={deleteItem}
+          >
+            Delete
+          </Button>
+          <Dialog>
+            <DialogTrigger>
+              <Button
+                variant="outline"
+                className="px-4 rounded-full drop-shadow"
+              >
+                Edit
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="rounded-lg max-w-[90dvw] max-h-[85dvh] overflow-auto">
+              <DialogHeader>
+                <DialogTitle>Add food item</DialogTitle>
+              </DialogHeader>
+              <ItemInformationForm item={getItem()} />
+            </DialogContent>
+          </Dialog>
         </div>
       </Card>
       <Separator className="ml-4 w-[calc(100%-4)]" />
