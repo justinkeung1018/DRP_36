@@ -5,6 +5,7 @@ import Items from "./pages/staff/Items";
 import { Restaurant } from "./pages/user/description/Restaurant";
 import Account from "./pages/user/Account";
 import { Favourites } from "./pages/user/Favourites";
+import { LocationDialog } from "./pages/user/LocationDialog";
 
 // TODO: clean up CSS
 import "./styles/App.css";
@@ -57,6 +58,7 @@ export const App = () => {
 
   return (
     <BrowserRouter>
+      <LocationDialog />
       <Routes>
         <Route path="/" element={<Home setPrivileges={setPrivileges} />} />
         <Route path="login" element={<Login />} />
