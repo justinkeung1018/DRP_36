@@ -78,9 +78,7 @@ function Favourites() {
       <Separator className="mb-8" />
       <div className="space-y-4">
         {Object.entries(items).length === 0 ? (
-          <h1 className="text-center text-xl font-semibold leading-none tracking-tight mb-2 px-4">
-            No Items
-          </h1>
+          <h1 className="text-center text-xl font-normal">No Items</h1>
         ) : (
           Object.entries(items).map(([restaurant, restaurantItems]) => (
             <>
