@@ -1,18 +1,28 @@
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { IconMapPinFilled } from "@tabler/icons-react";
 
 import { AspectRatio } from "./shadcn/AspectRatio";
+import { Badge } from "./shadcn/Badge";
 import { Card, CardContent, CardHeader } from "./shadcn/Card";
 
 import { RestaurantInfo } from "../types";
 
 interface RestaurantCardProps {
   info: RestaurantInfo;
-  isStaff?: boolean;
 }
 
-const RestaurantCard = ({ info, isStaff }: RestaurantCardProps) => {
+const RestaurantCard = ({ info }: RestaurantCardProps) => {
   const { name, waitTime, location, img } = info;
+
+  const [vegetarian, setVegetarian] = useState(false);
+  const [vegan, setVegan] = useState(false);
+  const [glutenFree, setGlutenFree] = useState(false);
+  const [nutFree, setNutFree] = useState(false);
+
+  useEffect(() => {
+    // TODO: Load dietary requirements and update state
+  }, []);
 
   return (
     <Link
@@ -35,7 +45,23 @@ const RestaurantCard = ({ info, isStaff }: RestaurantCardProps) => {
         <CardContent className="p-2">
           <div className="flex justify-between">
             <div>
-              <h1 className="font-bold text-xl">{name}</h1>
+              <div className="flex items-center gap-x-2">
+                <h1 className="font-bold text-xl">{name}</h1>
+                <div className="flex items-center gap-x-1">
+                  {vegetarian && (
+                    <Badge className="bg-green-700 px-1.5 py-0.25">V</Badge>
+                  )}
+                  {vegan && (
+                    <Badge className="bg-lime-400 px-1.5 py-0.25">VG</Badge>
+                  )}
+                  {glutenFree && (
+                    <Badge className="bg-sky-600 px-1.5 py-0.25">GF</Badge>
+                  )}
+                  {nutFree && (
+                    <Badge className="bg-fuchsia-700 px-1.5 py-0.25">NF</Badge>
+                  )}
+                </div>
+              </div>
               <div className="flex gap-x-1">
                 <div className="flex items-center justify-center text-slate-400">
                   <div>
