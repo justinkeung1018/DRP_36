@@ -58,7 +58,6 @@ export const App = () => {
 
   return (
     <BrowserRouter>
-      <LocationDialog />
       <Routes>
         <Route path="/" element={<Home setPrivileges={setPrivileges} />} />
         <Route path="login" element={<Login />} />
@@ -73,7 +72,10 @@ export const App = () => {
       ) : privileges === 1 ? (
         <NavStaff />
       ) : (
-        <NavUser />
+        <>
+          <LocationDialog />
+          <NavUser />
+        </>
       )}
     </BrowserRouter>
   );
