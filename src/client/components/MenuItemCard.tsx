@@ -251,14 +251,13 @@ function MenuItemCard({
 
     function replaceItem(itemToChange: string | null) {
       if (itemToChange) {
+        alert("successfully bought item");
         let updates: { [key: string]: Timestamp } = {};
         updates[itemToChange] = Timestamp.fromDate(new Date());
         update(userRef, updates).then(() => {
           const dbRef = ref(database, `${restaurant}/${category}/${key}`);
           update(dbRef, {
             quantity: increment(-1),
-          }).then(() => {
-            alert("successfully bought item");
           });
         });
       } else {

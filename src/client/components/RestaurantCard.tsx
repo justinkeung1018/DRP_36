@@ -6,7 +6,9 @@ import { AspectRatio } from "./shadcn/AspectRatio";
 import { Badge } from "./shadcn/Badge";
 import { Card, CardContent, CardHeader } from "./shadcn/Card";
 
-import { RestaurantInfo } from "../types";
+import { MenuItemInfoNoKey, RestaurantInfo } from "../types";
+import { get, ref, set } from "firebase/database";
+import { database } from "../firebase";
 
 interface RestaurantCardProps {
   info: RestaurantInfo;
@@ -21,7 +23,26 @@ const RestaurantCard = ({ info }: RestaurantCardProps) => {
   const [nutFree, setNutFree] = useState(false);
 
   useEffect(() => {
-    // TODO: Load dietary requirements and update state
+   const restaurantRef = ref(database, `${name}/Food`); 
+   get(restaurantRef).then((snapshot) => {
+      if (snapshot.exists()) {
+        const data: Record<string, MenuItemInfoNoKey> = snapshot.val();
+        let gf = false;
+        let vegan = false;
+        let vegetarian = false;
+        let nf = false;
+        Object.values(data).forEach((item: MenuItemInfoNoKey) => {
+          gf = gf || item.gf;
+          vegan = vegan || item.v;
+          vegetarian = vegetarian || item.vg;
+          nf = nf || item.nf;
+        })
+        setGlutenFree(gf);
+        setVegan(vegan);
+        setVegetarian(vegetarian);
+        setNutFree(nf);
+      }
+    })
   }, []);
 
   return (
