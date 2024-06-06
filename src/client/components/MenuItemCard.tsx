@@ -166,6 +166,8 @@ function MenuItemCard({ info, isStaff }: MenuItemCardProps) {
     info.restaurant = location.state.info.name;
   }
 
+  const [open, setOpen] = useState(false); // To control the edit item dialog
+
   let availabilityColour;
   let status;
   if (quantity >= 50) {
@@ -394,7 +396,7 @@ function MenuItemCard({ info, isStaff }: MenuItemCardProps) {
             >
               Delete
             </Button>
-            <Dialog>
+            <Dialog open={open} onOpenChange={setOpen}>
               <DialogTrigger>
                 <Button
                   variant="outline"
@@ -405,9 +407,14 @@ function MenuItemCard({ info, isStaff }: MenuItemCardProps) {
               </DialogTrigger>
               <DialogContent className="rounded-lg max-w-[90dvw] max-h-[85dvh] overflow-auto">
                 <DialogHeader>
-                  <DialogTitle>Add food item</DialogTitle>
+                  <DialogTitle>Edit food item</DialogTitle>
                 </DialogHeader>
-                <ItemInformationForm item={getItem()} />
+                <ItemInformationForm
+                  item={getItem()}
+                  onSubmissionComplete={() => {
+                    setOpen(false);
+                  }}
+                />
               </DialogContent>
             </Dialog>
           </div>

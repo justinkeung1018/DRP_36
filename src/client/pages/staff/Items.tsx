@@ -44,6 +44,7 @@ function StaffHeader({ restaurantName }: StaffHeaderProps) {
 
 export default function Items() {
   const [name, setName] = useState("SCR Restaurant");
+  const [open, setOpen] = useState(false); // To control the add item form
   const user = getAuth().currentUser;
   if (!user) {
     console.error("User not signed in!");
@@ -143,7 +144,7 @@ export default function Items() {
               </TabsContent>
             ))}
       </Tabs>
-      <Dialog>
+      <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger>
           <Button
             variant="outline"
@@ -161,7 +162,7 @@ export default function Items() {
           <DialogHeader>
             <DialogTitle>Add food item</DialogTitle>
           </DialogHeader>
-          <ItemInformationForm />
+          <ItemInformationForm resetAfterSubmission />
         </DialogContent>
       </Dialog>
     </>

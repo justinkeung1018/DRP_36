@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { getAuth } from "firebase/auth";
 import {
   ref,
@@ -29,6 +29,7 @@ import {
 } from "./shadcn/Form";
 import { Input } from "./shadcn/Input";
 import { Label } from "./shadcn/Label";
+import { LoadingSpinner } from "./shadcn/LoadingSpinner";
 import { Textarea } from "./shadcn/Textarea";
 import { ToggleGroup, ToggleGroupItem } from "./shadcn/ToggleGroup";
 
@@ -63,9 +64,16 @@ interface MenuItem {
 
 interface ItemFormProps {
   item?: MenuItem;
+  onSubmissionComplete?: () => void;
+  resetAfterSubmission?: boolean;
 }
 
-function ItemInformationForm({ item }: ItemFormProps) {
+function ItemInformationForm({
+  item,
+  onSubmissionComplete,
+  resetAfterSubmission,
+}: ItemFormProps) {
+  const [isSubmitting, setSubmitting] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -78,21 +86,10 @@ function ItemInformationForm({ item }: ItemFormProps) {
           description: "",
         },
   });
-  const { formState, resetField } = form;
-
-  // We use useEffect as recommended here: https://react-hook-form.com/docs/useform/reset
-  useEffect(() => {
-    if (formState.isSubmitSuccessful) {
-      form.reset();
-      // Ideally we do not need to do the following but react-hook-form will not clear
-      // the price and initialQuantity fields because we need to supply default values
-      // but it is an absolute pain in the ass to make them nullable in zod and work well
-      // with react-hook-form
-      (document.getElementById("item-info-form") as HTMLFormElement).reset();
-    }
-  }, [formState]);
 
   function onSubmit(values: z.infer<typeof formSchema>) {
+    setSubmitting(true);
+
     const {
       name,
       price,
@@ -163,11 +160,21 @@ function ItemInformationForm({ item }: ItemFormProps) {
             v: dietaryRequirements?.includes("vegetarian"),
             vg: dietaryRequirements?.includes("vegan"),
           }).then(() => {
-            if (item) {
-              alert("Successfully edited");
-            } else {
-              alert("Successfully added");
+            if (onSubmissionComplete) {
+              onSubmissionComplete();
             }
+            if (resetAfterSubmission) {
+              form.reset();
+
+              // Ideally we do not need to do the following but react-hook-form will not clear
+              // the price and initialQuantity fields because we need to supply default values
+              // but it is an absolute pain in the ass to make them nullable in zod and work well
+              // with react-hook-form
+              (
+                document.getElementById("item-info-form") as HTMLFormElement
+              ).reset();
+            }
+            setSubmitting(false);
           });
         });
       });
@@ -308,7 +315,11 @@ function ItemInformationForm({ item }: ItemFormProps) {
         />
 
         <div className="flex items-center justify-center w-full mt-[20px]">
-          <Button type="submit">Submit</Button>
+          {isSubmitting ? (
+            <LoadingSpinner size={30} />
+          ) : (
+            <Button type="submit">Submit</Button>
+          )}
         </div>
       </form>
     </Form>
