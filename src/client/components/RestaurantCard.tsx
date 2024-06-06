@@ -54,7 +54,7 @@ const RestaurantCard = ({ info }: RestaurantCardProps) => {
       <Card className="border-none shadow-none">
         <CardHeader className="p-4">
           <div className="w-full overflow-hidden">
-            <AspectRatio ratio={20 / 9} >
+            <AspectRatio ratio={20 / 9}>
               <div className="transition w-full h-full rounded-md opacity-0 hover:opacity-30 bg-black absolute " />
               <img
                 src={img}

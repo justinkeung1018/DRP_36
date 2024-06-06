@@ -1,6 +1,6 @@
 import { database } from "../../../firebase";
 import { onValue, ref } from "firebase/database";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useLocation, Link } from "react-router-dom";
 import { IoChevronBack } from "react-icons/io5";
 import { Search } from "lucide-react";
@@ -40,6 +40,27 @@ function RestaurantHeader({ info }: { info: RestaurantInfo }) {
       <h1 className="text-xl text-center font-bold mx-4 py-2">Menu</h1>
     </>
   );
+}
+
+function getRelevantMenuItemCards(
+  items: Record<string, MenuItemInfoNoKey>,
+  userInput: string,
+  category: string,
+  restaurant: string,
+) {
+  const relevantMenuItems = Object.entries(items).filter(([_, item]) =>
+    item.name.toLowerCase().replace(/\s+/g, "").includes(userInput),
+  );
+
+  if (relevantMenuItems.length === 0) {
+    return <h1 className="text-center font-normal text-lg">No items</h1>;
+  }
+
+  return relevantMenuItems.map(([key, item]) => {
+    if (item.name.toLowerCase().replace(/\s+/g, "").includes(userInput)) {
+      return <MenuItemCard info={{ ...item, category, key, restaurant }} />;
+    }
+  });
 }
 
 const Restaurant = () => {
@@ -132,7 +153,7 @@ const Restaurant = () => {
               <TabsContent
                 key={category}
                 value={category}
-                className="space-y-4 overflow-auto text-center font-bold text-l"
+                className="space-y-4 overflow-auto text-center font-normal text-lg"
               >
                 No Items
               </TabsContent>
@@ -143,22 +164,7 @@ const Restaurant = () => {
                 value={category}
                 className="space-y-4 overflow-auto"
               >
-                {Object.entries(items).map(
-                  ([key, item]: [string, MenuItemInfoNoKey]) => {
-                    if (
-                      item.name
-                        .toLowerCase()
-                        .replace(/\s+/g, "")
-                        .includes(userInput)
-                    ) {
-                      return (
-                        <MenuItemCard
-                          info={{ ...item, category, key, restaurant: name }}
-                        />
-                      );
-                    }
-                  },
-                )}
+                {getRelevantMenuItemCards(items, userInput, category, name)}
               </TabsContent>
             ))}
       </Tabs>
