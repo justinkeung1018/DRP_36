@@ -23,8 +23,8 @@ const RestaurantCard = ({ info }: RestaurantCardProps) => {
   const [nutFree, setNutFree] = useState(false);
 
   useEffect(() => {
-   const restaurantRef = ref(database, `${name}/Food`); 
-   get(restaurantRef).then((snapshot) => {
+    const restaurantRef = ref(database, `${name}/Food`);
+    get(restaurantRef).then((snapshot) => {
       if (snapshot.exists()) {
         const data: Record<string, MenuItemInfoNoKey> = snapshot.val();
         let gf = false;
@@ -36,13 +36,13 @@ const RestaurantCard = ({ info }: RestaurantCardProps) => {
           vegan = vegan || item.v;
           vegetarian = vegetarian || item.vg;
           nf = nf || item.nf;
-        })
+        });
         setGlutenFree(gf);
         setVegan(vegan);
         setVegetarian(vegetarian);
         setNutFree(nf);
       }
-    })
+    });
   }, []);
 
   return (

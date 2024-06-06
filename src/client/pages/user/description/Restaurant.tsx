@@ -98,7 +98,7 @@ const Restaurant = () => {
         setDietary(data);
       }
     });
-  });
+  }, []);
 
   return (
     <>
