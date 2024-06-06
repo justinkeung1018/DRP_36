@@ -85,6 +85,9 @@ const Restaurant = () => {
       if (data != null) {
         for (const category in data) {
           for (const item in data[category]) {
+            if (Date.now() - 86400000 > data[category][item].timestamp) {
+              delete data[category][item];
+            }
             if (dietary.gf && !data[category][item].gf) {
               delete data[category][item];
             } else if (dietary.nf && !data[category][item].nf) {
