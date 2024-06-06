@@ -66,7 +66,13 @@ export const App = () => {
         <Route path="account" element={<Account />} />
         <Route path="favourites" element={<Favourites />} />
       </Routes>
-      {privileges === 0 ? <div></div> : true ? <NavStaff /> : <NavUser />}
+      {privileges === 0 ? (
+        <div></div>
+      ) : privileges === 1 ? (
+        <NavStaff />
+      ) : (
+        <NavUser />
+      )}
     </BrowserRouter>
   );
 };
