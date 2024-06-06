@@ -199,7 +199,7 @@ function MenuItemCard({ info }: { info: MenuItemInfo }) {
             });
         } else {
           let itemToChange = null;
-    
+
           snapshot.forEach((child) => {
             const date = new Date();
             let timePassed =
@@ -209,7 +209,7 @@ function MenuItemCard({ info }: { info: MenuItemInfo }) {
               itemToChange = child.key;
             }
           });
-        
+
           replaceItem(itemToChange);
         }
       }
@@ -226,18 +226,15 @@ function MenuItemCard({ info }: { info: MenuItemInfo }) {
           );
           update(dbRef, {
             quantity: increment(-1),
-          })
-          .then(() => {
-            alert("successfully bought item")
-          }
-          );
+          }).then(() => {
+            alert("successfully bought item");
+          });
         });
       } else {
         alert("Limit reached. You can only buy 5 items in 30 mins");
       }
     }
   };
-
 
   return (
     <>
