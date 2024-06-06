@@ -368,16 +368,15 @@ function MenuItemCard({
               </div>
               {!isStaff && (
                 <div className="flex items-center justify-left gap-x-2 mt-2">
-                  {quantity > -1000000 && (
-                    <Button
-                      variant="outline"
-                      className="rounded-full drop-shadow"
-                      size="sm"
-                      onClick={buyItem}
-                    >
-                      I bought this item
-                    </Button>
-                  )}
+                  <Button
+                    variant="outline"
+                    className="rounded-full drop-shadow disabled:drop-shadow-none w-2/3"
+                    size="sm"
+                    onClick={buyItem}
+                    disabled={quantity <= -1000000}
+                  >
+                    {quantity > -1000000 ? "I bought this item" : "Sold out"}
+                  </Button>
                   <FavouriteIcon size={20} info={info} />
                 </div>
               )}
