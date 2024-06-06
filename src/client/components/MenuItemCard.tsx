@@ -156,9 +156,14 @@ function FavouriteIcon({ size, info }: FavouriteIconProps) {
 interface MenuItemCardProps {
   info: MenuItemInfo;
   isStaff?: boolean;
+  withSeparator?: boolean;
 }
 
-function MenuItemCard({ info, isStaff }: MenuItemCardProps) {
+function MenuItemCard({
+  info,
+  isStaff,
+  withSeparator = true,
+}: MenuItemCardProps) {
   const {
     gf,
     nf,
@@ -425,7 +430,7 @@ function MenuItemCard({ info, isStaff }: MenuItemCardProps) {
           </div>
         )}
       </Card>
-      <Separator className="ml-4 w-[calc(100%-4)]" />
+      {withSeparator && <Separator className="ml-4 w-[calc(100%-4)]" />}
     </>
   );
 }

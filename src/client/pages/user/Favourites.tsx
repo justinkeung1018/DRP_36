@@ -1,14 +1,46 @@
-import { MenuItemInfo } from "../../types";
 import { useEffect, useState } from "react";
-import { MenuItemCard } from "../../components/MenuItemCard";
 import { getAuth } from "firebase/auth";
 import { database } from "../../firebase";
 import { get, ref } from "firebase/database";
 
-function Favourites() {
-  const [items, setItems] = useState<MenuItemInfo[]>([]);
+import { Separator } from "../../components/shadcn/Separator";
+import { MenuItemCard } from "../../components/MenuItemCard";
+import { MenuItemInfo } from "../../types";
 
-  useEffect((): void => {
+// interface MenuItemInfo {
+//   gf: boolean;
+//   nf: boolean;
+//   image: string;
+//   name: string;
+//   price: number;
+//   quantity: number;
+//   v: boolean;
+//   vg: boolean;
+//   category: string;
+//   key: string;
+//   restaurant: string;
+// }
+
+function groupItemsByRestaurant(
+  items: MenuItemInfo[],
+): Record<string, MenuItemInfo[]> {
+  return items.reduce(
+    (map, info) => {
+      const { restaurant } = info;
+      if (!(restaurant in map)) {
+        map[restaurant] = [];
+      }
+      map[restaurant].push(info);
+      return map;
+    },
+    {} as Record<string, MenuItemInfo[]>,
+  );
+}
+
+function Favourites() {
+  const [items, setItems] = useState<Record<string, MenuItemInfo[]>>({});
+
+  useEffect(() => {
     const user = getAuth().currentUser;
     if (!user) {
       console.error("User not signed in!");
@@ -37,21 +69,38 @@ function Favourites() {
               return { ...val.val(), category, key, restaurant };
             },
           );
-          setItems(values);
+          setItems(groupItemsByRestaurant(values));
         });
       } else {
-        setItems([]);
+        setItems(groupItemsByRestaurant([]));
       }
     });
-  });
+  }, []);
 
-  console.log(items);
   return (
     <>
-      <h1>Favourites</h1>
-      {items.map((info) => (
-        <MenuItemCard info={info} />
-      ))}
+      <div className="px-10">
+        <div className="flex flex-col items-center justify-center mb-4 mt-10">
+          <h1 className="text-2xl font-bold">Favourites</h1>
+        </div>
+      </div>
+      <Separator className="mb-8" />
+      <div className="space-y-4">
+        {Object.entries(items).map(([restaurant, restaurantItems]) => (
+          <>
+            <h1 className="text-2xl font-semibold leading-none tracking-tight mb-2 px-4">
+              {restaurant}
+            </h1>
+            {restaurantItems.map((info, index) => (
+              <MenuItemCard
+                info={info}
+                withSeparator={index < restaurantItems.length - 1}
+              />
+            ))}
+            <Separator className="h-[5px] bg-slate-100" />
+          </>
+        ))}
+      </div>
     </>
   );
 }
