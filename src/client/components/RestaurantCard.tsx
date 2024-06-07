@@ -67,9 +67,9 @@ const RestaurantCard = ({ info }: RestaurantCardProps) => {
         const hour = new Date().getHours();
         const { averageQueue, averageWait } =
           WaitTimes.hasOwnProperty(name) && WaitTimes[name].hasOwnProperty(hour)
-            ? WaitTimes.name[hour]
+            ? WaitTimes[name][hour]
             : { averageQueue: 1, averageWait: 10 };
-        setWaitTime(averageWait * (amount / averageQueue));
+        setWaitTime(Math.round(averageWait * (amount / averageQueue)));
       }
     });
   }, []);
