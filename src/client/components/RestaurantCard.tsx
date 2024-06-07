@@ -18,7 +18,6 @@ import {
   startAt,
 } from "firebase/database";
 import { database } from "../firebase";
-import { average } from "firebase/firestore";
 
 interface RestaurantCardProps {
   info: RestaurantInfo;
@@ -109,8 +108,8 @@ const RestaurantCard = ({ info }: RestaurantCardProps) => {
       state={{ info }}
       style={{ textDecoration: "none", color: "black" }}
     >
-      <Card className="border-none shadow-none">
-        <CardHeader className="p-4">
+      <Card className="border-none shadow-none pt-4">
+        <CardHeader className="px-4 py-0 mb-2">
           <div className="w-full overflow-hidden">
             <AspectRatio ratio={20 / 9}>
               <div className="transition w-full h-full rounded-md opacity-0 hover:opacity-30 bg-black absolute " />
@@ -122,11 +121,11 @@ const RestaurantCard = ({ info }: RestaurantCardProps) => {
             </AspectRatio>
           </div>
         </CardHeader>
-        <CardContent className="px-4">
+        <CardContent className="px-4 py-0">
           <div>
             <div className="flex items-center gap-x-1 justify-between">
               <div className="flex items-center gap-x-2">
-                <h1 className="font-bold text-xl">{name}</h1>
+                <h1 className="font-bold text-lg">{name}</h1>
                 <div className="flex items-center gap-x-1">
                   {vegetarian && (
                     <Badge className="bg-green-700 px-1.5 py-0.25">V</Badge>
@@ -142,7 +141,7 @@ const RestaurantCard = ({ info }: RestaurantCardProps) => {
                   )}
                 </div>
               </div>
-              <h2 className="font-medium text-xl text-right">
+              <h2 className="font-medium text-lg text-right">
                 {waitTime} mins
               </h2>
             </div>
@@ -153,9 +152,9 @@ const RestaurantCard = ({ info }: RestaurantCardProps) => {
                     <IconMapPinFilled className="h-4 w-4" />
                   </div>
                 </div>
-                <p className="font-light">{location}</p>
+                <p className="font-light text-sm">{location}</p>
               </div>
-              <p className="font-light text-right">estimated wait</p>
+              <p className="font-light text-right text-sm">estimated wait</p>
             </div>
           </div>
         </CardContent>
