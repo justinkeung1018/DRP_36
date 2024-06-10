@@ -83,6 +83,19 @@ export function Items({ mode }: ItemsProps) {
     const unsubscribe = onValue(restaurantRef, (snapshot) => {
       const data = snapshot.val();
       if (data != null) {
+        for (const category in data) {
+          for (const item in data[category]) {
+            if (
+              (mode === "staff" &&
+                Date.now() - 86400000 > data[category][item].timestamp) ||
+              (mode === "archive" &&
+                (data[category][item].timestamp === undefined ||
+                  Date.now() - 86400000 <= data[category][item].timestamp))
+            ) {
+              delete data[category][item];
+            }
+          }
+        }
         setItems(data);
       }
     });
@@ -90,7 +103,7 @@ export function Items({ mode }: ItemsProps) {
     return () => {
       unsubscribe();
     };
-  }, [name]);
+  }, [name, mode]);
 
   return (
     <div className="main-content">

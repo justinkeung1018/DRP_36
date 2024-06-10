@@ -87,7 +87,7 @@ function ItemInformationForm({
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: item
-      ? item
+      ? { ...item, duration: item.timestamp ? "Daily" : "Permanent" }
       : {
           name: "",
           dietaryRequirements: [],
@@ -311,7 +311,7 @@ function ItemInformationForm({
             className="grid grid-cols-2 gap-1"
             type="single"
             defaultValue={
-              item && item.timestamp != undefined ? "Daily" : "Permanent"
+              item && item.timestamp !== undefined ? "Daily" : "Permanent"
             }
             onValueChange={(duration) => {
               form.setValue("duration", duration);
