@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { getAuth } from "firebase/auth";
 import { database } from "../../firebase";
-import { get, ref } from "firebase/database";
+import { get, onValue, ref } from "firebase/database";
 
 import { Separator } from "../../components/shadcn/Separator";
 import { MenuItemCard } from "../../components/MenuItemCard";
@@ -34,7 +34,7 @@ function Favourites() {
     }
     const uid = user.uid;
     const favouritesRef = ref(database, `Users/${uid}/Favourites`);
-    get(favouritesRef).then((snapshot) => {
+    const unsubscribe = onValue(favouritesRef, (snapshot) => {
       if (snapshot.exists()) {
         const data = snapshot.val();
         const favouritedItemsPromises = Object.values<{
@@ -66,6 +66,10 @@ function Favourites() {
         setItems(groupItemsByRestaurant([]));
       }
     });
+
+    return () => {
+      unsubscribe();
+    };
   }, []);
 
   return (

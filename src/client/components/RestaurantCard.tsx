@@ -10,6 +10,7 @@ import { MenuItemInfoNoKey, RestaurantInfo } from "../types";
 import {
   get,
   limitToLast,
+  onValue,
   orderByChild,
   orderByKey,
   query,
@@ -61,7 +62,7 @@ const RestaurantCard = ({ info }: RestaurantCardProps) => {
       orderByChild("time"),
       startAt(Date.now() - 300000),
     );
-    get(recentQuery).then((snapshot) => {
+    const unsubcribe = onValue(recentQuery, (snapshot) => {
       if (snapshot.exists()) {
         const amount = Object.keys(snapshot.val() ?? {}).length;
         const hour = new Date().getHours();
@@ -72,6 +73,10 @@ const RestaurantCard = ({ info }: RestaurantCardProps) => {
         setWaitTime(Math.round(averageWait * (amount / averageQueue)));
       }
     });
+
+    return () => {
+      unsubcribe();
+    };
   }, []);
 
   const [vegetarian, setVegetarian] = useState(false);
