@@ -158,37 +158,38 @@ function ItemInformationForm({
       }
 
       if (image.name !== "Original Image") {
-      uploadBytes(imageRef, image as File).then((snapshot) => {
-        getDownloadURL(snapshot.ref).then((url) => {
-          set(newItemRef, {
-            name: newname,
-            price,
-            quantity: initialQuantity,
-            image: url,
-            gf: dietaryRequirements?.includes("gluten-free"),
-            nf: dietaryRequirements?.includes("nut-free"),
-            v: dietaryRequirements?.includes("vegetarian"),
-            vg: dietaryRequirements?.includes("vegan"),
-            timestamp: duration === "Daily" ? Date.now() : null,
-          }).then(() => {
-            if (onSubmissionComplete) {
-              onSubmissionComplete();
-            }
-            if (resetAfterSubmission) {
-              form.reset();
+        uploadBytes(imageRef, image as File).then((snapshot) => {
+          getDownloadURL(snapshot.ref).then((url) => {
+            set(newItemRef, {
+              name: newname,
+              price,
+              quantity: initialQuantity,
+              image: url,
+              gf: dietaryRequirements?.includes("gluten-free"),
+              nf: dietaryRequirements?.includes("nut-free"),
+              v: dietaryRequirements?.includes("vegetarian"),
+              vg: dietaryRequirements?.includes("vegan"),
+              timestamp: duration === "Daily" ? Date.now() : null,
+            }).then(() => {
+              if (onSubmissionComplete) {
+                onSubmissionComplete();
+              }
+              if (resetAfterSubmission) {
+                form.reset();
 
-              // Ideally we do not need to do the following but react-hook-form will not clear
-              // the price and initialQuantity fields because we need to supply default values
-              // but it is an absolute pain in the ass to make them nullable in zod and work well
-              // with react-hook-form
-              (
-                document.getElementById("item-info-form") as HTMLFormElement
-              ).reset();
-            }
-            setSubmitting(false);
+                // Ideally we do not need to do the following but react-hook-form will not clear
+                // the price and initialQuantity fields because we need to supply default values
+                // but it is an absolute pain in the ass to make them nullable in zod and work well
+                // with react-hook-form
+                (
+                  document.getElementById("item-info-form") as HTMLFormElement
+                ).reset();
+              }
+              setSubmitting(false);
+            });
           });
         });
-      });} else {
+      } else {
         set(newItemRef, {
           name: newname,
           price,
@@ -226,17 +227,19 @@ function ItemInformationForm({
 
   useEffect(() => {
     if (original_image) {
-      const tmp_file = document.getElementById("image-input") as HTMLInputElement;
+      const tmp_file = document.getElementById(
+        "image-input",
+      ) as HTMLInputElement;
       const file = new File([""], "Original Image");
       const dataTransfer = new DataTransfer();
       dataTransfer.items.add(file);
       if (fileInputRef.current) {
         fileInputRef.current.files = dataTransfer.files;
-        const event = new Event('change', { bubbles: true });
+        const event = new Event("change", { bubbles: true });
         fileInputRef.current.dispatchEvent(event);
       }
     }
-  }, [])
+  }, []);
 
   return (
     <Form {...form}>

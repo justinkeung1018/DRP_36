@@ -321,16 +321,19 @@ function MenuItemCard({
       ? parseMenuName(name).description.split("with")[1].trimStart()
       : parseMenuName(name).description;
 
-    return {item: {
-      id: key,
-      name: parseMenuName(name).name,
-      price,
-      category: category,
-      initialQuantity: quantity <= 0 ? 0 : quantity,
-      dietaryRequirements,
-      description,
-      timestamp,
-    }, image};
+    return {
+      item: {
+        id: key,
+        name: parseMenuName(name).name,
+        price,
+        category: category,
+        initialQuantity: quantity <= 0 ? 0 : quantity,
+        dietaryRequirements,
+        description,
+        timestamp,
+      },
+      image,
+    };
   }
 
   return (
