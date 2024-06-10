@@ -63,19 +63,26 @@ interface MenuItem {
   timestamp?: number;
 }
 
-interface ItemFormProps {
+interface MenuItemImage {
   item?: MenuItem;
+  image?: string;
+}
+
+interface ItemFormProps {
+  itemImage?: MenuItemImage;
   onSubmissionComplete?: () => void;
   resetAfterSubmission?: boolean;
 }
 
 function ItemInformationForm({
-  item,
+  itemImage,
   onSubmissionComplete,
   resetAfterSubmission,
 }: ItemFormProps) {
   const [isSubmitting, setSubmitting] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const item = itemImage?.item;
+  const original_image = itemImage?.image;
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -150,6 +157,7 @@ function ItemInformationForm({
         fileInputRef.current.value = "";
       }
 
+      if (image.name !== "Original Image") {
       uploadBytes(imageRef, image as File).then((snapshot) => {
         getDownloadURL(snapshot.ref).then((url) => {
           set(newItemRef, {
@@ -180,13 +188,55 @@ function ItemInformationForm({
             setSubmitting(false);
           });
         });
-      });
+      });} else {
+        set(newItemRef, {
+          name: newname,
+          price,
+          quantity: initialQuantity,
+          image: original_image,
+          gf: dietaryRequirements?.includes("gluten-free"),
+          nf: dietaryRequirements?.includes("nut-free"),
+          v: dietaryRequirements?.includes("vegetarian"),
+          vg: dietaryRequirements?.includes("vegan"),
+          timestamp: duration === "Daily" ? Date.now() : null,
+        }).then(() => {
+          if (onSubmissionComplete) {
+            onSubmissionComplete();
+          }
+          if (resetAfterSubmission) {
+            form.reset();
+
+            // Ideally we do not need to do the following but react-hook-form will not clear
+            // the price and initialQuantity fields because we need to supply default values
+            // but it is an absolute pain in the ass to make them nullable in zod and work well
+            // with react-hook-form
+            (
+              document.getElementById("item-info-form") as HTMLFormElement
+            ).reset();
+          }
+          setSubmitting(false);
+        });
+      }
     }
   }
 
   function onInvalid(errors: object) {
     console.error(errors);
   }
+
+  useEffect(() => {
+    if (original_image) {
+      const tmp_file = document.getElementById("image-input") as HTMLInputElement;
+      const file = new File([""], "Original Image");
+      const dataTransfer = new DataTransfer();
+      dataTransfer.items.add(file);
+      if (fileInputRef.current) {
+        fileInputRef.current.files = dataTransfer.files;
+        const event = new Event('change', { bubbles: true });
+        fileInputRef.current.dispatchEvent(event);
+      }
+    }
+  }, [])
 
   return (
     <Form {...form}>
@@ -322,6 +372,7 @@ function ItemInformationForm({
               <FormControl>
                 <Input
                   type="file"
+                  id="image-input"
                   accept="image/x-png,image/jpeg,image/gif"
                   ref={fileInputRef}
                   onChange={(e) => {

@@ -321,7 +321,7 @@ function MenuItemCard({
       ? parseMenuName(name).description.split("with")[1].trimStart()
       : parseMenuName(name).description;
 
-    return {
+    return {item: {
       id: key,
       name: parseMenuName(name).name,
       price,
@@ -330,7 +330,7 @@ function MenuItemCard({
       dietaryRequirements,
       description,
       timestamp,
-    };
+    }, image};
   }
 
   return (
@@ -425,7 +425,7 @@ function MenuItemCard({
                   <DialogTitle>Edit food item</DialogTitle>
                 </DialogHeader>
                 <ItemInformationForm
-                  item={getItem()}
+                  itemImage={getItem()}
                   onSubmissionComplete={() => {
                     setOpen(false);
                   }}
@@ -450,7 +450,7 @@ function MenuItemCard({
                   <DialogTitle>Add food item</DialogTitle>
                 </DialogHeader>
                 <ItemInformationForm
-                  item={getItem()}
+                  itemImage={getItem()}
                   onSubmissionComplete={() => {
                     setOpen(false);
                   }}
