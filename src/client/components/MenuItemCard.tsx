@@ -399,7 +399,7 @@ function MenuItemCard({
           <div className="flex items-center justify-center gap-x-2 mt-2">
             <Button
               variant="outline"
-              className="px-4 rounded-full drop-shadow"
+              className="px-4 rounded-full drop-shadow disabled:drop-shadow-none"
               onClick={soldOut}
               disabled={currentQuantity <= -1000000}
             >
