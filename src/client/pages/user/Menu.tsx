@@ -135,7 +135,7 @@ const Restaurant = () => {
               <TabsContent
                 key={category}
                 value={category}
-                className="space-y-4 overflow-auto text-center font-bold text-l"
+                className="space-y-4 overflow-auto text-center font-normal text-lg"
               >
                 No Items
               </TabsContent>

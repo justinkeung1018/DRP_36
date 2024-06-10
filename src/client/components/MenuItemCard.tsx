@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { IoHeartOutline, IoHeartSharp } from "react-icons/io5";
-import { CirclePlus } from "lucide-react";
 import {
   equalTo,
   get,
