@@ -1,11 +1,14 @@
 import { useState } from "react";
-import { Route, Routes, BrowserRouter, Navigation } from "react-router-dom";
-import RestaurantList from "./pages/user/RestaurantList";
-import Items from "./pages/staff/Items";
-import { Restaurant } from "./pages/user/Menu";
+import { Route, Routes, BrowserRouter } from "react-router-dom";
+
+import { Archive } from "./pages/staff/Archive";
+import { StaffMenu } from "./pages/staff/StaffMenu";
+
 import Account from "./pages/user/Account";
 import { Favourites } from "./pages/user/Favourites";
 import { LocationDialog } from "./pages/user/LocationDialog";
+import { Restaurant } from "./pages/user/Menu";
+import RestaurantList from "./pages/user/RestaurantList";
 
 // TODO: clean up CSS
 import "./styles/App.css";
@@ -63,7 +66,8 @@ export const App = () => {
         <Route path="login" element={<Login />} />
         <Route path="restaurants" element={<RestaurantList />} />
         <Route path="restaurant" element={<Restaurant />} />
-        <Route path="items" element={<Items />} />
+        <Route path="items" element={<StaffMenu />} />
+        <Route path="archive" element={<Archive />} />
         <Route path="account" element={<Account />} />
         <Route path="favourites" element={<Favourites />} />
       </Routes>

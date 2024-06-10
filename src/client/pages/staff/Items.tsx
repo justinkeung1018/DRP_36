@@ -28,9 +28,10 @@ import { MenuItemCard } from "../../components/MenuItemCard";
 
 interface StaffHeaderProps {
   restaurantName: string;
+  mode: "staff" | "archive";
 }
 
-function StaffHeader({ restaurantName }: StaffHeaderProps) {
+function StaffHeader({ restaurantName, mode }: StaffHeaderProps) {
   return (
     <>
       <div className="flex flex-col items-center justify-center mb-4 mt-10">
@@ -38,14 +39,20 @@ function StaffHeader({ restaurantName }: StaffHeaderProps) {
         <h2 className="text-lg font-light">Staff page</h2>
       </div>
       <Separator className="mb-2" />
-      <h1 className="text-xl text-center font-bold mx-4 py-2">Menu</h1>
+      <h1 className="text-xl text-center font-bold mx-4 py-2">
+        {mode === "staff" ? "Today's menu" : "Past items"}
+      </h1>
     </>
   );
 }
 
-export default function Items() {
+interface ItemsProps {
+  mode: "staff" | "archive";
+}
+
+export function Items({ mode }: ItemsProps) {
   const [name, setName] = useState("SCR Restaurant");
-  const [open, setOpen] = useState(false); // To control the add item form
+
   const user = getAuth().currentUser;
   if (!user) {
     console.error("User not signed in!");
@@ -87,7 +94,7 @@ export default function Items() {
 
   return (
     <div className="main-content">
-      <StaffHeader restaurantName={name} />
+      <StaffHeader restaurantName={name} mode={mode} />
       <Tabs defaultValue="Food">
         <div className="flex items-center justify-center mb-2">
           <TabsList>
@@ -139,7 +146,7 @@ export default function Items() {
                       return (
                         <MenuItemCard
                           info={{ ...item, category, key, restaurant: name }}
-                          isStaff
+                          mode={mode}
                         />
                       );
                     }
@@ -149,27 +156,29 @@ export default function Items() {
               </TabsContent>
             ))}
       </Tabs>
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogTrigger>
-          <Button
-            variant="outline"
-            className="fixed bottom-20 right-10 shadow-md font-bold h-fit"
-          >
-            <div className="flex flex-col items-center">
-              <div>
-                <IoAddOutline size={30} />
+      {mode === "staff" && (
+        <Dialog>
+          <DialogTrigger>
+            <Button
+              variant="outline"
+              className="fixed bottom-20 right-10 shadow-md font-bold h-fit"
+            >
+              <div className="flex flex-col items-center">
+                <div>
+                  <IoAddOutline size={30} />
+                </div>
+                <div>Add item</div>
               </div>
-              <div>Add item</div>
-            </div>
-          </Button>
-        </DialogTrigger>
-        <DialogContent className="rounded-lg max-w-[90dvw] max-h-[85dvh] overflow-auto">
-          <DialogHeader>
-            <DialogTitle>Add food item</DialogTitle>
-          </DialogHeader>
-          <ItemInformationForm resetAfterSubmission />
-        </DialogContent>
-      </Dialog>
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="rounded-lg max-w-[90dvw] max-h-[85dvh] overflow-auto">
+            <DialogHeader>
+              <DialogTitle>Add food item</DialogTitle>
+            </DialogHeader>
+            <ItemInformationForm resetAfterSubmission />
+          </DialogContent>
+        </Dialog>
+      )}
     </div>
   );
 }

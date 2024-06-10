@@ -57,6 +57,7 @@ function addFavourite(info: MenuItemInfo) {
       console.error("Error adding favourite item: ", error);
     });
 }
+
 function removeFavourite(info: MenuItemInfo) {
   const user = getAuth().currentUser;
   if (!user) {
@@ -157,13 +158,13 @@ function FavouriteIcon({ size, info }: FavouriteIconProps) {
 
 interface MenuItemCardProps {
   info: MenuItemInfo;
-  isStaff?: boolean;
+  mode: "user" | "staff" | "archive";
   withSeparator?: boolean;
 }
 
 function MenuItemCard({
   info,
-  isStaff,
+  mode = "user",
   withSeparator = true,
 }: MenuItemCardProps) {
   const {
@@ -358,15 +359,17 @@ function MenuItemCard({
                   {nf && (
                     <Badge className="bg-fuchsia-700 px-1.5 py-0.25">NF</Badge>
                   )}
-                  <Badge variant="outline" className={availabilityColour}>
-                    {status}
-                  </Badge>
+                  {mode !== "archive" && (
+                    <Badge variant="outline" className={availabilityColour}>
+                      {status}
+                    </Badge>
+                  )}
                 </div>
               </div>
               <div className="text-gray-500 font-light leading-tight">
                 {description}
               </div>
-              {!isStaff && (
+              {mode === "user" && (
                 <div className="flex items-center justify-left gap-x-2 mt-2">
                   <Button
                     variant="outline"
@@ -392,7 +395,7 @@ function MenuItemCard({
             </AspectRatio>
           </div>
         </div>
-        {isStaff && (
+        {mode === "staff" && (
           <div className="flex items-center justify-center gap-x-2 mt-2">
             <Button
               variant="outline"
@@ -421,6 +424,31 @@ function MenuItemCard({
               <DialogContent className="rounded-lg max-w-[90dvw] max-h-[85dvh] overflow-auto">
                 <DialogHeader>
                   <DialogTitle>Edit food item</DialogTitle>
+                </DialogHeader>
+                <ItemInformationForm
+                  item={getItem()}
+                  onSubmissionComplete={() => {
+                    setOpen(false);
+                  }}
+                />
+              </DialogContent>
+            </Dialog>
+          </div>
+        )}
+        {mode === "archive" && (
+          <div className="flex items-center justify-center mt-2">
+            <Dialog open={open} onOpenChange={setOpen}>
+              <DialogTrigger>
+                <Button
+                  variant="outline"
+                  className="px-4 rounded-full drop-shadow"
+                >
+                  Add item
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="rounded-lg max-w-[90dvw] max-h-[85dvh] overflow-auto">
+                <DialogHeader>
+                  <DialogTitle>Add food item</DialogTitle>
                 </DialogHeader>
                 <ItemInformationForm
                   item={getItem()}

@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { IoRestaurantSharp } from "react-icons/io5";
 import { MdAccountCircle } from "react-icons/md";
+import { Clock } from "lucide-react";
 
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "./shadcn/Tabs";
 
@@ -19,6 +20,9 @@ const NavStaff = () => {
         break;
       case "account":
         navigate("/account");
+        break;
+      case "archive":
+        navigate("/archive");
         break;
     }
   }
@@ -50,7 +54,15 @@ const NavStaff = () => {
             <div>
               <IoRestaurantSharp size={30} />
             </div>
-            Items
+            Current menu
+          </div>
+        </TabsTrigger>
+        <TabsTrigger value="archive" className="flex-1">
+          <div className="flex flex-col items-center justify-center">
+            <div>
+              <Clock size={30} />
+            </div>
+            Past items
           </div>
         </TabsTrigger>
         <TabsTrigger value="account" className="flex-1">
@@ -63,6 +75,7 @@ const NavStaff = () => {
         </TabsTrigger>
       </TabsList>
       <TabsContent value="items" />
+      <TabsContent value="archive" />
       <TabsContent value="account" />
     </Tabs>
   );
