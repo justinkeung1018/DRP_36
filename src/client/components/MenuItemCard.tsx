@@ -32,7 +32,7 @@ import {
 } from "./shadcn/Dialog";
 import { Separator } from "./shadcn/Separator";
 
-import { MenuItemInfo } from "../types";
+import { MenuItemInfo, MenuItemInfoNoKey } from "../types";
 import { ItemInformationForm } from "./ItemInformationForm";
 
 function addFavourite(info: MenuItemInfo) {
@@ -158,7 +158,7 @@ function FavouriteIcon({ size, info }: FavouriteIconProps) {
 
 interface MenuItemCardProps {
   info: MenuItemInfo;
-  mode: "user" | "staff" | "archive";
+  mode?: "user" | "staff" | "archive";
   withSeparator?: boolean;
 }
 
@@ -466,4 +466,31 @@ function MenuItemCard({
   );
 }
 
-export { MenuItemCard };
+function getRelevantMenuItemCards(
+  items: Record<string, MenuItemInfoNoKey>,
+  userInput: string,
+  category: string,
+  restaurant: string,
+  mode: "user" | "staff" | "archive",
+) {
+  const relevantMenuItems = Object.entries(items).filter(([_, item]) =>
+    item.name.toLowerCase().replace(/\s+/g, "").includes(userInput),
+  );
+
+  if (relevantMenuItems.length === 0) {
+    return <h1 className="text-center font-normal text-lg">No items</h1>;
+  }
+
+  return relevantMenuItems.map(([key, item]) => {
+    if (item.name.toLowerCase().replace(/\s+/g, "").includes(userInput)) {
+      return (
+        <MenuItemCard
+          info={{ ...item, category, key, restaurant }}
+          mode={mode}
+        />
+      );
+    }
+  });
+}
+
+export { MenuItemCard, getRelevantMenuItemCards };

@@ -24,7 +24,7 @@ import {
 
 import { MenuItemInfo } from "../../types";
 import { ItemInformationForm } from "../../components/ItemInformationForm";
-import { MenuItemCard } from "../../components/MenuItemCard";
+import { getRelevantMenuItemCards } from "../../components/MenuItemCard";
 
 interface StaffHeaderProps {
   restaurantName: string;
@@ -135,22 +135,12 @@ export function Items({ mode }: ItemsProps) {
                 value={category}
                 className="space-y-4 overflow-auto"
               >
-                {Object.entries(items).map(
-                  ([key, item]: [string, MenuItemInfo]) => {
-                    if (
-                      item.name
-                        .toLowerCase()
-                        .replace(/\s+/g, "")
-                        .includes(userInput)
-                    ) {
-                      return (
-                        <MenuItemCard
-                          info={{ ...item, category, key, restaurant: name }}
-                          mode={mode}
-                        />
-                      );
-                    }
-                  },
+                {getRelevantMenuItemCards(
+                  items,
+                  userInput,
+                  category,
+                  name,
+                  mode,
                 )}
                 <div className="h-10" />
               </TabsContent>
