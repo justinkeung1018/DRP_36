@@ -42,7 +42,6 @@ function RestaurantHeader({ info }: { info: RestaurantInfo }) {
   );
 }
 
-
 type Item = {
   likes?: number; // "likes" is optional
   [key: string]: any; // Other fields of any type are allowed
@@ -52,14 +51,13 @@ type Category = {
   [key: string]: Item;
 };
 
-
 function sortByLikesDescending(obj: any): any {
   // Helper function to sort a single category (Food or Drink)
   function sortCategory(category: Category): any {
     return Object.fromEntries(
-      Object.entries(category).sort(([, a], [, b]) =>
-        (b.likes || 0) - (a.likes || 0)
-      )
+      Object.entries(category).sort(
+        ([, a], [, b]) => (b.likes || 0) - (a.likes || 0),
+      ),
     );
   }
 
@@ -68,9 +66,6 @@ function sortByLikesDescending(obj: any): any {
     Drink: sortCategory(obj.Drink),
   };
 }
-
-
-
 
 const Restaurant = () => {
   const location = useLocation();
