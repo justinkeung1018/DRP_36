@@ -128,7 +128,7 @@ export function Items({ mode }: ItemsProps) {
           />
         </div>
         {Object.keys(items).length === 0
-          ? ["Drink", "Food"].map((category) => (
+          ? ["Food", "Drink"].map((category) => (
               <TabsContent
                 key={category}
                 value={category}
