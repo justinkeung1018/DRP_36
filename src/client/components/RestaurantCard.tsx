@@ -108,16 +108,16 @@ const RestaurantCard = ({ info }: RestaurantCardProps) => {
   }, []);
 
   return (
-    <Link
-      to="/restaurant"
-      state={{ info }}
-      style={{ textDecoration: "none", color: "black" }}
-    >
-      <Card className="border-none shadow-none pt-4">
+    <Card className="border-none shadow-none pt-4 md:w-1/2 md:border-solid md:shadow-sm md:pb-4 md:mb-8">
+      <Link
+        to="/restaurant"
+        state={{ info }}
+        style={{ textDecoration: "none", color: "black" }}
+      >
         <CardHeader className="px-4 py-0 mb-2">
           <div className="w-full overflow-hidden">
             <AspectRatio ratio={20 / 9}>
-              <div className="transition w-full h-full rounded-md opacity-0 hover:opacity-30 bg-black absolute " />
+              <div className="transition w-full h-full rounded-md opacity-0 hover:opacity-30 bg-black absolute md:hidden" />
               <img
                 src={img}
                 alt="Food"
@@ -163,8 +163,8 @@ const RestaurantCard = ({ info }: RestaurantCardProps) => {
             </div>
           </div>
         </CardContent>
-      </Card>
-    </Link>
+      </Link>
+    </Card>
   );
 };
 
