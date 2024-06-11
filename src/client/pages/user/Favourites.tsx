@@ -74,10 +74,12 @@ function Favourites() {
 
   return (
     <div className="main-content">
-      <div className="px-10">
-        <div className="flex flex-col items-center justify-center mb-4 mt-10">
-          <h1 className="text-2xl font-bold">Your Favourites</h1>
-        </div>
+      <div className="px-10 pb-4 pt-4 bg-blue-100 flex items-center justify-center gap-x-2">
+        <img
+          src="./images/sprites/hearts.png"
+          className="object-contain h-10"
+        />
+        <h1 className="text-xl font-bold pt-3">Your Favourite Bites</h1>
       </div>
       <Separator className="mb-8" />
       <div className="space-y-4">
