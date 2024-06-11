@@ -1,5 +1,4 @@
 import RestaurantCard from "../../components/RestaurantCard";
-import { ScrollArea } from "../../components/shadcn/ScrollArea";
 
 import { restaurants } from "../../data";
 
