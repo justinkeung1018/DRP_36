@@ -43,7 +43,10 @@ function addFavourite(info: MenuItemInfo) {
   const uid = user.uid;
   const favouritesRef = ref(database, `Users/${uid}/Favourites`);
   const favouritesListRef = push(favouritesRef);
-  const itemRef = ref(database, `${info.restaurant}/${info.category}/${info.key}`)
+  const itemRef = ref(
+    database,
+    `${info.restaurant}/${info.category}/${info.key}`,
+  );
 
   set(favouritesListRef, {
     key: info.key,
@@ -51,13 +54,13 @@ function addFavourite(info: MenuItemInfo) {
     restaurant: info.restaurant,
   })
     .then(() => {
-      update(itemRef, {"likes": increment(1)})
+      update(itemRef, { likes: increment(1) })
         .then(() => {
           console.log("Favourite item added successfully.");
         })
         .catch((err) => {
           console.error("Error adding favourite item: ", err);
-        })
+        });
     })
     .catch((error) => {
       console.error("Error adding favourite item: ", error);
@@ -80,18 +83,21 @@ function removeFavourite(info: MenuItemInfo) {
       if (snapshot.exists()) {
         const entryKey = Object.keys(snapshot.val())[0]; // Get the key of the single entry
         const entryRef = ref(database, `Users/${uid}/Favourites/${entryKey}`); // Reference to the specific entry
-        const itemRef = ref(database, `${info.restaurant}/${info.category}/${info.key}`)
+        const itemRef = ref(
+          database,
+          `${info.restaurant}/${info.category}/${info.key}`,
+        );
 
         // Perform the delete operation
         set(entryRef, null)
           .then(() => {
-            update(itemRef, {"likes": increment(-1)})
-            .then(() => {
-              console.log("Item has been removed.");
-            })
-            .catch((err) => {
-              console.error("Error removing entry: ", err);
-            })
+            update(itemRef, { likes: increment(-1) })
+              .then(() => {
+                console.log("Item has been removed.");
+              })
+              .catch((err) => {
+                console.error("Error removing entry: ", err);
+              });
           })
           .catch((error) => {
             console.error("Error removing entry: ", error);

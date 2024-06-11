@@ -73,7 +73,7 @@ function Favourites() {
   }, []);
 
   return (
-    <>
+    <div className="main-content">
       <div className="px-10">
         <div className="flex flex-col items-center justify-center mb-4 mt-10">
           <h1 className="text-2xl font-bold">Your Favourites</h1>
@@ -84,7 +84,7 @@ function Favourites() {
         {Object.entries(items).length === 0 ? (
           <h1 className="text-center text-xl font-normal">No Items</h1>
         ) : (
-          Object.entries(items).map(([restaurant, restaurantItems]) => (
+          Object.entries(items).map(([restaurant, restaurantItems], index) => (
             <>
               <h1 className="text-2xl font-semibold leading-none tracking-tight mb-2 px-4">
                 {restaurant}
@@ -95,12 +95,14 @@ function Favourites() {
                   withSeparator={index < restaurantItems.length - 1}
                 />
               ))}
-              <Separator className="h-[5px] bg-slate-100" />
+              {index < Object.entries(items).length - 1 && (
+                <Separator className="h-[5px] bg-slate-100" />
+              )}
             </>
           ))
         )}
       </div>
-    </>
+    </div>
   );
 }
 
