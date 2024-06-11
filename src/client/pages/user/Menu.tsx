@@ -64,8 +64,8 @@ function sortByLikesDescending(obj: any): any {
   return obj === null
     ? null
     : {
-        Food: sortCategory(obj.Food),
         Drink: sortCategory(obj.Drink),
+        Food: sortCategory(obj.Food),
       };
 }
 
