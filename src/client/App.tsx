@@ -20,11 +20,12 @@ import "firebase/compat/firestore";
 import Login from "./pages/Login";
 
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { onValue, ref } from "firebase/database";
 import NavStaff from "./components/NavStaff";
 import NavUser from "./components/NavUser";
+import { AnimatePresence } from "framer-motion";
 
 const Home = (props: any) => {
   const navigate = useNavigate();

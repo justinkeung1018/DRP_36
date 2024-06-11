@@ -34,6 +34,8 @@ import { Separator } from "./shadcn/Separator";
 import { MenuItemInfo, MenuItemInfoNoKey } from "../types";
 import { ItemInformationForm } from "./ItemInformationForm";
 
+import { AnimatePresence, motion } from "framer-motion";
+
 function addFavourite(info: MenuItemInfo) {
   const user = getAuth().currentUser;
   if (!user) {
@@ -155,23 +157,32 @@ function FavouriteIcon({ size, info }: FavouriteIconProps) {
       });
   }, [info.key]);
 
-  return favourite ? (
-    <IoHeartSharp
-      size={size}
-      color="red"
-      onClick={() => {
-        setFavourite(false);
-        removeFavourite(info);
-      }}
-    />
-  ) : (
-    <IoHeartOutline
-      size={size}
-      onClick={() => {
-        setFavourite(true);
-        addFavourite(info);
-      }}
-    />
+  return (
+    <AnimatePresence>
+      <motion.div
+        whileTap={{ scale: 5 }}
+        transition={{ type: "spring", stiffness: 400, damping: 17 }}
+      >
+        {favourite ? (
+          <IoHeartSharp
+            size={size}
+            color="red"
+            onClick={() => {
+              setFavourite(false);
+              removeFavourite(info);
+            }}
+          />
+        ) : (
+          <IoHeartOutline
+            size={size}
+            onClick={() => {
+              setFavourite(true);
+              addFavourite(info);
+            }}
+          />
+        )}
+      </motion.div>
+    </AnimatePresence>
   );
 }
 
