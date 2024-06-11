@@ -25,7 +25,7 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { onValue, ref } from "firebase/database";
 import NavStaff from "./components/NavStaff";
 import NavUser from "./components/NavUser";
-import { AnimatePresence } from "framer-motion";
+import { Toaster } from "./components/shadcn/Toaster";
 
 const Home = (props: any) => {
   const navigate = useNavigate();
@@ -82,6 +82,7 @@ export const App = () => {
           <NavUser />
         </>
       )}
+      <Toaster />
     </BrowserRouter>
   );
 };

@@ -30,6 +30,7 @@ import {
   DialogTrigger,
 } from "./shadcn/Dialog";
 import { Separator } from "./shadcn/Separator";
+import { useToast, ToastFunction } from "./shadcn/use-toast";
 
 import { MenuItemInfo, MenuItemInfoNoKey } from "../types";
 import { ItemInformationForm } from "./ItemInformationForm";
@@ -124,10 +125,97 @@ function parseMenuName(name: string) {
       splitOnLeftParenthesis[0],
       ...splitOnLeftParenthesis[1].split(")"),
     ];
-    return { name: mainName, description: rest.join(" ") };
+    return { name: mainName.trim(), description: rest.join(" ") };
   }
   const [mainName, description] = splitOnWith;
-  return { name: mainName, description: "with " + description };
+  return { name: mainName.trim(), description: "with " + description };
+}
+
+function buyItem(info: MenuItemInfo, toast: ToastFunction) {
+  const { restaurant, category, key, name } = info;
+  const { name: mainName } = parseMenuName(name);
+
+  const user = getAuth().currentUser;
+  if (!user) {
+    console.error("User not signed in!");
+    return;
+  }
+  const uid = user.uid;
+  const userRef = ref(database, `Users/${uid}/Recents`);
+
+  let init = true;
+
+  onValue(userRef, (snapshot) => {
+    if (init) {
+      init = false;
+      if (snapshot.val() === null) {
+        set(userRef, {
+          item1: Timestamp.fromDate(new Date("1970-01-01")),
+          item2: Timestamp.fromDate(new Date("1970-01-01")),
+          item3: Timestamp.fromDate(new Date("1970-01-01")),
+          item4: Timestamp.fromDate(new Date("1970-01-01")),
+          item5: Timestamp.fromDate(new Date("1970-01-01")),
+        })
+          .then(() => {
+            replaceItem("item1");
+          })
+          .catch((error) => {
+            console.error("List init failed: ", error);
+          });
+      } else {
+        let itemToChange = null;
+
+        snapshot.forEach((child) => {
+          const date = new Date();
+          let timePassed =
+            date.getTime() -
+            (child.val().seconds * 1000 + child.val().nanoseconds / 1000000);
+          if (timePassed > 1800000) {
+            itemToChange = child.key;
+          }
+        });
+
+        replaceItem(itemToChange);
+      }
+    }
+  });
+
+  function replaceItem(itemToChange: string | null) {
+    if (itemToChange) {
+      toast({ title: `You bought ${mainName}.` });
+      let updates: { [key: string]: Timestamp } = {};
+      updates[itemToChange] = Timestamp.fromDate(new Date());
+      update(userRef, updates).then(() => {
+        const dbRef = ref(database, `${restaurant}/${category}/${key}`);
+        update(dbRef, {
+          quantity: increment(-1),
+        });
+      });
+    } else {
+      toast({ title: "Limit reached. You can only buy 5 items in 30 mins." });
+    }
+  }
+}
+
+function deleteItem(info: MenuItemInfo, toast: ToastFunction) {
+  const { restaurant, category, key, name } = info;
+  const { name: mainName } = parseMenuName(name);
+  const dbRef = ref(database, `${restaurant}/${category}/${key}`);
+  remove(dbRef).then(() => toast({ title: `Deleted ${mainName} from menu.` }));
+}
+
+function soldOut(
+  info: MenuItemInfo,
+  setCurrentQuantity: (quantity: number) => void,
+  toast: ToastFunction,
+) {
+  const { restaurant, category, key, name } = info;
+  const { name: mainName } = parseMenuName(name);
+  const dbRef = ref(database, `${restaurant}/${category}/${key}/quantity`);
+  set(dbRef, -1000000).then(() => {
+    toast({ title: `${mainName} is sold out.` });
+    setCurrentQuantity(-1000000);
+  });
 }
 
 interface FavouriteIconProps {
@@ -209,7 +297,6 @@ function MenuItemCard({
     quantity,
     v,
     vg,
-    restaurant,
     category,
     key,
     timestamp,
@@ -221,6 +308,7 @@ function MenuItemCard({
   }
 
   const [open, setOpen] = useState(false); // To control the edit item dialog
+  const { toast } = useToast();
 
   let availabilityColour;
   let status;
@@ -240,82 +328,6 @@ function MenuItemCard({
 
   const [currentQuantity, setCurrentQuantity] = useState(quantity);
 
-  function buyItem() {
-    const user = getAuth().currentUser;
-    if (!user) {
-      console.error("User not signed in!");
-      return;
-    }
-    const uid = user.uid;
-    const userRef = ref(database, `Users/${uid}/Recents`);
-
-    let init = true;
-
-    onValue(userRef, (snapshot) => {
-      if (init) {
-        init = false;
-        if (snapshot.val() === null) {
-          set(userRef, {
-            item1: Timestamp.fromDate(new Date("1970-01-01")),
-            item2: Timestamp.fromDate(new Date("1970-01-01")),
-            item3: Timestamp.fromDate(new Date("1970-01-01")),
-            item4: Timestamp.fromDate(new Date("1970-01-01")),
-            item5: Timestamp.fromDate(new Date("1970-01-01")),
-          })
-            .then((val) => {
-              replaceItem("item1");
-            })
-            .catch((error) => {
-              console.error("List init failed: ", error);
-            });
-        } else {
-          let itemToChange = null;
-
-          snapshot.forEach((child) => {
-            const date = new Date();
-            let timePassed =
-              date.getTime() -
-              (child.val().seconds * 1000 + child.val().nanoseconds / 1000000);
-            if (timePassed > 1800000) {
-              itemToChange = child.key;
-            }
-          });
-
-          replaceItem(itemToChange);
-        }
-      }
-    });
-
-    function replaceItem(itemToChange: string | null) {
-      if (itemToChange) {
-        alert("Successfully bought item.");
-        let updates: { [key: string]: Timestamp } = {};
-        updates[itemToChange] = Timestamp.fromDate(new Date());
-        update(userRef, updates).then(() => {
-          const dbRef = ref(database, `${restaurant}/${category}/${key}`);
-          update(dbRef, {
-            quantity: increment(-1),
-          });
-        });
-      } else {
-        alert("Limit reached. You can only buy 5 items in 30 mins.");
-      }
-    }
-  }
-
-  function deleteItem() {
-    const dbRef = ref(database, `${restaurant}/${category}/${key}`);
-    remove(dbRef).then(() => alert(`Deleted ${parseMenuName(name).name}`));
-  }
-
-  function soldOut() {
-    const dbRef = ref(database, `${restaurant}/${category}/${key}/quantity`);
-    set(dbRef, -1000000).then(() => {
-      alert(`${parseMenuName(name).name} is sold out`);
-      setCurrentQuantity(-1000000);
-    });
-  }
-
   function getItem() {
     let dietaryRequirements = [];
 
@@ -334,22 +346,6 @@ function MenuItemCard({
     if (gf) {
       dietaryRequirements.push("gluten-free");
     }
-
-    // let img = ref_storage(
-    //   storage,
-    //   "SCR Restaurant/Items/" + id,
-    // );
-
-    // getBlob(img).then((file) => {
-    //   return {id,
-    //     name,
-    //     price,
-    //     category,
-    //     initialQuantity:quantity,
-    //     dietaryRequirements,
-    //     description,
-    //     image: new File([file], "malhar")}
-    // });
 
     const description = parseMenuName(name).description.split("with")[1]
       ? parseMenuName(name).description.split("with")[1].trimStart()
@@ -411,7 +407,9 @@ function MenuItemCard({
                     variant="outline"
                     className="rounded-full drop-shadow disabled:drop-shadow-none w-2/3"
                     size="sm"
-                    onClick={buyItem}
+                    onClick={() => {
+                      buyItem(info, toast);
+                    }}
                     disabled={quantity <= -1000000}
                   >
                     {quantity > -1000000 ? "I bought this item" : "Sold out"}
@@ -436,7 +434,9 @@ function MenuItemCard({
             <Button
               variant="outline"
               className="px-4 rounded-full drop-shadow disabled:drop-shadow-none"
-              onClick={soldOut}
+              onClick={() => {
+                soldOut(info, setCurrentQuantity, toast);
+              }}
               disabled={currentQuantity <= -1000000}
             >
               Sold Out
@@ -444,7 +444,9 @@ function MenuItemCard({
             <Button
               variant="outline"
               className="px-4 rounded-full drop-shadow"
-              onClick={deleteItem}
+              onClick={() => {
+                deleteItem(info, toast);
+              }}
             >
               Delete
             </Button>
