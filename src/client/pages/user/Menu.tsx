@@ -42,6 +42,36 @@ function RestaurantHeader({ info }: { info: RestaurantInfo }) {
   );
 }
 
+
+type Item = {
+  likes?: number; // "likes" is optional
+  [key: string]: any; // Other fields of any type are allowed
+};
+
+type Category = {
+  [key: string]: Item;
+};
+
+
+function sortByLikesDescending(obj: any): any {
+  // Helper function to sort a single category (Food or Drink)
+  function sortCategory(category: Category): any {
+    return Object.fromEntries(
+      Object.entries(category).sort(([, a], [, b]) =>
+        (b.likes || 0) - (a.likes || 0)
+      )
+    );
+  }
+
+  return {
+    Food: sortCategory(obj.Food),
+    Drink: sortCategory(obj.Drink),
+  };
+}
+
+
+
+
 const Restaurant = () => {
   const location = useLocation();
   const { info } = location.state;
@@ -60,7 +90,8 @@ const Restaurant = () => {
   useEffect(() => {
     const restaurantRef = ref(database, name);
     const unsubscribe = onValue(restaurantRef, (snapshot) => {
-      const data = snapshot.val();
+      const data = sortByLikesDescending(snapshot.val());
+
       if (data != null) {
         for (const category in data) {
           for (const item in data[category]) {
