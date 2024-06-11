@@ -34,7 +34,7 @@ import { Separator } from "./shadcn/Separator";
 import { MenuItemInfo, MenuItemInfoNoKey } from "../types";
 import { ItemInformationForm } from "./ItemInformationForm";
 
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, useAnimate } from "framer-motion";
 
 function addFavourite(info: MenuItemInfo) {
   const user = getAuth().currentUser;
@@ -137,6 +137,7 @@ interface FavouriteIconProps {
 
 function FavouriteIcon({ size, info }: FavouriteIconProps) {
   const [favourite, setFavourite] = useState(false);
+  const [scope, animate] = useAnimate();
 
   useEffect(() => {
     const user = getAuth().currentUser;
@@ -159,10 +160,7 @@ function FavouriteIcon({ size, info }: FavouriteIconProps) {
 
   return (
     <AnimatePresence>
-      <motion.div
-        whileTap={{ scale: 5 }}
-        transition={{ type: "spring", stiffness: 400, damping: 17 }}
-      >
+      <div ref={scope}>
         {favourite ? (
           <IoHeartSharp
             size={size}
@@ -176,12 +174,17 @@ function FavouriteIcon({ size, info }: FavouriteIconProps) {
           <IoHeartOutline
             size={size}
             onClick={() => {
+              animate(
+                scope.current,
+                { scale: [5, 1] },
+                { type: "spring", stiffness: 400, damping: 17 },
+              );
               setFavourite(true);
               addFavourite(info);
             }}
           />
         )}
-      </motion.div>
+      </div>
     </AnimatePresence>
   );
 }
