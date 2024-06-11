@@ -62,8 +62,8 @@ function sortByLikesDescending(obj: any): any {
   }
 
   return {
-    Food: sortCategory(obj.Food),
     Drink: sortCategory(obj.Drink),
+    Food: sortCategory(obj.Food),
   };
 }
 
@@ -81,6 +81,8 @@ const Restaurant = () => {
     v: false,
     vg: false,
   });
+
+  const [isFetching, setFetching] = useState(false); // For loading animation
 
   useEffect(() => {
     const restaurantRef = ref(database, name);
@@ -109,7 +111,9 @@ const Restaurant = () => {
     });
 
     return () => {
+      setFetching(true);
       unsubscribe();
+      setFetching(false);
     };
   }, [name, dietary]);
 
@@ -135,16 +139,11 @@ const Restaurant = () => {
       <Tabs defaultValue="Food">
         <div className="flex items-center justify-center mb-2">
           <TabsList>
-            {(Object.keys(items).length === 0
-              ? ["Drink", "Food"]
-              : Object.keys(items)
-            )
-              .reverse()
-              .map((category) => (
-                <TabsTrigger key={category} value={category}>
-                  {category}
-                </TabsTrigger>
-              ))}
+            {["Food", "Drink"].map((category) => (
+              <TabsTrigger key={category} value={category}>
+                {category}
+              </TabsTrigger>
+            ))}
           </TabsList>
         </div>
         <div className="px-4 mb-4">
@@ -157,7 +156,7 @@ const Restaurant = () => {
           />
         </div>
         {Object.keys(items).length === 0
-          ? ["Drink", "Food"].map((category) => (
+          ? ["Food", "Drink"].map((category) => (
               <TabsContent
                 key={category}
                 value={category}

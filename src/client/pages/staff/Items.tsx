@@ -111,16 +111,11 @@ export function Items({ mode }: ItemsProps) {
       <Tabs defaultValue="Food">
         <div className="flex items-center justify-center mb-2">
           <TabsList>
-            {(Object.keys(items).length === 0
-              ? ["Drink", "Food"]
-              : Object.keys(items)
-            )
-              .reverse()
-              .map((category) => (
-                <TabsTrigger key={category} value={category}>
-                  {category}
-                </TabsTrigger>
-              ))}
+            {["Food", "Drink"].map((category) => (
+              <TabsTrigger key={category} value={category}>
+                {category}
+              </TabsTrigger>
+            ))}
           </TabsList>
         </div>
         <div className="px-4 mb-4">
