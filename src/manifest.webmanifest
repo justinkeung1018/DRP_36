@@ -17,5 +17,7 @@
   "start_url": "/?source=pwa",
   "display": "standalone",
   "scope": "/",
-  "description": "Imperial restaurant info"
+  "description": "Imperial restaurant info",
+  "theme_color": "#dbeafe",
+  "background_color": "#dbeafe"
 }
