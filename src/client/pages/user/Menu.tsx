@@ -1,8 +1,11 @@
 import { database } from "../../firebase";
 import { onValue, ref } from "firebase/database";
+import { getAuth } from "firebase/auth";
+
 import { useEffect, useState } from "react";
 import { useLocation, Link } from "react-router-dom";
 import { IoChevronBack } from "react-icons/io5";
+import { IconContext } from "react-icons";
 import { Search } from "lucide-react";
 
 import { AspectRatio } from "../../components/shadcn/AspectRatio";
@@ -17,9 +20,8 @@ import {
 } from "../../components/shadcn/Tabs";
 
 import { RestaurantInfo, MenuItemInfoNoKey } from "../../types";
-import { IconContext } from "react-icons";
 import { getRelevantMenuItemCards } from "../../components/MenuItemCard";
-import { getAuth } from "firebase/auth";
+import { Header } from "../../components/Header";
 
 function RestaurantHeader({ info }: { info: RestaurantInfo }) {
   const { name, location, img } = info;
@@ -133,59 +135,57 @@ const Restaurant = () => {
 
   return (
     <>
-      <RestaurantHeader info={info} />
-      <Tabs defaultValue="Food">
-        <div className="flex items-center justify-center mb-2">
-          <TabsList>
-            {["Food", "Drink"].map((category) => (
-              <TabsTrigger key={category} value={category}>
-                {category}
-              </TabsTrigger>
-            ))}
-          </TabsList>
-        </div>
-        <div className="px-4 mb-4">
-          <Input
-            placeholder="Search for an item"
-            startIcon={Search}
-            onChange={(e) => {
-              setUserInput(e.target.value.toLowerCase().replace(/\s+/g, ""));
-            }}
-          />
-        </div>
-        {Object.keys(items).length === 0
-          ? ["Food", "Drink"].map((category) => (
-              <TabsContent
-                key={category}
-                value={category}
-                className="space-y-4 overflow-auto text-center font-normal text-lg"
-              >
-                No Items
-              </TabsContent>
-            ))
-          : Object.entries(items).map(([category, items]) => (
-              <TabsContent
-                key={category}
-                value={category}
-                className="space-y-4 overflow-auto"
-              >
-                {getRelevantMenuItemCards(
-                  items,
-                  userInput,
-                  category,
-                  name,
-                  "user",
-                )}
-              </TabsContent>
-            ))}
-      </Tabs>
-      <Button asChild>
-        <Link to="/" className="fixed top-5 left-5 bg-stone-700/60 px-1">
-          <IconContext.Provider value={{ color: "#a8a29e", size: "30px" }}>
-            <IoChevronBack />
-          </IconContext.Provider>
-        </Link>
-      </Button>
+      <div className="main-content max-h-[92vh]">
+        <RestaurantHeader info={info} />
+        <Tabs defaultValue="Food">
+          <div className="flex items-center justify-center mb-2">
+            <TabsList>
+              {["Food", "Drink"].map((category) => (
+                <TabsTrigger key={category} value={category}>
+                  {category}
+                </TabsTrigger>
+              ))}
+            </TabsList>
+          </div>
+          <div className="px-4 mb-4">
+            <Input
+              placeholder="Search for an item"
+              startIcon={Search}
+              onChange={(e) => {
+                setUserInput(e.target.value.toLowerCase().replace(/\s+/g, ""));
+              }}
+            />
+          </div>
+          {Object.keys(items).length === 0
+            ? ["Food", "Drink"].map((category) => (
+                <TabsContent
+                  key={category}
+                  value={category}
+                  className="space-y-4 overflow-auto text-center font-normal text-lg"
+                >
+                  No Items
+                </TabsContent>
+              ))
+            : Object.entries(items).map(([category, items]) => (
+                <TabsContent
+                  key={category}
+                  value={category}
+                  className="space-y-4 overflow-auto"
+                >
+                  {getRelevantMenuItemCards(
+                    items,
+                    userInput,
+                    category,
+                    name,
+                    "user",
+                  )}
+                </TabsContent>
+              ))}
+        </Tabs>
+      </div>
+      <Header spritePath="./images/sprites/smile.png" withBackButton>
+        Explore our offerings!
+      </Header>
     </>
   );
 };

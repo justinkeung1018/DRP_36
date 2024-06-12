@@ -159,7 +159,7 @@ export function Items({ mode }: ItemsProps) {
           <DialogTrigger>
             <Button
               variant="outline"
-              className="fixed bottom-32 right-10 shadow-md font-bold h-fit"
+              className="fixed bottom-20 right-10 shadow-md font-bold h-fit"
             >
               <div className="flex flex-col items-center">
                 <div>

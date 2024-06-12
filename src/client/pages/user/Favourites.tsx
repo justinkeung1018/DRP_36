@@ -104,13 +104,6 @@ function Favourites() {
       <Header spritePath="./images/sprites/hearts.png">
         Your Favourite Bites!
       </Header>
-      {/* <div className="pb-2 pt-2 fixed top-0 left-0 right-0 h-[8vh] bg-white flex items-center justify-center gap-x-4 drop-shadow-md">
-        <img
-          src="./images/sprites/hearts.png"
-          className="object-contain h-10"
-        />
-        <h1 className="text-lg font-medium">Your Favourite Bites!</h1>
-      </div> */}
     </>
   );
 }
