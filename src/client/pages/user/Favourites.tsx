@@ -73,38 +73,41 @@ function Favourites() {
   }, []);
 
   return (
-    <div className="main-content">
-      <div className="px-10 pb-4 pt-4 bg-blue-100 flex items-center justify-center gap-x-2">
+    <>
+      <div className="overflow-auto max-h-[84vh] mt-[8vh]">
+        <div className="space-y-4 pt-4 pb-10">
+          {Object.entries(items).length === 0 ? (
+            <h1 className="text-center text-xl font-normal">No Items</h1>
+          ) : (
+            Object.entries(items).map(
+              ([restaurant, restaurantItems], index) => (
+                <>
+                  <h1 className="text-xl font-bold text-blue-dark leading-none tracking-tight mb-2 px-4">
+                    {restaurant}
+                  </h1>
+                  {restaurantItems.map((info, index) => (
+                    <MenuItemCard
+                      info={info}
+                      withSeparator={index < restaurantItems.length - 1}
+                    />
+                  ))}
+                  {index < Object.entries(items).length - 1 && (
+                    <Separator className="h-[5px] bg-slate-100" />
+                  )}
+                </>
+              ),
+            )
+          )}
+        </div>
+      </div>
+      <div className="pb-2 pt-2 fixed top-0 left-0 right-0 h-[8vh] bg-white flex items-center justify-center gap-x-4 drop-shadow-md">
         <img
           src="./images/sprites/hearts.png"
           className="object-contain h-10"
         />
-        <h1 className="text-xl font-bold pt-3">Your Favourite Bites</h1>
+        <h1 className="text-lg font-medium">Your Favourite Bites!</h1>
       </div>
-      <Separator className="mb-8" />
-      <div className="space-y-4">
-        {Object.entries(items).length === 0 ? (
-          <h1 className="text-center text-xl font-normal">No Items</h1>
-        ) : (
-          Object.entries(items).map(([restaurant, restaurantItems], index) => (
-            <>
-              <h1 className="text-2xl font-semibold leading-none tracking-tight mb-2 px-4">
-                {restaurant}
-              </h1>
-              {restaurantItems.map((info, index) => (
-                <MenuItemCard
-                  info={info}
-                  withSeparator={index < restaurantItems.length - 1}
-                />
-              ))}
-              {index < Object.entries(items).length - 1 && (
-                <Separator className="h-[5px] bg-slate-100" />
-              )}
-            </>
-          ))
-        )}
-      </div>
-    </div>
+    </>
   );
 }
 

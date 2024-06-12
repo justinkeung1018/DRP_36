@@ -31,11 +31,14 @@ interface AccountHeaderProps {
 function AccountHeader({ name }: AccountHeaderProps) {
   return (
     <>
-      <div className="flex flex-col items-center justify-center mb-4 mt-10">
-        <h1 className="text-2xl font-bold">Welcome back,</h1>
-        <h2 className="text-lg font-light">
-          {name === "Jamal" ? "Staff" : name}
-        </h2>
+      <div className="flex items-center justify-center pb-4 pt-10 gap-x-4">
+        <img src="./images/sprites/happy.png" className="object-contain h-10" />
+        <div className="flex flex-col items-start justify-center">
+          <h1 className="text-2xl font-bold">Welcome back,</h1>
+          <h2 className="text-lg font-light">
+            {name === "Jamal" ? "Staff" : name}
+          </h2>
+        </div>
       </div>
       <Separator className="mb-8" />
     </>
