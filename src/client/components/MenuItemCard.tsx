@@ -253,6 +253,8 @@ interface FavouriteIconProps {
 function FavouriteIcon({ size, info }: FavouriteIconProps) {
   const [favourite, setFavourite] = useState(false);
   const [scope, animate] = useAnimate();
+  const { toast } = useToast();
+  const { name: mainName } = parseMenuName(info.name);
 
   useEffect(() => {
     const user = getAuth().currentUser;
@@ -283,6 +285,13 @@ function FavouriteIcon({ size, info }: FavouriteIconProps) {
             onClick={() => {
               setFavourite(false);
               removeFavourite(info);
+              toast({
+                title: (
+                  <ToastTitle spritePath="./images/sprites/sad.png">
+                    Removed {mainName} from favourites!
+                  </ToastTitle>
+                ),
+              });
             }}
           />
         ) : (
@@ -296,6 +305,13 @@ function FavouriteIcon({ size, info }: FavouriteIconProps) {
               );
               setFavourite(true);
               addFavourite(info);
+              toast({
+                title: (
+                  <ToastTitle spritePath="./images/sprites/hearts.png">
+                    Added {mainName} to favourites!
+                  </ToastTitle>
+                ),
+              });
             }}
           />
         )}
