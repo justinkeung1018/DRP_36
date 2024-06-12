@@ -24,37 +24,27 @@ interface RestaurantCardProps {
   info: RestaurantInfo;
 }
 
-const WaitTimes: Record<
-  string,
-  Record<number, { averageQueue: number; averageWait: number }>
-> = {
-  "SCR Restaurant": {
-    9: {
-      averageQueue: 1,
-      averageWait: 0,
-    },
-    10: {
-      averageQueue: 1,
-      averageWait: 0,
-    },
-    11: {
-      averageQueue: 3,
-      averageWait: 5,
-    },
-    12: {
-      averageQueue: 5,
-      averageWait: 10,
-    },
-    13: {
-      averageQueue: 7,
-      averageWait: 15,
-    },
-  },
-};
-
 const RestaurantCard = ({ info }: RestaurantCardProps) => {
   const { name, location, img } = info;
   const [waitTime, setWaitTime] = useState(0);
+  const [waitTimes, setWaitTimes] = useState<
+    Record<
+      string,
+      Record<string, { averageQueue: number; averageWait: number }>
+    >
+  >({});
+
+  useEffect(() => {
+    const unsubcribe = onValue(ref(database, "WaitTimes"), (snapshot) => {
+      if (snapshot.exists()) {
+        setWaitTimes(snapshot.val());
+      }
+    });
+
+    return () => {
+      unsubcribe();
+    };
+  }, []);
 
   useEffect(() => {
     const recentQuery = query(
@@ -66,10 +56,7 @@ const RestaurantCard = ({ info }: RestaurantCardProps) => {
       if (snapshot.exists()) {
         const amount = Object.keys(snapshot.val() ?? {}).length;
         const hour = new Date().getHours();
-        const { averageQueue, averageWait } =
-          WaitTimes.hasOwnProperty(name) && WaitTimes[name].hasOwnProperty(hour)
-            ? WaitTimes[name][hour]
-            : { averageQueue: 1, averageWait: 10 };
+        const { averageQueue, averageWait } = waitTimes[name][hour.toString()];
         setWaitTime(Math.round(averageWait * (amount / averageQueue)));
       }
     });
@@ -77,7 +64,7 @@ const RestaurantCard = ({ info }: RestaurantCardProps) => {
     return () => {
       unsubcribe();
     };
-  }, []);
+  }, [waitTimes]);
 
   const [vegetarian, setVegetarian] = useState(false);
   const [vegan, setVegan] = useState(false);
