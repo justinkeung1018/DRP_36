@@ -8,7 +8,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "../../components/shadcn/Dialog";
-import { get, push, ref, set } from "firebase/database";
+import { get, onValue, push, ref, set } from "firebase/database";
 import { getAuth } from "firebase/auth";
 import { database } from "../../firebase";
 
@@ -39,20 +39,48 @@ function deg2rad(deg: number) {
 function LocationDialog() {
   const [open, setOpen] = useState(false);
   const [restaurant, setRestaurant] = useState("");
-  const coords = { "SCR Restaurant": [51.4948061, -0.1861341] };
+  const [coords, setCoords] = useState<
+    Record<string, { latitude: number; longitude: number }>
+  >({});
+  const [restaurantDistance, setRestaurantDistance] = useState(30);
+
+  useEffect(() => {
+    const unsubscribe = onValue(ref(database, "Coordinates"), (snapshot) => {
+      if (snapshot.exists()) {
+        setCoords(snapshot.val());
+      }
+    });
+
+    return () => {
+      unsubscribe();
+    };
+  }, []);
+
+  useEffect(() => {
+    const unsubcribe = onValue(ref(database, "Distance"), (snapshot) => {
+      if (snapshot.exists()) {
+        console.log("Distance, ", snapshot.val());
+        setRestaurantDistance(snapshot.val());
+      }
+    });
+    return () => {
+      unsubcribe();
+    };
+  }, []);
 
   useEffect(() => {
     const interval = setInterval(() => {
+      let alreadyQueued = false;
       navigator.geolocation.getCurrentPosition(
         (position) => {
-          Object.entries(coords).forEach(([name, [lat, long]]) => {
+          Object.entries(coords).forEach(([name, { latitude, longitude }]) => {
             const distance = getDistanceFromLatLonInM(
               position.coords.latitude,
               position.coords.longitude,
-              lat,
-              long,
+              latitude,
+              longitude,
             );
-            if (distance < 30) {
+            if (distance < restaurantDistance && !alreadyQueued) {
               const user = getAuth().currentUser;
               if (!user) {
                 console.error("User not signed in!");
@@ -63,6 +91,7 @@ function LocationDialog() {
                 if (!snapshot.exists()) {
                   setOpen(true);
                   setRestaurant(name);
+                  alreadyQueued = true;
                 } else {
                   const lastAccepted = snapshot.val()?.lastAccepted ?? 0;
                   const lastRestaurantFailed =
@@ -74,6 +103,7 @@ function LocationDialog() {
                   ) {
                     setOpen(true);
                     setRestaurant(name);
+                    alreadyQueued = true;
                   }
                 }
               });
@@ -88,7 +118,7 @@ function LocationDialog() {
     }, 10000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [coords, restaurantDistance]);
 
   function handleQueueResponse(isQueueing: boolean) {
     const user = getAuth().currentUser;
