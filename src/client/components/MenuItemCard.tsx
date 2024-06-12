@@ -36,6 +36,7 @@ import { MenuItemInfo, MenuItemInfoNoKey } from "../types";
 import { ItemInformationForm } from "./ItemInformationForm";
 
 import { AnimatePresence, useAnimate } from "framer-motion";
+import { ToastTitle } from "./ToastTitle";
 
 function addFavourite(info: MenuItemInfo) {
   const user = getAuth().currentUser;
@@ -182,7 +183,13 @@ function buyItem(info: MenuItemInfo, toast: ToastFunction) {
 
   function replaceItem(itemToChange: string | null) {
     if (itemToChange) {
-      toast({ title: `You bought ${mainName}.` });
+      toast({
+        title: (
+          <ToastTitle spritePath="./images/sprites/happy.png">
+            You bought {mainName}
+          </ToastTitle>
+        ),
+      });
       let updates: { [key: string]: Timestamp } = {};
       updates[itemToChange] = Timestamp.fromDate(new Date());
       update(userRef, updates).then(() => {
@@ -192,7 +199,13 @@ function buyItem(info: MenuItemInfo, toast: ToastFunction) {
         });
       });
     } else {
-      toast({ title: "Limit reached. You can only buy 5 items in 30 mins." });
+      toast({
+        title: (
+          <ToastTitle spritePath="./images/sprites/sad.png">
+            Limit reached. You can only buy 5 items in 30 mins.
+          </ToastTitle>
+        ),
+      });
     }
   }
 }
@@ -201,7 +214,15 @@ function deleteItem(info: MenuItemInfo, toast: ToastFunction) {
   const { restaurant, category, key, name } = info;
   const { name: mainName } = parseMenuName(name);
   const dbRef = ref(database, `${restaurant}/${category}/${key}`);
-  remove(dbRef).then(() => toast({ title: `Deleted ${mainName} from menu.` }));
+  remove(dbRef).then(() =>
+    toast({
+      title: (
+        <ToastTitle spritePath="./images/sprites/smile.png">
+          Deleted {mainName} from menu.
+        </ToastTitle>
+      ),
+    }),
+  );
 }
 
 function soldOut(
@@ -213,7 +234,13 @@ function soldOut(
   const { name: mainName } = parseMenuName(name);
   const dbRef = ref(database, `${restaurant}/${category}/${key}/quantity`);
   set(dbRef, -1000000).then(() => {
-    toast({ title: `${mainName} is sold out.` });
+    toast({
+      title: (
+        <ToastTitle spritePath="./images/sprites/sad.png">
+          {mainName} is sold out.
+        </ToastTitle>
+      ),
+    });
     setCurrentQuantity(-1000000);
   });
 }
