@@ -6,6 +6,7 @@ import { MdAccountCircle } from "react-icons/md";
 import { IoHeartOutline } from "react-icons/io5";
 
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "./shadcn/Tabs";
+import { NavTabsList, NavTabsTrigger } from "./NavTabs";
 
 const NavUser = () => {
   const navigate = useNavigate();
@@ -48,32 +49,32 @@ const NavUser = () => {
       defaultValue="restaurant-list"
       onValueChange={handleTabChange}
     >
-      <TabsList className="fixed bottom-0 left-0 right-0 w-screen h-[8vh] flex shadow-[rgba(0,0,0,0.1)_0_-10px_15px_-3px,rgba(0,0,0,0.1)_0_-4px_6px_-4px]">
-        <TabsTrigger value="restaurant-list" className="flex-1 h-full">
+      <NavTabsList>
+        <NavTabsTrigger value="restaurant-list">
           <div className="flex flex-col items-center justify-center">
             <div>
               <IoRestaurantSharp size={30} />
             </div>
             Restaurants
           </div>
-        </TabsTrigger>
-        <TabsTrigger value="favourites" className="flex-1 h-full">
+        </NavTabsTrigger>
+        <NavTabsTrigger value="favourites">
           <div className="flex flex-col items-center justify-center">
             <div>
               <IoHeartOutline size={30} />
             </div>
             Favourites
           </div>
-        </TabsTrigger>
-        <TabsTrigger value="account" className="flex-1 h-full">
+        </NavTabsTrigger>
+        <NavTabsTrigger value="account">
           <div className="flex flex-col items-center justify-center">
             <div>
               <MdAccountCircle size={30} />
             </div>
             Account
           </div>
-        </TabsTrigger>
-      </TabsList>
+        </NavTabsTrigger>
+      </NavTabsList>
       <TabsContent value="restaurant-list" />
       <TabsContent value="account" />
       <TabsContent value="favourites" />
