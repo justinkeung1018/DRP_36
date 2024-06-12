@@ -6,6 +6,7 @@ import { get, onValue, ref } from "firebase/database";
 import { Separator } from "../../components/shadcn/Separator";
 import { MenuItemCard } from "../../components/MenuItemCard";
 import { MenuItemInfo } from "../../types";
+import { Header } from "../../components/Header";
 
 function groupItemsByRestaurant(
   items: MenuItemInfo[],
@@ -74,7 +75,7 @@ function Favourites() {
 
   return (
     <>
-      <div className="overflow-auto max-h-[84vh] mt-[8vh]">
+      <div className="main-content">
         <div className="space-y-4 pt-4 pb-10">
           {Object.entries(items).length === 0 ? (
             <h1 className="text-center text-xl font-normal">No Items</h1>
@@ -100,13 +101,16 @@ function Favourites() {
           )}
         </div>
       </div>
-      <div className="pb-2 pt-2 fixed top-0 left-0 right-0 h-[8vh] bg-white flex items-center justify-center gap-x-4 drop-shadow-md">
+      <Header spritePath="./images/sprites/hearts.png">
+        Your Favourite Bites!
+      </Header>
+      {/* <div className="pb-2 pt-2 fixed top-0 left-0 right-0 h-[8vh] bg-white flex items-center justify-center gap-x-4 drop-shadow-md">
         <img
           src="./images/sprites/hearts.png"
           className="object-contain h-10"
         />
         <h1 className="text-lg font-medium">Your Favourite Bites!</h1>
-      </div>
+      </div> */}
     </>
   );
 }

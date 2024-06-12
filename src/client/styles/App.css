@@ -1,6 +1,7 @@
 .main-content {
   overflow: auto;
-  max-height: 92vh;
+  max-height: 84vh;
+  margin-top: 8vh;
   padding-bottom: 2rem;
 }
 

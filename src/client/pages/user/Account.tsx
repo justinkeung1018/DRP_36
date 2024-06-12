@@ -22,8 +22,6 @@ function signOutOfAccount() {
     });
 }
 
-// trivial change to force deploy
-
 interface AccountHeaderProps {
   name: string;
 }
@@ -32,7 +30,7 @@ function AccountHeader({ name }: AccountHeaderProps) {
   return (
     <>
       <div className="flex items-center justify-center pb-4 pt-10 gap-x-4">
-        <img src="./images/sprites/happy.png" className="object-contain h-10" />
+        <img src="./images/sprites/happy.png" className="object-contain h-16" />
         <div className="flex flex-col items-start justify-center">
           <h1 className="text-2xl font-bold">Welcome back,</h1>
           <h2 className="text-lg font-light">
@@ -46,7 +44,6 @@ function AccountHeader({ name }: AccountHeaderProps) {
 }
 
 function setDietaryRequirements(dietaryRequirements: string[]) {
-  console.log("Dietar, ", dietaryRequirements);
   const user = getAuth().currentUser;
   if (!user) {
     console.error("User not signed in!");
@@ -158,7 +155,9 @@ const Account = () => {
       <div className="px-10">
         {staff ? <></> : <DietaryRequirements />}
         <div className="flex items-center justify-center">
-          <Button onClick={signOutOfAccount}>Sign Out</Button>
+          <Button onClick={signOutOfAccount} className="bg-blue-dark">
+            Sign Out
+          </Button>
         </div>
       </div>
     </>
