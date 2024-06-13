@@ -201,7 +201,7 @@ function buyItem(info: MenuItemInfo, toast: ToastFunction) {
     } else {
       toast({
         title: (
-          <ToastTitle spritePath="./images/sprites/sad.png">
+          <ToastTitle spritePath="./images/sprites/angry.png">
             Limit reached. You can only buy 5 items in 30 mins.
           </ToastTitle>
         ),

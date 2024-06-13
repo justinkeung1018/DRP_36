@@ -97,13 +97,13 @@ const Restaurant = () => {
             if (Date.now() - 86400000 > data[category][item].timestamp) {
               delete data[category][item];
             }
-            if (dietary.gf && !data[category][item].gf) {
+            if (dietary.gf && data[category][item] != undefined && !data[category][item].gf) {
               delete data[category][item];
-            } else if (dietary.nf && !data[category][item].nf) {
+            } else if (dietary.nf && data[category][item] != undefined && !data[category][item].nf) {
               delete data[category][item];
-            } else if (dietary.v && !data[category][item].v) {
+            } else if (dietary.v && data[category][item] != undefined && !data[category][item].v) {
               delete data[category][item];
-            } else if (dietary.vg && !data[category][item].vg) {
+            } else if (dietary.vg && data[category][item] != undefined && !data[category][item].vg) {
               delete data[category][item];
             }
           }
@@ -184,7 +184,7 @@ const Restaurant = () => {
         </Tabs>
       </div>
       <Header spritePath="./images/sprites/smile.png" withBackButton>
-        Explore our offerings!
+        Check out what's on offer!
       </Header>
     </>
   );
