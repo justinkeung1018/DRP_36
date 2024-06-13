@@ -89,7 +89,8 @@ const Restaurant = () => {
   useEffect(() => {
     const restaurantRef = ref(database, name);
     const unsubscribe = onValue(restaurantRef, (snapshot) => {
-      const data = sortByLikesDescending(snapshot.val());
+      const data = snapshot.val();
+      // const data = sortByLikesDescending(snapshot.val());
 
       if (data != null) {
         for (const category in data) {
