@@ -76,6 +76,20 @@ export function Items({ mode }: ItemsProps) {
     Record<string, Record<string, MenuItemInfo>>
   >({});
 
+  const [expiryTimeSeconds, setExpiryTimeSeconds] = useState(86400);
+
+  useEffect(() => {
+    const unsubcribe = onValue(
+      ref(database, "expiryTimeSeconds"),
+      (snapshot) => {
+        if (snapshot.exists()) {
+          setExpiryTimeSeconds(snapshot.val());
+        }
+      },
+    );
+    return () => unsubcribe();
+  }, []);
+
   const [userInput, setUserInput] = useState("");
 
   useEffect(() => {
@@ -87,10 +101,12 @@ export function Items({ mode }: ItemsProps) {
           for (const item in data[category]) {
             if (
               (mode === "staff" &&
-                Date.now() - 86400000 > data[category][item].timestamp) ||
+                Date.now() - expiryTimeSeconds * 1000 >
+                  data[category][item].timestamp) ||
               (mode === "archive" &&
                 (data[category][item].timestamp === undefined ||
-                  Date.now() - 86400000 <= data[category][item].timestamp))
+                  Date.now() - expiryTimeSeconds * 1000 <=
+                    data[category][item].timestamp))
             ) {
               delete data[category][item];
             }
@@ -103,7 +119,7 @@ export function Items({ mode }: ItemsProps) {
     return () => {
       unsubscribe();
     };
-  }, [name, mode]);
+  }, [name, mode, expiryTimeSeconds]);
 
   return (
     <div className="main-content">

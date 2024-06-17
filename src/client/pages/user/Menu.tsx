@@ -86,6 +86,21 @@ const Restaurant = () => {
     vg: false,
   });
 
+  const [expiryTimeSeconds, setExpiryTimeSeconds] = useState(86400);
+
+  useEffect(() => {
+    const unsubscribe = onValue(
+      ref(database, "expiryTimeSeconds"),
+      (snapshot) => {
+        if (snapshot.exists()) {
+          setExpiryTimeSeconds(snapshot.val());
+        }
+      },
+    );
+
+    return () => unsubscribe();
+  }, []);
+
   useEffect(() => {
     const restaurantRef = ref(database, name);
     const unsubscribe = onValue(restaurantRef, (snapshot) => {
@@ -95,7 +110,10 @@ const Restaurant = () => {
       if (data != null) {
         for (const category in data) {
           for (const item in data[category]) {
-            if (Date.now() - 86400000 > data[category][item].timestamp) {
+            if (
+              Date.now() - expiryTimeSeconds * 1000 >
+              data[category][item].timestamp
+            ) {
               delete data[category][item];
             }
             if (
@@ -132,7 +150,7 @@ const Restaurant = () => {
     return () => {
       unsubscribe();
     };
-  }, [name, dietary]);
+  }, [name, dietary, expiryTimeSeconds]);
 
   useEffect(() => {
     const user = getAuth().currentUser;
